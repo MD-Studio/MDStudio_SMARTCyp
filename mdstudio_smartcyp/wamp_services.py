@@ -65,7 +65,7 @@ class SmartCypWampApi(ComponentSession):
     def authorize_request(self, uri, claims):
         return True
 
-    @endpoint('info', 'smartcyp_info_request', 'smartcyp_info_response',
+    @endpoint('info', 'info_request', 'info_response',
               options=RegisterOptions(invoke=u'roundrobin'))
     def smartcyp_info(self, request, claims):
         """
@@ -79,7 +79,7 @@ class SmartCypWampApi(ComponentSession):
 
         return info_dict
 
-    @endpoint('predict', 'smartcyp_predict_request', 'smartcyp_predict_response',
+    @endpoint('predict', 'predict_request', 'predict_response',
               options=RegisterOptions(invoke=u'roundrobin'))
     def smartcyp_prediction(self, request, claims):
         """
