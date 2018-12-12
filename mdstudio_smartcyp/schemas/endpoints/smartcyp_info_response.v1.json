@@ -1,0 +1,26 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "title": "MDStudio SMARTCyp info",
+  "description": "Informative summary on the installed SMARTCyp version and configuration",
+  "type": "object",
+  "properties": {
+    "version": {
+      "description": "SMARTCyp version",
+      "type": "string"
+    },
+    "citation": {
+      "description": "SMARTCyp citation",
+      "type": "string"
+    },
+    "models": {
+      "type": "array",
+      "description": "Supported CYP prediction models",
+      "default": []
+    }
+  },
+  "required": [
+    "version",
+    "citation",
+    "models"
+  ]
+}

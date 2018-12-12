@@ -1,0 +1,14 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "title": "MDStudio SMARTCyp prediction",
+  "description": "Perform a CYP site of metabolism prediction using SMARTCyp",
+  "type": "object",
+  "properties": {
+    "mol": {
+      "$ref": "resource://mdgroup/common_resources/path_file/v1",
+      "description": "Ligand input file"
+    }
+  },
+  "required": ["mol"],
+  "additionalProperties": false
+}

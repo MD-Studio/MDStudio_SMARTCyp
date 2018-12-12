@@ -1,0 +1,13 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "title": "MDStudio SMARTCyp prediction",
+  "description": "Perform a CYP site of metabolism prediction using SMARTCyp",
+  "type": "object",
+  "properties": {
+    "result": {
+      "type": "object",
+      "description": "Content of SMARTCyp prediction .csv file"
+    }
+  },
+  "required": ["result"]
+}
