@@ -7,6 +7,19 @@
     "mol": {
       "$ref": "resource://mdgroup/common_resources/path_file/v1",
       "description": "Ligand input file"
+    },
+    "noempcorr": {
+      "description": "Do not use the empirical N-oxidation correction (smartcyp >= v2.3).",
+      "default": false
+    },
+    "output_format": {
+      "description": "SAMRTCyp result output format",
+      "enum": ["csv", "html", "json"],
+      "default": "json"
+    },
+    "output_png": {
+      "description": "Export PNG image files for the prediction",
+      "default": false
     }
   },
   "required": ["mol"],
