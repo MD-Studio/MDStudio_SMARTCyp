@@ -1,0 +1,743 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+    <title>Results from SMARTCyp</title>
+    <style type="text/css">
+<!--
+body {
+	background: #FFFFFF;
+	color: #000000;
+	margin: 5px;
+	font-family: Verdana, Arial, sans-serif;
+	font-size: 16px;
+	}
+.boldlarge { margin-left: 20px; font-size: 20px; font-weight : bold; }
+.molecule { margin-left: 20px }
+table { }
+th { text-align:center; font-weight : bold; }
+.highlight1 {  background: rgb(255,204,102); font-weight : bold; }
+.highlight2 {  background: rgb(223,189,174); font-weight : bold; }
+.highlight3 {  background: rgb(214,227,181); font-weight : bold; }
+.hiddenPic {display:none;}
+ul#navlist	{
+font: bold 14px verdana, arial, sans-serif;
+list-style-type: none;
+padding-bottom: 26px;
+border-bottom: 0px;
+margin: 0; }
+ul#navlist li {
+float: left;
+height: 24px;
+margin: 2px 4px 0px 4px;
+border: 0px;
+border-top-left-radius: 3px;
+border-top-right-radius: 3px; }
+ul#navlist li#cyp3A4 {
+border-bottom: 1px solid rgb(242,238,234);
+background-color: rgb(242,238,234); }
+li#cyp3A4 a { color:  rgb(80,80,100); }
+ul#navlist li#cyp2D6 {
+border-bottom: 1px solid rgb(228,235,240);
+background-color: rgb(228,235,240); }
+li#cyp2D6 a { color: rgb(80,80,100); }
+ul#navlist li#cyp2C9 {
+border-bottom: 1px solid rgb(255,235,235);
+background-color: rgb(255,235,235); }
+li#cyp2C9 a { color: rgb(80,80,100); }
+#navlist a	{
+float: left;
+display: block;
+text-decoration: none;
+padding: 4px;
+font-style: italic; }
+.table2c9 {background-color:rgb(255,235,235); border-radius: 5px; padding: 5px}
+.table2d6 {background-color:rgb(228,235,240); border-radius: 5px; padding: 5px}
+.table3a4 {background-color:rgb(242,238,234); border-radius: 5px; padding: 5px}
+canvas.ChemDoodleWebComponent {border: none;}
+-->
+
+    </style>
+    <script type="text/javascript" src="http://www.farma.ku.dk/smartcyp/chemdoodle/ChemDoodleWeb-libs.js"></script>
+    <script type="text/javascript" src="http://www.farma.ku.dk/smartcyp/chemdoodle/ChemDoodleWeb.js"></script>
+    <script type="text/javascript">
+function roll_over(img_name, img_src)
+   {
+   document[img_name].src = img_src;
+   }
+function HideContent(d) {
+	document.getElementById(d).style.display = 'none';
+	}
+function ShowContent(d) {
+	document.getElementById(d).style.display = 'block';
+	}
+function Switch2D6and3A4(cyp2show) {
+	var cyp2c9list = [];
+	cyp2c9list[0] = "molecule1CYP2C9";
+	var cyp2d6list = [];
+	cyp2d6list[0] = "molecule1CYP2D6div";
+	var cyp3a4list = [];
+	cyp3a4list[0] = "molecule1standarddiv";
+	var maxmol = 1;
+	if(cyp2show=='2C9'){
+		for(var i=0; i<maxmol; i++) {
+			HideContent(cyp3a4list[i]);
+			HideContent(cyp2d6list[i]);
+			ShowContent(cyp2c9list[i]);
+		}
+	}
+	if(cyp2show=='2D6'){
+		for(var i=0; i<maxmol; i++) {
+			HideContent(cyp2c9list[i]);
+			HideContent(cyp3a4list[i]);
+			ShowContent(cyp2d6list[i]);
+		}
+	}
+	if(cyp2show=='3A4'){
+		for(var i=0; i<maxmol; i++) {
+			HideContent(cyp2c9list[i]);
+			HideContent(cyp2d6list[i]);
+			ShowContent(cyp3a4list[i]);
+		}
+	}
+}
+
+    </script>
+</head>
+
+<body>
+<h1>Results from SMARTCyp version 2.4.2</h1>
+
+These results were produced: 2019-02-06_17-34-21.
+
+The infiles were: [smartcypxyz.smiles].
+
+<br/><br/><i>To alternate between heteroatoms and atom numbers, move the mouse cursor over the figure.</i>
+
+<!-- Molecule 1 -->
+<div id='molecule1CYP2D6div' style='display:none;'>
+    <table>
+        <tr>
+            <td style='vertical-align:top;'>
+                <script>
+var molecule12D6 = new ChemDoodle.ViewerCanvas('molecule12D6', 400, 300);
+molecule12D6.specs.atoms_useJMOLColors = true;
+var molecule12D6MolFile = '\n  CDK     0206191734\n\n 13 14  0  0  0  0  0  0  0  0999 V2000\n    2.5838    1.7716    0.0000 O   0  0  0  0  0  0  0  0  0  0  0  0\n    1.2135    2.3817    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n    0.0000    1.5000    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n    0.0000    0.0000    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n   -1.4266   -0.4635    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n   -2.3083    0.7500    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n   -1.4266    1.9635    0.0000 S   0  0  0  0  0  0  0  0  0  0  0  0\n   -3.8083    0.7500    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n   -4.5583   -0.5490    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n   -6.0583   -0.5490    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n   -6.8083    0.7500    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n   -6.0583    2.0490    0.0000 N   0  0  0  0  0  0  0  0  0  0  0  0\n   -4.5583    2.0490    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n  2  1  2  0  0  0  0 \n  3  2  1  0  0  0  0 \n  4  3  4  0  0  0  0 \n  5  4  4  0  0  0  0 \n  6  5  4  0  0  0  0 \n  7  6  4  0  0  0  0 \n  7  3  4  0  0  0  0 \n  8  6  1  0  0  0  0 \n  9  8  4  0  0  0  0 \n 10  9  4  0  0  0  0 \n 11 10  4  0  0  0  0 \n 12 11  4  0  0  0  0 \n 13 12  4  0  0  0  0 \n 13  8  4  0  0  0  0 \nM  END\n';
+var molecule12D6Mol = ChemDoodle.readMOL(molecule12D6MolFile);
+// get the dimension of the molecule
+var size = molecule12D6Mol.getDimension();
+// find the scale by taking the minimum of the canvas/size ratios
+var scale = Math.min(molecule12D6.width/size.x, molecule12D6.height/size.y);
+// load the molecule first (this function automatically sets scale, so we need to change specs after
+molecule12D6.loadMolecule(molecule12D6Mol);
+// change the specs.scale value to the scale calculated, shrinking it slightly so that text is not cut off
+molecule12D6.specs.scale = scale*.8;
+molecule12D6.mouseover = function(){
+	for (var i = 0, ii=molecule12D6Mol.atoms.length; i<ii; i++) {
+		molecule12D6Mol.atoms[i].altLabel = i+1;
+	}
+this.repaint();
+}
+molecule12D6.mouseout = function(){
+	for (var i = 0, ii=molecule12D6Mol.atoms.length; i<ii; i++) {
+		delete molecule12D6Mol.atoms[i].altLabel;
+	}
+	this.repaint();
+}
+molecule12D6.touchstart = function(){
+	for (var i = 0, ii=molecule12D6Mol.atoms.length; i<ii; i++) {
+		molecule12D6Mol.atoms[i].altLabel = i+1;
+	}
+this.repaint();
+}
+molecule12D6.touchend = function(){
+	for (var i = 0, ii=molecule12D6Mol.atoms.length; i<ii; i++) {
+		delete molecule12D6Mol.atoms[i].altLabel;
+	}
+	this.repaint();
+}
+molecule12D6.drawChildExtras = function(ctx){
+	ctx.save();
+	ctx.translate(this.width/2, this.height/2);
+	ctx.rotate(this.specs.rotateAngle);
+	ctx.scale(this.specs.scale, this.specs.scale);
+	ctx.translate(-this.width/2, -this.height/2);
+	//draw atom numbers and draw circles on ranked atoms
+	ctx.lineWidth = 2 + 4/this.specs.scale;
+	radius = 6 + 6/this.specs.scale;
+	for (var i = 0, ii=molecule12D6Mol.atoms.length; i<ii; i++) {
+		var atom = molecule12D6Mol.atoms[i];
+		if((i + 1) == 2){
+			ctx.strokeStyle = 'rgb(255,204,102)';
+			ctx.beginPath();
+			ctx.arc(atom.x, atom.y, radius, 0, Math.PI * 2, false);
+			ctx.stroke();
+		}
+		if((i + 1) == 7){
+			ctx.strokeStyle = 'rgb(214,227,181)';
+			ctx.beginPath();
+			ctx.arc(atom.x, atom.y, radius, 0, Math.PI * 2, false);
+			ctx.stroke();
+		}
+		if((i + 1) == 12){
+			ctx.strokeStyle = 'rgb(223,189,174)';
+			ctx.beginPath();
+			ctx.arc(atom.x, atom.y, radius, 0, Math.PI * 2, false);
+			ctx.stroke();
+		}
+	}
+	ctx.restore();
+}
+molecule12D6.repaint();
+
+                </script>
+            </td>
+            <td style='vertical-align:top;'>
+                <ul id='navlist'>
+                    <li id='cyp3A4'><a href="javascript:Switch2D6and3A4('3A4')"
+                                       title="Click to show standard predictions">Standard</a></li>
+                    <li id='cyp2C9'><a href="javascript:Switch2D6and3A4('2C9')" title="Click to show CYP2C predictions">CYP2C</a>
+                    </li>
+                    <li id='cyp2D6'><a href="javascript:Switch2D6and3A4('2D6')">CYP2D6</a></li>
+                </ul>
+                <div class='table2d6'>
+                    <span class="boldlarge">1: null</span><br/>
+                    <table class="molecule">
+                        <tr>
+                            <th>Rank</th>
+                            <th>Atom</th>
+                            <th>Score</th>
+                            <th>Energy</th>
+                            <th>S2End</th>
+                            <th>N+Dist</th>
+                            <th>2DSASA</th>
+                        </tr>
+                        <tr class="highlight1">
+                            <td>1</td>
+                            <td>C.2</td>
+                            <td>45.66</td>
+                            <td>40.2</td>
+                            <td>1</td>
+                            <td>-</td>
+                            <td>31.01</td>
+                        </tr>
+                        <tr class="highlight2">
+                            <td>2</td>
+                            <td>N.12</td>
+                            <td>81.3</td>
+                            <td>75.6</td>
+                            <td>1</td>
+                            <td>-</td>
+                            <td>25.11</td>
+                        </tr>
+                        <tr class="highlight3">
+                            <td>3</td>
+                            <td>S.7</td>
+                            <td>88.38</td>
+                            <td>70.0</td>
+                            <td>3</td>
+                            <td>-</td>
+                            <td>42.98</td>
+                        </tr>
+                        <tr>
+                            <td>4</td>
+                            <td>C.4</td>
+                            <td>90.32</td>
+                            <td>78.1</td>
+                            <td>2</td>
+                            <td>-</td>
+                            <td>29.61</td>
+                        </tr>
+                        <tr>
+                            <td>5</td>
+                            <td>C.11</td>
+                            <td>90.45</td>
+                            <td>92.0</td>
+                            <td>0</td>
+                            <td>-</td>
+                            <td>38.69</td>
+                        </tr>
+                        <tr>
+                            <td>6</td>
+                            <td>C.10</td>
+                            <td>91.64</td>
+                            <td>86.3</td>
+                            <td>1</td>
+                            <td>-</td>
+                            <td>34</td>
+                        </tr>
+                        <tr>
+                            <td>7</td>
+                            <td>C.5</td>
+                            <td>97.09</td>
+                            <td>78.1</td>
+                            <td>3</td>
+                            <td>-</td>
+                            <td>27.87</td>
+                        </tr>
+                        <tr>
+                            <td>8</td>
+                            <td>C.9</td>
+                            <td>98.55</td>
+                            <td>86.3</td>
+                            <td>2</td>
+                            <td>-</td>
+                            <td>28.79</td>
+                        </tr>
+                        <tr>
+                            <td>9</td>
+                            <td>C.13</td>
+                            <td>104.15</td>
+                            <td>92.0</td>
+                            <td>2</td>
+                            <td>-</td>
+                            <td>31.24</td>
+                        </tr>
+                        <tr>
+                            <td>10</td>
+                            <td>C.3</td>
+                            <td>1,012.17</td>
+                            <td>999</td>
+                            <td>2</td>
+                            <td>-</td>
+                            <td>5.79</td>
+                        </tr>
+                        <tr>
+                            <td>11</td>
+                            <td>C.8</td>
+                            <td>1,018.94</td>
+                            <td>999</td>
+                            <td>3</td>
+                            <td>-</td>
+                            <td>4.02</td>
+                        </tr>
+                        <tr>
+                            <td>12</td>
+                            <td>C.6</td>
+                            <td>1,025.69</td>
+                            <td>999</td>
+                            <td>4</td>
+                            <td>-</td>
+                            <td>3.79</td>
+                        </tr>
+                    </table>
+                </div>
+            </td>
+        </tr>
+    </table>
+</div>
+<div id='molecule1CYP2C9' style='display:none;'>
+    <table>
+        <tr>
+            <td style='vertical-align:top;'>
+                <script>
+var molecule12C9 = new ChemDoodle.ViewerCanvas('molecule12C9', 400, 300);
+molecule12C9.specs.atoms_useJMOLColors = true;
+var molecule12C9MolFile = '\n  CDK     0206191734\n\n 13 14  0  0  0  0  0  0  0  0999 V2000\n    2.5838    1.7716    0.0000 O   0  0  0  0  0  0  0  0  0  0  0  0\n    1.2135    2.3817    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n    0.0000    1.5000    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n    0.0000    0.0000    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n   -1.4266   -0.4635    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n   -2.3083    0.7500    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n   -1.4266    1.9635    0.0000 S   0  0  0  0  0  0  0  0  0  0  0  0\n   -3.8083    0.7500    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n   -4.5583   -0.5490    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n   -6.0583   -0.5490    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n   -6.8083    0.7500    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n   -6.0583    2.0490    0.0000 N   0  0  0  0  0  0  0  0  0  0  0  0\n   -4.5583    2.0490    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n  2  1  2  0  0  0  0 \n  3  2  1  0  0  0  0 \n  4  3  4  0  0  0  0 \n  5  4  4  0  0  0  0 \n  6  5  4  0  0  0  0 \n  7  6  4  0  0  0  0 \n  7  3  4  0  0  0  0 \n  8  6  1  0  0  0  0 \n  9  8  4  0  0  0  0 \n 10  9  4  0  0  0  0 \n 11 10  4  0  0  0  0 \n 12 11  4  0  0  0  0 \n 13 12  4  0  0  0  0 \n 13  8  4  0  0  0  0 \nM  END\n';
+var molecule12C9Mol = ChemDoodle.readMOL(molecule12C9MolFile);
+// get the dimension of the molecule
+var size = molecule12C9Mol.getDimension();
+// find the scale by taking the minimum of the canvas/size ratios
+var scale = Math.min(molecule12C9.width/size.x, molecule12C9.height/size.y);
+// load the molecule first (this function automatically sets scale, so we need to change specs after
+molecule12C9.loadMolecule(molecule12C9Mol);
+// change the specs.scale value to the scale calculated, shrinking it slightly so that text is not cut off
+molecule12C9.specs.scale = scale*.8;
+molecule12C9.mouseover = function(){
+	for (var i = 0, ii=molecule12C9Mol.atoms.length; i<ii; i++) {
+		molecule12C9Mol.atoms[i].altLabel = i+1;
+	}
+this.repaint();
+}
+molecule12C9.mouseout = function(){
+	for (var i = 0, ii=molecule12C9Mol.atoms.length; i<ii; i++) {
+		delete molecule12C9Mol.atoms[i].altLabel;
+	}
+	this.repaint();
+}
+molecule12C9.touchstart = function(){
+	for (var i = 0, ii=molecule12C9Mol.atoms.length; i<ii; i++) {
+		molecule12C9Mol.atoms[i].altLabel = i+1;
+	}
+this.repaint();
+}
+molecule12C9.touchend = function(){
+	for (var i = 0, ii=molecule12C9Mol.atoms.length; i<ii; i++) {
+		delete molecule12C9Mol.atoms[i].altLabel;
+	}
+	this.repaint();
+}
+molecule12C9.drawChildExtras = function(ctx){
+	ctx.save();
+	ctx.translate(this.width/2, this.height/2);
+	ctx.rotate(this.specs.rotateAngle);
+	ctx.scale(this.specs.scale, this.specs.scale);
+	ctx.translate(-this.width/2, -this.height/2);
+	//draw atom numbers and draw circles on ranked atoms
+	ctx.lineWidth = 2 + 4/this.specs.scale;
+	radius = 6 + 6/this.specs.scale;
+	for (var i = 0, ii=molecule12C9Mol.atoms.length; i<ii; i++) {
+		var atom = molecule12C9Mol.atoms[i];
+		if((i + 1) == 2){
+			ctx.strokeStyle = 'rgb(255,204,102)';
+			ctx.beginPath();
+			ctx.arc(atom.x, atom.y, radius, 0, Math.PI * 2, false);
+			ctx.stroke();
+		}
+		if((i + 1) == 7){
+			ctx.strokeStyle = 'rgb(214,227,181)';
+			ctx.beginPath();
+			ctx.arc(atom.x, atom.y, radius, 0, Math.PI * 2, false);
+			ctx.stroke();
+		}
+		if((i + 1) == 12){
+			ctx.strokeStyle = 'rgb(223,189,174)';
+			ctx.beginPath();
+			ctx.arc(atom.x, atom.y, radius, 0, Math.PI * 2, false);
+			ctx.stroke();
+		}
+	}
+	ctx.restore();
+}
+molecule12C9.repaint();
+
+                </script>
+            </td>
+            <td style='vertical-align:top;'>
+                <ul id='navlist'>
+                    <li id='cyp3A4'><a href="javascript:Switch2D6and3A4('3A4')"
+                                       title="Click to show standard predictions">Standard</a></li>
+                    <li id='cyp2C9'><a href="javascript:Switch2D6and3A4('2C9')">CYP2C</a></li>
+                    <li id='cyp2D6'><a href="javascript:Switch2D6and3A4('2D6')"
+                                       title="Click to show CYP2D6 predictions">CYP2D6</a></li>
+                </ul>
+                <div class='table2c9'>
+                    <span class="boldlarge">1: null</span><br/>
+                    <table class="molecule">
+                        <tr>
+                            <th>Rank</th>
+                            <th>Atom</th>
+                            <th>Score</th>
+                            <th>Energy</th>
+                            <th>S2End</th>
+                            <th>COODist</th>
+                            <th>2DSASA</th>
+                        </tr>
+                        <tr class="highlight1">
+                            <td>1</td>
+                            <td>C.2</td>
+                            <td>44.86</td>
+                            <td>40.2</td>
+                            <td>1</td>
+                            <td>-</td>
+                            <td>31.01</td>
+                        </tr>
+                        <tr class="highlight2">
+                            <td>2</td>
+                            <td>N.12</td>
+                            <td>80.5</td>
+                            <td>75.6</td>
+                            <td>1</td>
+                            <td>-</td>
+                            <td>25.11</td>
+                        </tr>
+                        <tr class="highlight3">
+                            <td>3</td>
+                            <td>S.7</td>
+                            <td>85.98</td>
+                            <td>70.0</td>
+                            <td>3</td>
+                            <td>-</td>
+                            <td>42.98</td>
+                        </tr>
+                        <tr>
+                            <td>4</td>
+                            <td>C.4</td>
+                            <td>88.72</td>
+                            <td>78.1</td>
+                            <td>2</td>
+                            <td>-</td>
+                            <td>29.61</td>
+                        </tr>
+                        <tr>
+                            <td>5</td>
+                            <td>C.11</td>
+                            <td>90.45</td>
+                            <td>92.0</td>
+                            <td>0</td>
+                            <td>-</td>
+                            <td>38.69</td>
+                        </tr>
+                        <tr>
+                            <td>6</td>
+                            <td>C.10</td>
+                            <td>90.84</td>
+                            <td>86.3</td>
+                            <td>1</td>
+                            <td>-</td>
+                            <td>34</td>
+                        </tr>
+                        <tr>
+                            <td>7</td>
+                            <td>C.5</td>
+                            <td>94.69</td>
+                            <td>78.1</td>
+                            <td>3</td>
+                            <td>-</td>
+                            <td>27.87</td>
+                        </tr>
+                        <tr>
+                            <td>8</td>
+                            <td>C.9</td>
+                            <td>96.95</td>
+                            <td>86.3</td>
+                            <td>2</td>
+                            <td>-</td>
+                            <td>28.79</td>
+                        </tr>
+                        <tr>
+                            <td>9</td>
+                            <td>C.13</td>
+                            <td>102.55</td>
+                            <td>92.0</td>
+                            <td>2</td>
+                            <td>-</td>
+                            <td>31.24</td>
+                        </tr>
+                        <tr>
+                            <td>10</td>
+                            <td>C.3</td>
+                            <td>1,010.57</td>
+                            <td>999</td>
+                            <td>2</td>
+                            <td>-</td>
+                            <td>5.79</td>
+                        </tr>
+                        <tr>
+                            <td>11</td>
+                            <td>C.8</td>
+                            <td>1,016.54</td>
+                            <td>999</td>
+                            <td>3</td>
+                            <td>-</td>
+                            <td>4.02</td>
+                        </tr>
+                        <tr>
+                            <td>12</td>
+                            <td>C.6</td>
+                            <td>1,022.49</td>
+                            <td>999</td>
+                            <td>4</td>
+                            <td>-</td>
+                            <td>3.79</td>
+                        </tr>
+                    </table>
+                </div>
+            </td>
+        </tr>
+    </table>
+</div>
+<div id='molecule1standarddiv' style='display:;'>
+    <table>
+        <tr>
+            <td style='vertical-align:top;'>
+                <script>
+var molecule1standard = new ChemDoodle.ViewerCanvas('molecule1standard', 400, 300);
+molecule1standard.specs.atoms_useJMOLColors = true;
+var molecule1standardMolFile = '\n  CDK     0206191734\n\n 13 14  0  0  0  0  0  0  0  0999 V2000\n    2.5838    1.7716    0.0000 O   0  0  0  0  0  0  0  0  0  0  0  0\n    1.2135    2.3817    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n    0.0000    1.5000    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n    0.0000    0.0000    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n   -1.4266   -0.4635    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n   -2.3083    0.7500    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n   -1.4266    1.9635    0.0000 S   0  0  0  0  0  0  0  0  0  0  0  0\n   -3.8083    0.7500    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n   -4.5583   -0.5490    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n   -6.0583   -0.5490    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n   -6.8083    0.7500    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n   -6.0583    2.0490    0.0000 N   0  0  0  0  0  0  0  0  0  0  0  0\n   -4.5583    2.0490    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n  2  1  2  0  0  0  0 \n  3  2  1  0  0  0  0 \n  4  3  4  0  0  0  0 \n  5  4  4  0  0  0  0 \n  6  5  4  0  0  0  0 \n  7  6  4  0  0  0  0 \n  7  3  4  0  0  0  0 \n  8  6  1  0  0  0  0 \n  9  8  4  0  0  0  0 \n 10  9  4  0  0  0  0 \n 11 10  4  0  0  0  0 \n 12 11  4  0  0  0  0 \n 13 12  4  0  0  0  0 \n 13  8  4  0  0  0  0 \nM  END\n';
+var molecule1standardMol = ChemDoodle.readMOL(molecule1standardMolFile);
+// get the dimension of the molecule
+var size = molecule1standardMol.getDimension();
+// find the scale by taking the minimum of the canvas/size ratios
+var scale = Math.min(molecule1standard.width/size.x, molecule1standard.height/size.y);
+// load the molecule first (this function automatically sets scale, so we need to change specs after
+molecule1standard.loadMolecule(molecule1standardMol);
+// change the specs.scale value to the scale calculated, shrinking it slightly so that text is not cut off
+molecule1standard.specs.scale = scale*.8;
+molecule1standard.mouseover = function(){
+	for (var i = 0, ii=molecule1standardMol.atoms.length; i<ii; i++) {
+		molecule1standardMol.atoms[i].altLabel = i+1;
+	}
+this.repaint();
+}
+molecule1standard.mouseout = function(){
+	for (var i = 0, ii=molecule1standardMol.atoms.length; i<ii; i++) {
+		delete molecule1standardMol.atoms[i].altLabel;
+	}
+	this.repaint();
+}
+molecule1standard.touchstart = function(){
+	for (var i = 0, ii=molecule1standardMol.atoms.length; i<ii; i++) {
+		molecule1standardMol.atoms[i].altLabel = i+1;
+	}
+this.repaint();
+}
+molecule1standard.touchend = function(){
+	for (var i = 0, ii=molecule1standardMol.atoms.length; i<ii; i++) {
+		delete molecule1standardMol.atoms[i].altLabel;
+	}
+	this.repaint();
+}
+molecule1standard.drawChildExtras = function(ctx){
+	ctx.save();
+	ctx.translate(this.width/2, this.height/2);
+	ctx.rotate(this.specs.rotateAngle);
+	ctx.scale(this.specs.scale, this.specs.scale);
+	ctx.translate(-this.width/2, -this.height/2);
+	//draw atom numbers and draw circles on ranked atoms
+	ctx.lineWidth = 2 + 4/this.specs.scale;
+	radius = 6 + 6/this.specs.scale;
+	for (var i = 0, ii=molecule1standardMol.atoms.length; i<ii; i++) {
+		var atom = molecule1standardMol.atoms[i];
+		if((i + 1) == 2){
+			ctx.strokeStyle = 'rgb(255,204,102)';
+			ctx.beginPath();
+			ctx.arc(atom.x, atom.y, radius, 0, Math.PI * 2, false);
+			ctx.stroke();
+		}
+		if((i + 1) == 7){
+			ctx.strokeStyle = 'rgb(223,189,174)';
+			ctx.beginPath();
+			ctx.arc(atom.x, atom.y, radius, 0, Math.PI * 2, false);
+			ctx.stroke();
+		}
+		if((i + 1) == 12){
+			ctx.strokeStyle = 'rgb(214,227,181)';
+			ctx.beginPath();
+			ctx.arc(atom.x, atom.y, radius, 0, Math.PI * 2, false);
+			ctx.stroke();
+		}
+	}
+	ctx.restore();
+}
+molecule1standard.repaint();
+
+                </script>
+            </td>
+            <td style='vertical-align:top;'>
+                <ul id='navlist'>
+                    <li id='cyp3A4'><a href="javascript:Switch2D6and3A4('3A4')">Standard</a></li>
+                    <li id='cyp2C9'><a href="javascript:Switch2D6and3A4('2C9')" title="Click to show CYP2C predictions">CYP2C</a>
+                    </li>
+                    <li id='cyp2D6'><a href="javascript:Switch2D6and3A4('2D6')"
+                                       title="Click to show CYP2D6 predictions">CYP2D6</a></li>
+                </ul>
+                <div class='table3a4'>
+                    <span class="boldlarge">1: null</span><br/>
+                    <table class="molecule">
+                        <tr>
+                            <th>Rank</th>
+                            <th>Atom</th>
+                            <th>Score</th>
+                            <th>Energy</th>
+                            <th>Accessibility</th>
+                            <th>2DSASA</th>
+                        </tr>
+                        <tr class="highlight1">
+                            <td>1</td>
+                            <td>C.2</td>
+                            <td>31.96</td>
+                            <td>40.2</td>
+                            <td>0.88</td>
+                            <td>31.01</td>
+                        </tr>
+                        <tr class="highlight2">
+                            <td>2</td>
+                            <td>S.7</td>
+                            <td>63.28</td>
+                            <td>70.0</td>
+                            <td>0.62</td>
+                            <td>42.98</td>
+                        </tr>
+                        <tr class="highlight3">
+                            <td>3</td>
+                            <td>N.12</td>
+                            <td>67.6</td>
+                            <td>75.6</td>
+                            <td>0.88</td>
+                            <td>25.11</td>
+                        </tr>
+                        <tr>
+                            <td>4</td>
+                            <td>C.4</td>
+                            <td>70.92</td>
+                            <td>78.1</td>
+                            <td>0.75</td>
+                            <td>29.61</td>
+                        </tr>
+                        <tr>
+                            <td>5</td>
+                            <td>C.5</td>
+                            <td>71.99</td>
+                            <td>78.1</td>
+                            <td>0.62</td>
+                            <td>27.87</td>
+                        </tr>
+                        <tr>
+                            <td>6</td>
+                            <td>C.10</td>
+                            <td>77.94</td>
+                            <td>86.3</td>
+                            <td>0.88</td>
+                            <td>34</td>
+                        </tr>
+                        <tr>
+                            <td>7</td>
+                            <td>C.9</td>
+                            <td>79.15</td>
+                            <td>86.3</td>
+                            <td>0.75</td>
+                            <td>28.79</td>
+                        </tr>
+                        <tr>
+                            <td>8</td>
+                            <td>C.11</td>
+                            <td>82.45</td>
+                            <td>92.0</td>
+                            <td>1</td>
+                            <td>38.69</td>
+                        </tr>
+                        <tr>
+                            <td>9</td>
+                            <td>C.13</td>
+                            <td>84.75</td>
+                            <td>92.0</td>
+                            <td>0.75</td>
+                            <td>31.24</td>
+                        </tr>
+                        <tr>
+                            <td>10</td>
+                            <td>C.3</td>
+                            <td>992.77</td>
+                            <td>999</td>
+                            <td>0.75</td>
+                            <td>5.79</td>
+                        </tr>
+                        <tr>
+                            <td>11</td>
+                            <td>C.8</td>
+                            <td>993.84</td>
+                            <td>999</td>
+                            <td>0.62</td>
+                            <td>4.02</td>
+                        </tr>
+                        <tr>
+                            <td>12</td>
+                            <td>C.6</td>
+                            <td>994.85</td>
+                            <td>999</td>
+                            <td>0.5</td>
+                            <td>3.79</td>
+                        </tr>
+                    </table>
+                </div>
+            </td>
+        </tr>
+    </table>
+</div>
+<hr/>
+</body>
+</html>
