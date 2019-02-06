@@ -90,11 +90,12 @@ class SmartCypWampApi(ComponentSession):
         :return:
         """
 
-        result_dict = {'result': {}}
-
         mol = mol_validate_file_object(request['mol'])
 
         smartcyp = SmartCypRunner(log=self.log)
-        result_dict['result'] = smartcyp.run(mol['content'], is_smiles=mol['extension'] == 'smi')
+        result_dict = smartcyp.run(mol['content'],
+                                   is_smiles=mol['extension'] == 'smi',
+                                   output_format=request['output_format'],
+                                   noempcorr=request['noempcorr'])
 
         return result_dict
