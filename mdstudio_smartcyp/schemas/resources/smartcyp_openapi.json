@@ -1,0 +1,137 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "SMARTCyp service, A 2D Method for Prediction of Cytochrome P450-Mediated Drug Metabolism",
+    "description": "SMARTCyp providing Site of Metabolism prediction for Cytochrome P450s to the MDStudio environment using the SMARTCyp package developed by P. Rydberg et al",
+    "version": "1.0",
+    "contact": {
+      "email": "m.van.dijk4@vu.nl"
+    }
+  },
+  "schemes": [
+    "http"
+  ],
+  "host": "mdstudio.smartcyp.org",
+  "basePath": "\/",
+  "tags": [
+    "SMARTCyp",
+    "cytochrome",
+    "site-of-metabolism",
+    "CYP450",
+    "Models"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "\/info": {
+      "get": {
+        "description": "Return an informative summary on the installed SMARTCyp version and configuration",
+        "responses": {
+          "200": {
+            "description": "MDStudio SMARTCyp info",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "version": {
+                  "description": "SMARTCyp version",
+                  "type": "string"
+                },
+                "citation": {
+                  "description": "SMARTCyp citation",
+                  "type": "string"
+                },
+                "models": {
+                  "type": "array",
+                  "description": "Supported CYP prediction models",
+                  "default": []
+                }
+              },
+              "required": [
+                "version",
+                "citation",
+                "models"
+              ]
+            }
+          },
+          "default": {
+            "description": "Unexpected error",
+            "schema": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "\/predict": {
+      "get": {
+        "description": "Perform a CYP site of metabolism prediction using SMARTCyp",
+        "parameters": [
+          {
+            "name": "mol",
+            "description": "Ligand input file",
+            "in": "query",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "noempcorr",
+            "description": "Do not use the empirical N-oxidation correction (smartcyp >= v2.3).",
+            "in": "query",
+            "default": false,
+            "required": false,
+            "type": "boolean"
+          },
+          {
+            "name": "output_format",
+            "description": "SAMRTCyp result output format",
+            "in": "query",
+            "enum": [
+              "csv",
+              "html",
+              "json"
+            ],
+            "default": "json",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "output_png",
+            "description": "Export PNG image files for the prediction",
+            "in": "query",
+            "default": false,
+            "required": false,
+            "type": "boolean"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "SMARTCyp prediction results",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "result": {
+                  "description": "Content of SMARTCyp prediction .csv file in the required format",
+                  "type": "string"
+                },
+                "images": {
+                  "description": "",
+                  "type": "string"
+                }
+              },
+              "required": [
+                "result"
+              ]
+            }
+          },
+          "default": {
+            "description": "Unexpected error",
+            "schema": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    }
+  }
+}
