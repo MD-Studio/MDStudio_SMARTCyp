@@ -9,13 +9,32 @@ Unit tests for SmartCypRunner methods
 import os
 import json
 import unittest
+import base64
 
-from mdstudio_smartcyp.smartcyp_run import SmartCypRunner
+from mdstudio_smartcyp import __smartcyp_citation__, __smartcyp_version__, __supported_models__
+from mdstudio_smartcyp.smartcyp_run import SmartCypRunner, smartcyp_version_info
 
 FILEPATH = os.path.abspath(os.path.join(os.path.dirname(__file__), '../files/'))
 
 
+class SmartCypInfoTests(unittest.TestCase):
+
+    def test_smartcyp_version_info(self):
+        """
+        Test smartcyp_version_info function
+        """
+
+        infodict = smartcyp_version_info()
+
+        self.assertIsInstance(infodict, dict)
+        self.assertDictEqual(infodict, {'version': __smartcyp_version__,
+                                        'models': __supported_models__,
+                                        'citation': __smartcyp_citation__})
+
+
 class SmartCypRunnerTests(unittest.TestCase):
+
+    tmp_files = []
 
     def setUp(self):
         """
@@ -31,6 +50,10 @@ class SmartCypRunnerTests(unittest.TestCase):
         """
 
         self.assertFalse(os.path.exists(self.scr.tempdir))
+
+        for tmp_file in self.tmp_files:
+            if os.path.exists(tmp_file):
+                os.remove(tmp_file)
 
     def test_smartcyp_smiles(self):
         """
@@ -110,3 +133,14 @@ class SmartCypRunnerTests(unittest.TestCase):
         """
 
         png_result = self.scr.run(mol='O=Cc1ccc(s1)c2cccnc2', is_smiles=True, output_png=True)
+
+        self.assertTrue('images' in png_result)
+        for image in png_result['images']:
+
+            out_img_file = '{0}/{1}.png'.format(FILEPATH, image)
+            self.tmp_files.append(out_img_file)
+            with open(out_img_file, 'wb') as img_file:
+                img = png_result['images'][image]
+                img_file.write(base64.b64decode(img.encode('ascii')))
+
+            self.assertTrue(os.path.isfile(out_img_file))
