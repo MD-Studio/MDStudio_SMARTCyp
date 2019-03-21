@@ -12,16 +12,69 @@ import tempfile
 import glob
 import csv
 import os
+import re
 import shutil
 import logging
 import base64
 
-from mdstudio_smartcyp import __smartcyp_path__, __module__
+from mdstudio_smartcyp import (__smartcyp_version__, __smartcyp_citation__, __supported_models__, __smartcyp_path__,
+                               __module__)
 
 logger = logging.getLogger(__module__)
+smiles_regex = re.compile('^([^J][A-Za-z0-9@+\-\[\]\(\)\\\/%=#$]+)$')
 result_types = {'Ranking': int, '2DSASA': float, 'N+Dist': int, '2D6ranking': int, 'Energy': float,
                 'Molecule': int, 'Span2End': int, 'Score': float, 'Relative Span': float,
                 '2Cscore': float, 'Atom': str, '2Cranking': int, 'COODist': int, '2D6score': float}
+
+
+def mol_validate_file_object(path_file):
+    """
+    Validate a MDStudio/REST path_file object
+
+    - Check if 'content' is a InChI or SMILES string and set extension
+    - If no 'content' check if path exists and import file
+
+    :param path_file: path_file object
+    :type path_file:  :py:dict
+
+    :return:          validated path_file object
+    :rtype:           :py:dict
+    """
+
+    content = path_file['content']
+    if content is not None:
+
+        # SMILES and InChI are single line strings
+        if len(content.split('\n')) == 1:
+
+            # Test for InChI type
+            if content.startswith('InChI='):
+                path_file['extension'] = 'inchi'
+
+            # Test for SMILES
+            if smiles_regex.match(path_file['content']):
+                path_file['extension'] = 'smi'
+
+    elif path_file['path'] is not None and os.path.exists(path_file['path']):
+
+        with open(path_file['path']) as pf:
+            path_file['content'] = pf.read()
+
+    return path_file
+
+
+def smartcyp_version_info():
+    """
+    :return: information on the packaged SMARTCyp version, supported models
+             and software citation reference.
+    :rtype:  :py:dict
+    """
+
+    info_dict = {'version': __smartcyp_version__,
+                 'models': __supported_models__,
+                 'citation': __smartcyp_citation__}
+
+    return info_dict
 
 
 class SmartCypRunner(object):
@@ -95,7 +148,8 @@ class SmartCypRunner(object):
                     image_name = os.path.basename(image).split('.')[0]
 
                     with open(image, "rb") as image_file:
-                        image_results[image_name] = base64.b64encode(image_file.read())
+                        base64_image = base64.b64encode(image_file.read())
+                        image_results[image_name] = base64_image.decode('ascii')
 
         return image_results
 
@@ -107,13 +161,19 @@ class SmartCypRunner(object):
         directory and returns the content of the prediction .csv file as
         a dictionary.
 
-        :param mol:         molecule to make prediction for
-        :type mol:          :py:str
-        :param is_smiles:   is the molecule a SMILES string
-        :type is_smiles:    :py:bool
+        :param mol:           molecule to make prediction for
+        :type mol:            :py:str
+        :param is_smiles:     is the molecule a SMILES string
+        :type is_smiles:      :py:bool
+        :param output_format: output format as CSV, JSON or HTML
+        :type output_format:  :py:str
+        :param noempcorr:     do not use the empirical N-oxidation correction
+                              (smartcyp >= v2.3)
+        :type noempcorr:      :py:bool
+        :param output_png:    export PNG image files for the prediction
 
-        :return:            SMARTCyp prediction results
-        :rtype:             :py:dict
+        :return:              SMARTCyp prediction results
+        :rtype:               :py:dict
         """
 
         # Build CMD
@@ -136,7 +196,7 @@ class SmartCypRunner(object):
 
         # Run SMARTCyp
         cmd.extend(['-outputdir', self.tempdir])
-        self.log.debug('SMARTCyp CMD: {0}'.format(' '.join(cmd)))
+        self.log.info('Run SMARTCyp: {0}'.format(' '.join(cmd)))
 
         process = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         out, err = process.communicate()
@@ -170,7 +230,7 @@ class SmartCypRunner(object):
 
         if output_png:
             image_results = self._parse_images()
-            result.update(image_results)
+            result['images'] = image_results
 
         # Remove the temporary directory again
         self.log.debug('Remove temporary directory: {0}'.format(self.tempdir))
