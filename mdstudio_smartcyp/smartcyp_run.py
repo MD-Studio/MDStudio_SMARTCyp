@@ -7,60 +7,20 @@ Defines the SmartCypRunner class responsible for running the SMARTCyp
 Java code and parsing the output to structured JSON.
 """
 
-import subprocess
-import tempfile
 import glob
 import csv
 import os
-import re
-import shutil
 import logging
 import base64
 
 from mdstudio_smartcyp import (__smartcyp_version__, __smartcyp_citation__, __supported_models__, __smartcyp_path__,
                                __module__)
+from mdstudio_smartcyp.utils import prepare_work_dir, RunnerBaseClass
 
 logger = logging.getLogger(__module__)
-smiles_regex = re.compile('^([^J][A-Za-z0-9@+\-\[\]\(\)\\\/%=#$]+)$')
 result_types = {'Ranking': int, '2DSASA': float, 'N+Dist': int, '2D6ranking': int, 'Energy': float,
                 'Molecule': int, 'Span2End': int, 'Score': float, 'Relative Span': float,
                 '2Cscore': float, 'Atom': str, '2Cranking': int, 'COODist': int, '2D6score': float}
-
-
-def mol_validate_file_object(path_file):
-    """
-    Validate a MDStudio/REST path_file object
-
-    - Check if 'content' is a InChI or SMILES string and set extension
-    - If no 'content' check if path exists and import file
-
-    :param path_file: path_file object
-    :type path_file:  :py:dict
-
-    :return:          validated path_file object
-    :rtype:           :py:dict
-    """
-
-    content = path_file['content']
-    if content is not None:
-
-        # SMILES and InChI are single line strings
-        if len(content.split('\n')) == 1:
-
-            # Test for InChI type
-            if content.startswith('InChI='):
-                path_file['extension'] = 'inchi'
-
-            # Test for SMILES
-            if smiles_regex.match(path_file['content']):
-                path_file['extension'] = 'smi'
-
-    elif path_file['path'] is not None and os.path.exists(path_file['path']):
-
-        with open(path_file['path']) as pf:
-            path_file['content'] = pf.read()
-
-    return path_file
 
 
 def smartcyp_version_info():
@@ -77,7 +37,7 @@ def smartcyp_version_info():
     return info_dict
 
 
-class SmartCypRunner(object):
+class SmartCypRunner(RunnerBaseClass):
     """
     SmartCypRunner class
 
@@ -85,13 +45,19 @@ class SmartCypRunner(object):
     to structured JSON.
     """
 
-    def __init__(self, log=logger):
+    def __init__(self, log=logger, workdir=None):
+        """
+        Implement class __init__
+
+        :param log:     external logger instance
+        :param workdir: path to base working directory
+        :type workdir:  :py:str
+        """
 
         self.log = log
 
         # Make a temporary directory
-        self.tempdir = tempfile.mkdtemp()
-        self.log.debug('Make temporary directory at: {0}'.format(self.tempdir))
+        self.workdir = prepare_work_dir(path=workdir, prefix='smartcyp-')
 
     def _parse_csv(self, csvfile):
         """
@@ -141,7 +107,7 @@ class SmartCypRunner(object):
         """
 
         image_results = {}
-        for output in glob.glob('{0}/*'.format(self.tempdir)):
+        for output in glob.glob('{0}/*'.format(self.workdir)):
             if os.path.isdir(output) and 'smartcyp_images' in output:
 
                 for image in glob.glob('{0}/*.png'.format(output)):
@@ -189,26 +155,19 @@ class SmartCypRunner(object):
             self.log.info('SMARTCyp prediction for SMILES string: {0}'.format(mol))
 
         else:
-            with open('{0}/ligand.mol2'.format(self.tempdir), 'w') as ligfile:
+            with open('{0}/ligand.mol2'.format(self.workdir), 'w') as ligfile:
                 ligfile.write(mol)
 
-            cmd.append(os.path.join(self.tempdir, 'ligand.mol2'))
+            cmd.append(os.path.join(self.workdir, 'ligand.mol2'))
 
         # Run SMARTCyp
-        cmd.extend(['-outputdir', self.tempdir])
-        self.log.info('Run SMARTCyp: {0}'.format(' '.join(cmd)))
-
-        process = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        out, err = process.communicate()
-
-        if process.returncode != 0:
-            self.log.warning('SMARTCyp run with non-zero exit code ({0}): {1}'.format(process.returncode, err))
+        self.cmd_runner(cmd)
 
         result = {'result': None}
         if output_format in ('csv', 'json'):
 
             # Get output CSV
-            csvfile = glob.glob('{0}/*.csv'.format(self.tempdir))
+            csvfile = glob.glob('{0}/*.csv'.format(self.workdir))
             if len(csvfile):
                 with open(csvfile[0], 'r') as csvfile:
                     if output_format == 'csv':
@@ -221,7 +180,7 @@ class SmartCypRunner(object):
         else:
 
             # Get output HTML
-            htmlfile = glob.glob('{0}/*.html'.format(self.tempdir))
+            htmlfile = glob.glob('{0}/*.html'.format(self.workdir))
             if len(htmlfile):
                 with open(htmlfile[0], 'r') as html:
                     result['result'] = html.read()
@@ -231,9 +190,5 @@ class SmartCypRunner(object):
         if output_png:
             image_results = self._parse_images()
             result['images'] = image_results
-
-        # Remove the temporary directory again
-        self.log.debug('Remove temporary directory: {0}'.format(self.tempdir))
-        shutil.rmtree(self.tempdir)
 
         return result
