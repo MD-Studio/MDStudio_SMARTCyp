@@ -6,48 +6,370 @@ info:
   contact:
     email: m.van.dijk4@vu.nl
 schemes:
+  - https
   - http
 host: localhost:8081
 basePath: "/"
+tags:
+  - name: SMARTCyp
+  - name: SPORES
+  - name: PLANTS
+consumes:
+  - multipart/form-data
 produces:
   - application/json
 paths:
-  /info:
+  /smartcyp_info:
     get:
-      description: Return an informative summary on the installed SMARTCyp version and configuration
-      operationId: "mdstudio_smartcyp.smartcyp_run.smartcyp_version_info"
+      description: Information on the installed SMARTCyp version and configuration
+      operationId: mdstudio_smartcyp.smartcyp_run.smartcyp_version_info
       consumes:
         - application/json
       responses:
-        200:
+        '200':
           description: MDStudio SMARTCyp info
+          schema:
+            $ref: '#/definitions/SoftwareInfo'
+  /plants_info:
+    get:
+      description: Information on the installed PLANTS version and configuration
+      operationId: mdstudio_smartcyp.plants_run.plants_version_info
+      consumes:
+        - application/json
+      responses:
+        '200':
+          description: MDStudio PLANTS info
+          schema:
+            $ref: '#/definitions/SoftwareInfo'
+  /spores_info:
+    get:
+      description: Information on the installed SPORES version and configuration
+      operationId: mdstudio_smartcyp.spores_run.spores_version_info
+      consumes:
+        - application/json
+      responses:
+        '200':
+          description: MDStudio SPORES info
+          schema:
+            $ref: '#/definitions/SoftwareInfo'
+  /docking:
+    post:
+      description: Perform a PLANTS docking of a ligand and protein
+      operationId: mdstudio_smartcyp.rest_services.plants_docking
+      parameters:
+        - name: ligand_file
+          description: Ligand input file
+          in: formData
+          required: true
+          type: file
+        - name: protein_file
+          description: Protein input file
+          in: formData
+          required: true
+          type: file
+        - name: bindingsite_center
+          description: Docking binding site center coordinates (comma seperated string of floats)
+          in: formData
+          required: true
+          type: string
+        - name: outside_binding_site_penalty
+          description: Penalty if molecules is outside defined binding center
+          in: formData
+          type: number
+          default: 50.0
+        - name: scoring_function
+          type: string
+          description: test
+          in: formData
+          default: chemplp
+          enum: [plp, plp95, chemplp]
+        - name: enable_sulphur_acceptors
+          description: test
+          in: formData
+          type: integer
+          default: 0
+        - name: ligand_intra_score
+          type: string
+          description: test
+          in: formData
+          default: clash2
+        - name: chemplp_clash_include_14
+          description: test
+          in: formData
+          type: integer
+          default: 1
+        - name: chemplp_clash_include_HH
+          description: test
+          in: formData
+          type: integer
+          default: 0
+        - name: plp_steric_e
+          description: test
+          in: formData
+          type: number
+          default: -0.4
+        - name: plp_burpolar_e
+          description: test
+          in: formData
+          type: number
+          default: -0.05
+        - name: plp_hbond_e
+          description: test
+          in: formData
+          type: number
+          default: -2.0
+        - name: plp_metal_e
+          description: test
+          in: formData
+          type: number
+          default: -4.0
+        - name: plp_repulsive_weight
+          description: test
+          in: formData
+          type: number
+          default: 0.5
+        - name: plp_tors_weight
+          description: test
+          in: formData
+          type: number
+          default: 1.0
+        - name: chemplp_weak_cho
+          description: test
+          in: formData
+          type: integer
+          default: 1
+        - name: chemplp_charged_hb_weight
+          description: test
+          in: formData
+          type: number
+          default: 2.0
+        - name: chemplp_charged_metal_weight
+          description: test
+          in: formData
+          type: number
+          default: 2.0
+        - name: chemplp_hbond_weight
+          description: test
+          in: formData
+          type: number
+          default: -3.0
+        - name: chemplp_hbond_cho_weight
+          description: test
+          in: formData
+          type: number
+          default: -3.0
+        - name: chemplp_metal_weight
+          description: test
+          in: formData
+          type: number
+          default: -6.0
+        - name: chemplp_plp_weight
+          description: test
+          in: formData
+          type: number
+          default: 1.0
+        - name: chemplp_plp_steric_e
+          description: test
+          in: formData
+          type: number
+          default: -0.4
+        - name: chemplp_plp_burpolar_e
+          description: test
+          in: formData
+          type: number
+          default: -0.1
+        - name: chemplp_plp_hbond_e
+          description: test
+          in: formData
+          type: number
+          default: -1.0
+        - name: chemplp_plp_metal_e
+          description: test
+          in: formData
+          type: number
+          default: -1.0
+        - name: chemplp_plp_repulsive_weight
+          description: test
+          in: formData
+          type: number
+          default: 1.0
+        - name: chemplp_tors_weight
+          description: test
+          in: formData
+          type: number
+          default: 2.0
+        - name: chemplp_lipo_weight
+          description: test
+          in: formData
+          type: number
+          default: 0.0
+        - name: chemplp_intercept_weight
+          description: test
+          in: formData
+          type: number
+          default: -20.0
+        - name: rescore_mode
+          description: test
+          in: formData
+          type: string
+          default: simplex
+        - name: search_speed
+          description: test
+          in: formData
+          type: string
+          default: speed1
+          enum: [speed1, speed2, speed4]
+        - name: write_multi_mol2
+          description: test
+          in: formData
+          type: integer
+          default: 0
+        - name: flip_amide_bonds
+          description: test
+          in: formData
+          type: integer
+          default: 1
+        - name: flip_planar_n
+          description: test
+          in: formData
+          type: integer
+          default: 1
+        - name: flip_ring_corners
+          description: test
+          in: formData
+          type: integer
+          default: 0
+        - name: force_flipped_bonds_planarity
+          description: test
+          in: formData
+          type: integer
+          default: 0
+        - name: force_planar_bond_rotation
+          description: test
+          in: formData
+          type: integer
+          default: 1
+        - name: bindingsite_radius
+          description: test
+          in: formData
+          type: number
+          default: 12
+        - name: cluster_structures
+          description: test
+          in: formData
+          type: integer
+          default: 50
+        - name: cluster_rmsd
+          description: test
+          in: formData
+          type: number
+          default: 1.0
+        - name: write_ranking_links
+          description: test
+          in: formData
+          type: integer
+          default: 0
+        - name: write_protein_bindingsite
+          description: test
+          in: formData
+          type: integer
+          default: 0
+        - name: write_protein_conformations
+          description: test
+          in: formData
+          type: integer
+          default: 0
+        - name: write_merged_protein
+          description: test
+          in: formData
+          type: integer
+          default: 0
+        - name: write_merged_ligand
+          description: test
+          in: formData
+          type: integer
+          default: 0
+        - name: write_merged_water
+          description: test
+          in: formData
+          type: integer
+          default: 0
+        - name: write_protein_splitted
+          description: test
+          in: formData
+          type: integer
+          default: 0
+        - name: write_per_atom_scores
+          description: test
+          in: formData
+          type: integer
+          default: 0
+        - name: merge_multi_conf_output
+          description: test
+          in: formData
+          type: integer
+          default: 0
+      responses:
+        '200':
+          description: PLANTS docking results
           schema:
             type: object
             properties:
-              version:
-                description: SMARTCyp version
+              result:
+                description: Content of SMARTCyp prediction .csv file in the required format
                 type: string
-              citation:
-                description: SMARTCyp citation
-                type: string
-              models:
-                type: array
-                description: Supported CYP prediction models
-                default: []
             required:
-            - version
-            - citation
-            - models
+              - result
         default:
           description: Unexpected error
           schema:
             type: string
+  /spores:
+    post:
+      description: Process molecular structures using the Structure PrOtonation and REcognition System (SPORES)
+      operationId: mdstudio_smartcyp.rest_services.spores_run
+      parameters:
+        - name: mol
+          description: Structure input file
+          in: formData
+          required: true
+          type: file
+        - name: input_format
+          description: Input structure file format
+          in: formData
+          required: false
+          type: string
+          default: mol2
+          enum: [pdb, sdf, mol, mol2]
+        - name: spores_mode
+          description: SPORES running mode
+          in: formData
+          required: true
+          type: string
+          enum: [complete, reprot, settypes, readbonds, protstates, stereo, tautomers, ketoenol, ringconfs]
+      responses:
+        '200':
+          description: SMARTCyp prediction results
+          schema:
+            type: object
+            properties:
+              extension:
+                description: Result file extension
+                type: string
+              encoding:
+                description: Result file encoding
+                type: string
+                default: utf8
+              path:
+                description: Result file path
+                type: string
+              content:
+                description: Result file content
+                type: string
   /predict:
     post:
       description: Perform a CYP site of metabolism prediction using SMARTCyp
-      operationId: "mdstudio_smartcyp.rest_services.smartcyp_prediction"
-      consumes:
-        - multipart/form-data
+      operationId: mdstudio_smartcyp.rest_services.smartcyp_prediction
       parameters:
         - name: mol
           description: Ligand input file
@@ -87,15 +409,38 @@ paths:
           schema:
             type: object
             properties:
-              result:
-                description: Content of SMARTCyp prediction .csv file in the required format
+              extension:
+                description: Result file extension
                 type: string
-              images:
-                description: ''
+              encoding:
+                description: Result file encoding
                 type: string
-            required:
-            - result
+                default: utf8
+              path:
+                description: Result file path
+                type: string
+              content:
+                description: Result file content
+                type: string
         default:
           description: Unexpected error
           schema:
             type: string
+definitions:
+  SoftwareInfo:
+    type: object
+    properties:
+      version:
+        description: SMARTCyp version
+        type: string
+      citation:
+        description: SMARTCyp citation
+        type: string
+      models:
+        type: array
+        description: Supported CYP prediction models
+        items:
+          type: string
+    required:
+      - version
+      - citation
