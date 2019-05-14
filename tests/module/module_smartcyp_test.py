@@ -49,6 +49,8 @@ class SmartCypRunnerTests(unittest.TestCase):
         Check if temporary dir is cleaned
         """
 
+        # Remove temporary working directory
+        self.scr.delete()
         self.assertFalse(os.path.exists(self.scr.tempdir))
 
         for tmp_file in self.tmp_files:
