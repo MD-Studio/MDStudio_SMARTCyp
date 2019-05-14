@@ -1,0 +1,32 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema",
+  "id": "http://mdstudio/schemas/endpoints/docking_response.v1.json",
+  "title": "docking output",
+  "description": "docking output",
+  "type": "object",
+  "properties": {
+    "status": {
+      "type": "string",
+      "description": "Plants Docking final status",
+      "enum": [
+        "failed",
+        "completed"
+      ]
+    },
+    "clusterplot": {
+      "description": "Dendrogram plot of hierarchical clusters",
+      "$ref": "resource://mdgroup/common_resources/path_file/v1"
+    },
+    "output": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "description": "Dictionary containing the Plants docking output files"
+    }
+  },
+  "required": [
+    "status",
+    "output"
+  ]
+}

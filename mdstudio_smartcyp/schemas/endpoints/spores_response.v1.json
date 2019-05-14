@@ -1,0 +1,16 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "id": "http://mdstudio/schemas/endpoints/spores_response.v1.json",
+  "title": "MDStudio SPORES structure porcessing",
+  "description": "Perform Structure PrOtonation and REcognition System (SPORES)",
+  "type": "object",
+  "properties": {
+    "result": {
+      "type": "object",
+      "description": "SPORES processed structure file",
+      "$ref": "resource://mdgroup/common_resources/path_file/v1"
+    }
+    }
+  },
+  "required": ["result"]
+}

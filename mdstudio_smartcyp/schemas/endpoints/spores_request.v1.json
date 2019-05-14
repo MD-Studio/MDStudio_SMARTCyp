@@ -1,0 +1,44 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "id": "http://mdstudio/schemas/endpoints/spores_request.v1.json",
+  "title": "MDStudio SPORES structure porcessing",
+  "description": "Perform Structure PrOtonation and REcognition System (SPORES)",
+  "type": "object",
+  "properties": {
+    "mol": {
+      "$ref": "resource://mdgroup/common_resources/path_file/v1",
+      "description": "Input structure file, PDB or MOL2"
+    },
+    "input_format": {
+      "description": "Input structure fiole format",
+      "type": "string",
+      "default": "mol2",
+      "enum": [
+        "pdb",
+        "sdf",
+        "mol",
+        "mol2"
+      ]
+    },
+    "spores_mode": {
+      "description": "SPORES running mode",
+      "type": "string",
+      "enum": [
+        "complete",
+        "reprot",
+        "settypes",
+        "readbonds",
+        "protstates",
+        "stereo",
+        "tautomers",
+        "ketoenol",
+        "ringconfs"
+      ]
+    }
+  },
+  "required": [
+    "mol",
+    "spores_mode"
+  ],
+  "additionalProperties": false
+}

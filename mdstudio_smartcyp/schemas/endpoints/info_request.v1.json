@@ -2,7 +2,7 @@
   "$schema": "http://json-schema.org/draft-04/schema#",
   "id": "http://mdstudio/schemas/endpoints/info_request.v1.json",
   "title": "MDStudio SMARTCyp info",
-  "description": "Informative summary on the installed SMARTCyp version and configuration",
+  "description": "Information on the installed SMARTCyp version and configuration",
   "type": "object",
   "properties": {},
   "additionalProperties": false
