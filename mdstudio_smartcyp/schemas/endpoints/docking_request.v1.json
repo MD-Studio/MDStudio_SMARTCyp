@@ -294,7 +294,8 @@
     "criterion": {
       "description": "Cluster criterion used by the fcluster method (scipy.cluster.hierarchy.fcluster)",
       "type": "string",
-      "default": "maxclust"
+      "default": "maxclust",
+      "enum": ["inconsistent", "distance", "maxclust", "monocrit", "maxclust_monocrit"]
     }
   },
   "required": [
