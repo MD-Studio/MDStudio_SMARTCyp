@@ -5,7 +5,7 @@
   "description": "Plants docking method configuration schema",
   "type": "object",
   "properties": {
-    "workdir": {
+    "base_work_dir": {
       "type": "string",
       "description": "Directory to run the docking simulation",
       "default": "/tmp/mdstudio/lie_plants_docking"
