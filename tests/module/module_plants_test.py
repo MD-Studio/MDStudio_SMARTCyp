@@ -125,7 +125,7 @@ class PlantsDockingTest(unittest.TestCase):
         self.assertEqual(len(results), 40)
 
     @unittest.skipIf(not os.path.exists(PLANTS_EXEC), 'This test requires proprietary software')
-    def test_plants_docking_redoc_clustering(self):
+    def test_plants_docking_redo_clustering(self):
         """
         Redo clustering
         """
@@ -134,10 +134,10 @@ class PlantsDockingTest(unittest.TestCase):
         self.assertTrue(did_run_successfully)
 
         results = plants.get_results()
-        for a,b in results.items():
-            print(a, b['cluster'], b['mean'])
+        clust_orig = [b['cluster'] for b in results.values()]
 
         plants.update(threshold=4.0)
         results = plants.get_results()
-        for a,b in results.items():
-            print(a, b['cluster'], b['mean'])
+        clust_new = [b['cluster'] for b in results.values()]
+
+        self.assertNotEqual(clust_orig, clust_new)
