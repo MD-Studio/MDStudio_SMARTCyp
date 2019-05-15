@@ -314,21 +314,81 @@ paths:
           in: formData
           type: integer
           default: 0
+        - name: min_cluster_size
+          description: Minimum cluster size for coordinate based clustering
+          in: formData
+          type: integer
+          default: 2
+        - name: threshold
+          description: Minimum RMSD threshold for defining clusters. Same a the 't' argument in the scipy.cluster.hierarchy.fcluster package
+          in: formData
+          type: integer
+          default: 8
+        - name: criterion
+          description: Cluster criterion used by the fcluster method (scipy.cluster.hierarchy.fcluster)
+          in: formData
+          type: string
+          default: maxclust
+          enum: [inconsistent, distance, maxclust, monocrit, maxclust_monocrit]
       responses:
         '200':
           description: PLANTS docking results
           schema:
-            type: object
-            properties:
-              result:
-                description: Content of SMARTCyp prediction .csv file in the required format
-                type: string
-            required:
-              - result
-        default:
-          description: Unexpected error
-          schema:
+            $ref: '#/definitions/DockingResults'
+  /docking_get_statistics:
+    post:
+      description: Get docking statistics for all or a subset of docking solutions initially returned by the 'docking' method
+      operationId: mdstudio_smartcyp.rest_services.plants_docking_statistics
+      parameters:
+        - name: paths
+          description: Paths to docking poses for which to return statistics
+          in: formData
+          collectionFormat: multi
+          required: True
+          type: array
+          items:
             type: string
+        - name: min_cluster_size
+          description: Minimum cluster size for coordinate based clustering
+          in: formData
+          type: integer
+          default: 2
+        - name: threshold
+          description: Minimum RMSD threshold for defining clusters. Same a the 't' argument in the scipy.cluster.hierarchy.fcluster package
+          in: formData
+          type: integer
+          default: 8
+        - name: criterion
+          description: Cluster criterion used by the fcluster method (scipy.cluster.hierarchy.fcluster)
+          in: formData
+          type: string
+          default: maxclust
+          enum: [inconsistent, distance, maxclust, monocrit, maxclust_monocrit]
+      responses:
+        '200':
+          description: PLANTS docking results
+          schema:
+            $ref: '#/definitions/DockingResults'
+  /docking_get_structures:
+    post:
+      description: Get docking result structures as one combined Tripos MOL2 file
+      operationId: mdstudio_smartcyp.rest_services.plants_docking_structures
+      parameters:
+        - name: paths
+          description: Paths to docking poses for which to return statistics
+          in: formData
+          collectionFormat: multi
+          required: True
+          type: array
+          items:
+            type: string
+      produces:
+        - text/plain
+      responses:
+        '200':
+          description: PLANTS docking results
+          schema:
+            type: file
   /spores:
     post:
       description: Process molecular structures using the Structure PrOtonation and REcognition System (SPORES)
@@ -449,3 +509,11 @@ definitions:
     required:
       - version
       - citation
+  DockingResults:
+    type: object
+    properties:
+      result:
+        description: Content of SMARTCyp prediction .csv file in the required format
+        type: string
+    required:
+      - result
