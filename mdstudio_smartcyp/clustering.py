@@ -53,43 +53,43 @@ def _rotate(c1, c2):
     rotated = _kabsch(c1, c2)
 
     # Rotate c1
-    c1 = numpy.dot(c1, rotated)
-    return c1
+    return numpy.dot(c1, rotated)
 
 
-def _centroid(X):
+def _centroid(x):
     """
-    Calculate the centroid from a vectorset X
+    Calculate the centroid from a vectorset x
     """
-    C = sum(X) / len(X)
-    return C
+
+    return sum(x) / len(x)
 
 
-def _kabsch(P, Q):
+def _kabsch(pmat, qmat):
     """
     The optimal rotation matrix U is calculated and then used to rotate matrix
-    P unto matrix Q so the minimum root-mean-square deviation (RMSD) can be
+    pmat unto matrix qmat so the minimum root-mean-square deviation (RMSD) can be
     calculated.
 
-    Using the Kabsch algorithm with two sets of paired point P and Q,
+    Using the Kabsch algorithm with two sets of paired point pmat and qmat,
     centered around the center-of-mass. Each vector set is represented as
     an NxD matrix, where D is the the dimension of the space.
 
     The algorithm works in three steps:
-        * A translation of P and Q
+        * A translation of pmat and qmat
         * The computation of a covariance matrix C
         * Computation of the optimal rotation matrix U
 
     http://en.wikipedia.org/wiki/Kabsch_algorithm
 
-    :param P: (N, number of points)x(D, dimension) matrix
-    :param Q: (N, number of points)x(D, dimension) matrix
-    :return: U the Rotation matrix
-    :rtype: object
+    :param pmat: (N, number of points)x(D, dimension) matrix
+    :param qmat: (N, number of points)x(D, dimension) matrix
+
+    :return:     the rotation matrix
+    :rtype:      object
     """
 
     # Computation of the covariance matrix
-    C = numpy.dot(numpy.transpose(P), Q)
+    covmat = numpy.dot(numpy.transpose(pmat), qmat)
 
     # Computation of the optimal rotation matrix
     # This can be done using singular value decomposition (SVD)
@@ -98,17 +98,15 @@ def _kabsch(P, Q):
     # right-handed coordinate system.
     # And finally calculating the optimal rotation matrix U
     # see http://en.wikipedia.org/wiki/Kabsch_algorithm
-    V, S, W = numpy.linalg.svd(C)
-    d = (numpy.linalg.det(V) * numpy.linalg.det(W)) < 0.0
+    v, s, w = numpy.linalg.svd(covmat)
+    d = (numpy.linalg.det(v) * numpy.linalg.det(w)) < 0.0
 
     if d:
-        S[-1] = -S[-1]
-        V[:, -1] = -V[:, -1]
+        s[-1] = -s[-1]
+        v[:, -1] = -v[:, -1]
 
     # Create Rotation matrix U
-    U = numpy.dot(V, W)
-
-    return U
+    return numpy.dot(v, w)
 
 
 def rmsd(c1, c2):
@@ -203,13 +201,13 @@ class ClusterStructures(object):
         Return a nicely formatted summary of the clustering
         """
 
-        summary = []
-        summary.append('Clustering {0} structures'.format(len(self.xyz)))
-        summary.append('Metric for pairwise distance matrix: {0}'.format(self.metric))
-        summary.append('Metric for hierarchical clustering: {0}'.format(self.method))
-        summary.append('Cluster selection criterion: {0} with parameter {1}\n'.format(self.criterion, self.threshold))
-
-        summary.append('Clusters: {0}, coverage: {1:.2f}%'.format(self.cluster_count, self.coverage * 100))
+        summary = [
+            'Clustering {0} structures'.format(len(self.xyz)),
+            'Metric for pairwise distance matrix: {0}'.format(self.metric),
+            'Metric for hierarchical clustering: {0}'.format(self.method),
+            'Cluster selection criterion: {0} with parameter {1}\n'.format(self.criterion, self.threshold),
+            'Clusters: {0}, coverage: {1:.2f}%'.format(self.cluster_count, self.coverage * 100),
+        ]
 
         return '\n'.join(summary)
 
@@ -242,7 +240,7 @@ class ClusterStructures(object):
         :rtype: list
         """
 
-        return [sid for sid in self._clusters_filtered if self._clusters_filtered[sid].get('cluster', 0) != 0]
+        return [sid for sid in self._clusters_filtered if self._clusters_filtered[sid].get('CLUSTER', 0) != 0]
 
     @property
     def cluster_medians(self):
@@ -256,9 +254,9 @@ class ClusterStructures(object):
         :rtype:  :py:class:`dict`
         """
 
-        return {self._clusters_filtered[sid]['cluster']: sid for sid
+        return {self._clusters_filtered[sid]['CLUSTER']: sid for sid
                 in self._clusters_filtered
-                if self._clusters_filtered[sid].get('mean', False)}
+                if self._clusters_filtered[sid].get('MEAN', False)}
 
     @property
     def cluster_count(self):
@@ -273,7 +271,7 @@ class ClusterStructures(object):
         :rtype: float
         """
 
-        return (len(self.clustered_structures) / float(len(self.xyz)))
+        return len(self.clustered_structures) / float(len(self.xyz))
 
     def plot(self, to_file='cluster_dendrogram.pdf'):
         """
@@ -359,14 +357,16 @@ class ClusterStructures(object):
 
                 meanpose = self.labels[cl[0][lc[0]]]
                 for idx in cl[0]:
-                    self._clusters_filtered[self.labels[idx]] = {'cluster': n, 'mean': self.labels[idx] == meanpose}
+                    self._clusters_filtered[self.labels[idx]] = {'CLUSTER': n, 'MEAN': self.labels[idx] == meanpose}
             else:
-                self.logger.debug('Cluster {0} contains less that {1} structures ({2}). Dropping'.format(n, min_cluster_count, len(cl[0])))
+                self.logger.debug('Cluster {0} contains less that {1} structures ({2}). Dropping'.format(n,
+                                                                                        min_cluster_count, len(cl[0])))
                 for idx in cl[0]:
-                    self._clusters_filtered[self.labels[idx]] = {'cluster': 0, 'mean': 0}
+                    self._clusters_filtered[self.labels[idx]] = {'CLUSTER': 0, 'MEAN': 0}
 
-        self.logger.info('Cluster {0} structures. pdist method: {1}, cluster method: {2}, criterion: {3}, tolerance: {4}, minimum cluster size: {5}'.format(
-            len(self.xyz), self.metric, self.method, self.criterion, self.threshold, min_cluster_count))
-        self.logger.info('Resolved {0} clusters with a coverage of {1}%'.format(self.cluster_count, self.coverage * 100))
+        self.logger.info('Cluster {0} structures. pdist method: {1}, cluster method: {2}, criterion: {3}, tolerance: '
+                         '{4}, minimum cluster size: {5}'.format(len(self.xyz), self.metric, self.method,
+                                                                 self.criterion, self.threshold, min_cluster_count))
+        self.logger.info('Resolved {0} clusters, coverage of {1}%'.format(self.cluster_count, self.coverage * 100))
 
         return self._clusters_filtered
