@@ -68,10 +68,15 @@ paths:
           required: true
           type: file
         - name: bindingsite_center
-          description: Docking binding site center coordinates (comma seperated string of floats)
+          description: Docking binding site center coordinates
           in: formData
-          required: true
-          type: string
+          collectionFormat: multi
+          required: True
+          type: array
+          minItems: 3
+          maxItems: 3
+          items:
+            type: number
         - name: outside_binding_site_penalty
           description: Penalty if molecules is outside defined binding center
           in: formData
