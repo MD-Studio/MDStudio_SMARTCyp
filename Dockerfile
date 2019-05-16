@@ -17,18 +17,16 @@ RUN apt-get update && \
 	rm -rf /var/lib/apt/lists/* && \
 	rm -rf /var/cache/oracle-jdk8-installer;
 
-COPY . /home/mdstudio/mdstudio_smartcyp
-
-RUN chown mdstudio:mdstudio /home/mdstudio/mdstudio_smartcyp
-
-WORKDIR /home/mdstudio/mdstudio_smartcyp
-
-RUN pip install .
-
-USER mdstudio
-
 # Setup JAVA_HOME, this is useful for docker commandline
 ENV JAVA_HOME /usr/lib/jvm/java-8-openjdk-amd64/
 RUN export JAVA_HOME
 
+# Install package
+COPY . /home/mdstudio/mdstudio_smartcyp
+RUN chown mdstudio:mdstudio /home/mdstudio/mdstudio_smartcyp
+WORKDIR /home/mdstudio/mdstudio_smartcyp
+RUN pip install .
+USER mdstudio
+
+# Set entrypoint and start process
 CMD ["bash", "entry_point_mdstudio_smartcyp.sh"]
