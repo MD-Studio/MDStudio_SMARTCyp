@@ -47,8 +47,7 @@ class PlantsDocking(RunnerBaseClass):
 
       PLANTS: Protein-Ligand ANT System.
       "An ant colony optimization approach to flexible protein-ligand
-       docking" Swarm Intell. 1, 115-134 (2007).
-      O. Korb, T. Stützle, T.E. Exner
+      docking" Swarm Intell. 1, 115-134 (2007). O. Korb, T. Stützle, T.E. Exner
       URL: http://www.tcd.uni-konstanz.de/research/plants.php
 
     This class is compatible with PLANTS versions 1.1 and 1.2.
@@ -122,6 +121,10 @@ class PlantsDocking(RunnerBaseClass):
         """
 
         if isinstance(wdir, str):
+
+            if self.base_work_dir and self.base_work_dir not in wdir:
+                wdir = os.path.join(self.base_work_dir, wdir)
+
             wdir = os.path.abspath(wdir)
             if not os.path.isdir(wdir):
                 raise IOError('Docking results (no longer) exist: {0}'.format(wdir))
@@ -173,6 +176,8 @@ class PlantsDocking(RunnerBaseClass):
         # Structure selection to return results for
         if not structures:
             structures = [struc for struc in glob.glob(os.path.join(self.workdir, '*_entry_*_conf_*.mol2'))]
+        else:
+            structures = [os.path.join(self.base_work_dir, struc) for struc in structures]
 
         # Read docking results: first try features.csv, else ranking.csv
         results = import_plants_csv(self.workdir, structures)
@@ -197,10 +202,13 @@ class PlantsDocking(RunnerBaseClass):
         """
         Create a multi-molecule MOL2 file by concatenating
         single PLANTS MOL2 docking pose files.
+
+        :return: docking results as single Tripos MOL2 file
+        :rtype:  :py:str
         """
 
         if not isinstance(structures, (list, tuple)):
-            structure_path = [structures]
+            structures = [structures]
 
         return create_multi_mol2(structures)
 
@@ -245,7 +253,7 @@ class PlantsDocking(RunnerBaseClass):
         if not os.path.exists(exec_path):
             self.log.error('Plants executable not available at: {0}'.format(exec_path))
             check_valid = False
-        if not os.access(exec_path, os.X_OK):
+        elif not os.access(exec_path, os.X_OK):
             self.log.error('Plants executable {0} does not have exacutable permissions'.format(exec_path))
             check_valid = False
 

@@ -16,9 +16,10 @@ from mdstudio_smartcyp.spores_run import SporesRunner
 from mdstudio_smartcyp.utils import mol_validate_file_object
 
 
-def plants_docking(protein_file, ligand_file, bindingsite_center, workdir=None, **kwargs):
+def plants_docking(protein_file, ligand_file, base_work_dir=None, **kwargs):
     """
     Run a REST based PLANTS docking run
+
     :return:
     """
 
@@ -32,23 +33,67 @@ def plants_docking(protein_file, ligand_file, bindingsite_center, workdir=None, 
     else:
         return 'Unsuported protein file structure: {0}'.format(type(ligand_file)), 401
 
-    # Format the binding site center
-    try:
-        kwargs['bindingsite_center'] = [float(n) for n in bindingsite_center.split(',')]
-    except BaseException:
-        return 'Malformed bindingsite_center: {0}'.format(bindingsite_center)
-
     # Run docking
-    docking = PlantsDocking(workdir=workdir, **kwargs)
+    docking = PlantsDocking(base_work_dir=os.environ.get('BASE_WORK_DIR', base_work_dir), **kwargs)
     success = docking.run(protein_file, ligand_file)
 
     if success:
-        results = docking.results()
-        docking.delete()
+        results = docking.get_results()
         return results
 
     docking.delete()
     return 'PLANTS docking failed', 401
+
+
+def plants_docking_statistics(paths=None, **kwargs):
+    """
+    Return PLANTS docking statistics for particular docking solutions run previously.
+    Clustering will also be redone and optionally adjusted.
+
+    :param paths: list of docking solution paths
+    :type paths:  :py:list
+
+    :return:
+    """
+
+    base_path = list(set([os.path.dirname(p) for p in paths]))
+    if len(base_path) > 1:
+        return 'Unable to combine results for more then one docking run', 401
+
+    if not os.path.exists(os.path.join(os.environ.get('BASE_WORK_DIR', ''), base_path[0])):
+        return 'Docking results (no longer) exist: {0}'.format(os.path.basename(base_path[0])), 401
+
+    docking = PlantsDocking(base_work_dir=os.environ.get('BASE_WORK_DIR'))
+    docking.workdir = base_path[0]
+    docking.update(kwargs)
+    results = docking.get_results(structures=paths)
+
+    return results
+
+
+def plants_docking_structures(paths=None):
+    """
+    Return PLANTS docking statistics for particular docking solutions run previously.
+    Clustering will also be redone and optionally adjusted.
+
+    :param paths: list of docking solution paths
+    :type paths:  :py:list
+
+    :return:
+    """
+
+    base_path = list(set([os.path.dirname(p) for p in paths]))
+    if len(base_path) > 1:
+        return 'Unable to combine results for more then one docking run', 401
+
+    if not os.path.exists(os.path.join(os.environ.get('BASE_WORK_DIR', ''), base_path[0])):
+        return 'Docking results (no longer) exist: {0}'.format(os.path.basename(base_path[0])), 401
+
+    docking = PlantsDocking(base_work_dir=os.environ.get('BASE_WORK_DIR'))
+    docking.workdir = base_path[0]
+    results = docking.get_structures(paths)
+
+    return results
 
 
 def smartcyp_prediction(mol=None, smiles=None, output_format='json', noempcorr=False, output_png=False):

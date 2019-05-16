@@ -62,6 +62,9 @@ if __name__ == '__main__':
                         type=int, default=0)
     args = parser.parse_args()
 
+    # Set dynamic base_work_dir as environmental variable accessible from else where
+    os.environ['BASE_WORK_DIR'] = args.base_work_dir
+
     # Start results cleanup event if 'base_work_dir' and 'result_storage_time' are set
     if args.base_work_dir and args.result_storage_time > 0:
         p = PeriodicCleanup(args.base_work_dir, args.result_storage_time)
