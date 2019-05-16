@@ -225,6 +225,7 @@ def import_plants_csv(result_dir, structures=None, files=('features.csv', 'ranki
     """
 
     results = {}
+    docking_dir_name = os.path.basename(result_dir)
     for resultcsv in files:
         resultcsv = os.path.join(result_dir, resultcsv)
         if os.path.isfile(resultcsv):
@@ -244,7 +245,7 @@ def import_plants_csv(result_dir, structures=None, files=('features.csv', 'ranki
                         del row[None]
 
                     results[mol2] = row
-                    results[mol2]['PATH'] = path
+                    results[mol2]['PATH'] = os.path.join(docking_dir_name, '{0}.mol2'.format(mol2))
             break
 
     return results
