@@ -308,5 +308,5 @@ class PeriodicCleanup(object):
                 if os.path.isdir(dockdir):
                     if int(time.time()) - int(os.path.getmtime(dockdir)) >= self.result_storage_time:
 
-                        logging.info('Remove: {0}'.format(dockdir))
+                        logging.info('Periodic cleanup, remove: {0}'.format(dockdir))
                         shutil.rmtree(dockdir)

@@ -19,6 +19,7 @@ __url__ = 'https://github.com/NLeSC/MDStudio'
 __copyright__ = "Copyright (c) VU University, Amsterdam"
 __package_path__ = os.path.dirname(os.path.realpath(__file__))
 
+
 # SMARTCyp
 __smartcyp_path__ = os.path.join(__package_path__, 'bin/smartcyp-2.4.2.jar')
 __smartcyp_version__ = '2.4.2'

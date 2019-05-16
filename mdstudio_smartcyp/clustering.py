@@ -183,7 +183,7 @@ class ClusterStructures(object):
 
         # Optional list of labels (e.a. structure id's) need to match coordinate set in length
         cond = len(self.labels) == len(self.xyz)
-        assert cond, 'Number if labels is not matching number of coordinate sets'
+        assert cond, 'Number of labels is not matching number of coordinate sets'
 
         self._condensed_distance_matrix = self._build_pdist()
         self._clusters = []
