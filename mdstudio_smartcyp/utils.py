@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 """
-IO and subprocess related utility functions.
+MDStudio_SMARTCyp utility functions
 """
 
 import os
@@ -12,6 +12,10 @@ import re
 import tempfile
 import shutil
 import csv
+import glob
+import time
+
+from threading import Event, Thread
 
 # Library and function compatibility
 if sys.version_info[0] < 3:
@@ -240,7 +244,68 @@ def import_plants_csv(result_dir, structures=None, files=('features.csv', 'ranki
                         del row[None]
 
                     results[mol2] = row
-                    results[mol2]['path'] = path
+                    results[mol2]['PATH'] = path
             break
 
     return results
+
+
+class PeriodicCleanup(object):
+    """
+    Asynchronous periodic cleanup class checking a base working directory for
+    result directories starting with 'docking-' that are more then
+    `result_storage_time` hours old every `period` seconds and removing them.
+    """
+
+    def __init__(self, base_work_dir, result_storage_time, period=60):
+        """
+
+        :param base_work_dir:        base directory containing 'docking-' dirs.
+        :type base_work_dir:         :py:str
+        :param result_storage_time:  maximum time in hours results are stored
+                                     on disc.
+        :type result_storage_time:   :py:int
+        :param period:               event interval time in seconds
+        :type period:                :py:int
+        """
+
+        self.base_work_dir = base_work_dir
+        self.result_storage_time = result_storage_time * 3600
+        self.period = period
+
+        logging.info('Start periodic cleanup of "{0}" every {1} sec. removing results > {2} hours old'.format(
+            base_work_dir, period, result_storage_time))
+
+        self.clean_event = Event()
+
+    def start(self):
+        """
+        Start the Event thread
+        """
+
+        self.clean_event.clear()
+        self.proc = Thread(target=self.cleanup)
+        self.proc.start()
+
+    def stop(self):
+        """
+        Nearly immediately kills the Periodic function
+        """
+
+        self.clean_event.set()
+        self.proc.join()
+
+    def cleanup(self):
+
+        while True:
+            self.clean_event.wait(self.period)
+            if self.clean_event.is_set():
+                break
+
+            for dockdir in glob.glob('{0}/docking-*/'.format(self.base_work_dir)):
+
+                if os.path.isdir(dockdir):
+                    if int(time.time()) - int(os.path.getmtime(dockdir)) >= self.result_storage_time:
+
+                        logging.info('Remove: {0}'.format(dockdir))
+                        shutil.rmtree(dockdir)
