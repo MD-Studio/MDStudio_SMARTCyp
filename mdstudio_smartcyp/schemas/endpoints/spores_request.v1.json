@@ -10,7 +10,7 @@
       "description": "Input structure file, PDB or MOL2"
     },
     "input_format": {
-      "description": "Input structure fiole format",
+      "description": "Input structure file format",
       "type": "string",
       "default": "mol2",
       "enum": [
@@ -23,6 +23,7 @@
     "spores_mode": {
       "description": "SPORES running mode",
       "type": "string",
+      "default": "complete",
       "enum": [
         "complete",
         "reprot",

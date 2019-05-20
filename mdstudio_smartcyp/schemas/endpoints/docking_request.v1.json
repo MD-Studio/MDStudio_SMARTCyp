@@ -12,7 +12,7 @@
     },
     "scoring_function": {
       "type": "string",
-      "description": "",
+      "description": "Intermolecular protein-ligand interaction scoring function",
       "default": "chemplp",
       "enum": [
         "plp",
@@ -21,142 +21,160 @@
       ]
     },
     "outside_binding_site_penalty": {
-      "description": "",
+      "description": "scoring functions using precalculated grids use value to fill grid points outside the binding site definition",
       "type": "number",
       "default": 50.0
     },
     "enable_sulphur_acceptors": {
-      "description": "",
+      "description": "Scoring of sulphur acceptors (activate (1) or deactivate (0))",
       "type": "integer",
-      "default": 0
+      "default": 0,
+      "enum": [0, 1]
     },
     "ligand_intra_score": {
       "type": "string",
-      "description": "",
-      "default": "clash2"
+      "description": "Simple heavy-atom clash terms (clash) or all-atom Lennard-Jones term (clash2)",
+      "default": "clash2",
+      "enum": ["clash", "clash2"]
+    },
+    "rigid_ligand": {
+      "description": "Rigid ligand docking (activate (1) or deactivate (0))",
+      "type": "integer",
+      "default": 0,
+      "enum": [0, 1]
+    },
+    "rigid_all": {
+      "description": "Rigid protein and rigid ligand docking (activate (1) or deactivate (0))",
+      "type": "integer",
+      "default": 0,
+      "enum": [0, 1]
     },
     "chemplp_clash_include_14": {
-      "description": "",
+      "description": "Scoring of 1-4 interactions (activate (1) or deactivate (0))",
       "type": "integer",
-      "default": 1
+      "default": 1,
+      "enum": [0, 1]
     },
     "chemplp_clash_include_HH": {
-      "description": "",
+      "description": "Scoring of hydrogen-hydrogen interactions (activate (1) or deactivate (0))",
       "type": "integer",
-      "default": 0
+      "default": 0,
+      "enum": [0, 1]
     },
     "plp_steric_e": {
-      "description": "",
+      "description": "Well-depth for steric PLP interactions",
       "type": "number",
       "default": -0.4
     },
     "plp_burpolar_e": {
-      "description": "",
+      "description": "Well-depth for occluded polar PLP interactions",
       "type": "number",
       "default": -0.05
     },
     "plp_hbond_e": {
-      "description": "",
+      "description": "Well-depth for polar PLP interactions",
       "type": "number",
       "default": -2.0
     },
     "plp_metal_e": {
-      "description": "",
+      "description": "Well-depth for acceptor–metal PLP interactions",
       "type": "number",
       "default": -4.0
     },
     "plp_repulsive_weight": {
-      "description": "",
+      "description": "Weight for repulsive PLP interactions",
       "type": "number",
       "default": 0.5
     },
     "plp_tors_weight": {
-      "description": "",
+      "description": "Weight for the ligand torsional potential",
       "type": "number",
       "default": 1.0
     },
     "chemplp_weak_cho": {
-      "description": "",
+      "description": "Weak CH-O scoring (activate (1) or deactivate (0)).",
       "type": "integer",
-      "default": 1
+      "default": 1,
+      "enum": [0, 1]
     },
     "chemplp_charged_hb_weight": {
-      "description": "",
+      "description": "Weighting factor (multiplier) for charged hydrogen bonds",
       "type": "number",
       "default": 2.0
     },
     "chemplp_charged_metal_weight": {
-      "description": "",
+      "description": "Weighting factor (multiplier) for charged acceptor-metal interactions",
       "type": "number",
       "default": 2.0
     },
     "chemplp_hbond_weight": {
-      "description": "",
+      "description": "Weighting factor neutral-neutral and neutral-charged hydrogen bonds",
       "type": "number",
       "default": -3.0
     },
     "chemplp_hbond_cho_weight": {
-      "description": "",
+      "description": "Weighting factor for CH-O interactions",
       "type": "number",
       "default": -3.0
     },
     "chemplp_metal_weight": {
-      "description": "",
+      "description": "Weighting factor for neutral acceptor-metal interactions",
       "type": "number",
       "default": -6.0
     },
     "chemplp_plp_weight": {
-      "description": "",
+      "description": "Weighting factor for PLP interactions",
       "type": "number",
       "default": 1.0
     },
     "chemplp_plp_steric_e": {
-      "description": "",
+      "description": "Well-depth for steric PLP interactions",
       "type": "number",
       "default": -0.4
     },
     "chemplp_plp_burpolar_e": {
-      "description": "",
+      "description": "Well-depth for occluded polar PLP interactions",
       "type": "number",
       "default": -0.1
     },
     "chemplp_plp_hbond_e": {
-      "description": "",
+      "description": "Well-depth for polar PLP interactions",
       "type": "number",
       "default": -1.0
     },
     "chemplp_plp_metal_e": {
-      "description": "",
+      "description": "Well-depth for acceptor–metal PLP interactions",
       "type": "number",
       "default": -1.0
     },
     "chemplp_plp_repulsive_weight": {
-      "description": "",
+      "description": "Weight for repulsive PLP interactions",
       "type": "number",
       "default": 1.0
     },
     "chemplp_tors_weight": {
-      "description": "",
+      "description": "Weight for the ligand torsional potential",
       "type": "number",
       "default": 2.0
     },
     "chemplp_lipo_weight": {
-      "description": "",
+      "description": "Weighting factor for lipophilic interactions",
       "type": "number",
       "default": 0.0
     },
     "chemplp_intercept_weight": {
-      "description": "",
+      "description": "Intercept value",
       "type": "number",
       "default": -20.0
     },
     "rescore_mode": {
-      "description": "",
+      "description": "Perform simplex optimization during rescoring (simplex) or only direct input conformation scoring (no_simplex)",
       "type": "string",
-      "default": "simplex"
+      "default": "simplex",
+      "enum": ["simplex", "no_simplex"]
     },
     "search_speed": {
-      "description": "",
+      "description": "Search speed setting as: highest reliability, slowest setting (speed1), good reliability, twice as fast as speed1 (speed2) or modest reliability, four times as fast as speed1 (speed4)",
       "type": "string",
       "default": "speed1",
       "enum": [
@@ -178,37 +196,51 @@
       "type": "string",
       "default": "."
     },
-    "write_multi_mol2": {
-      "description": "",
+    "aco_ants": {
+      "description": "Number of ants",
       "type": "integer",
-      "default": 0
+      "default": 20
+    },
+    "aco_evap": {
+      "description": "Evaporation factor",
+      "type": "number"
+    },
+    "aco_sigma": {
+      "description": "Iteration scaling factor sigma",
+      "type": "number"
     },
     "flip_amide_bonds": {
-      "description": "",
+      "description": "Flipping of amide bonds (activate (1) or deactivate (0))",
       "type": "integer",
-      "default": 1
+      "default": 1,
+      "enum": [0, 1]
     },
     "flip_planar_n": {
-      "description": "",
+      "description": "Flipping of bonds next to planar nitrogens (activate (1) or deactivate (0))",
       "type": "integer",
-      "default": 1
+      "default": 1,
+      "enum": [0, 1]
     },
     "flip_ring_corners": {
-      "description": "",
+      "description": "Flipping of free ring corners (activate (1) or deactivate (0))",
       "type": "integer",
-      "default": 0
+      "default": 0,
+      "enum": [0, 1]
     },
     "force_flipped_bonds_planarity": {
-      "description": "",
+      "description": "Automatic planarity correction for flippable bonds (activate (1) or deactivate (0))",
       "type": "integer",
-      "default": 0
+      "default": 0,
+      "enum": [0, 1]
     },
     "force_planar_bond_rotation": {
-      "description": "",
+      "description": "Free rotation of planar bonds (activate (1) or deactivate (0))",
       "type": "integer",
-      "default": 1
+      "default": 1,
+      "enum": [0, 1]
     },
     "bindingsite_center": {
+      "description": "Center coordinates of the binding-site sphere",
       "type": "array",
       "minItems": 3,
       "maxItems": 3,
@@ -222,64 +254,73 @@
       ]
     },
     "bindingsite_radius": {
-      "description": "",
+      "description": "Radius of the binding-site sphere",
       "type": "number",
       "default": 12
     },
     "cluster_structures": {
-      "description": "",
+      "description": "Number of structures generated by the cluster algorithm",
       "type": "integer",
-      "default": 50
+      "default": 10
     },
     "cluster_rmsd": {
-      "description": "",
+      "description": "RMSD similarity threshold for cluster algorithm",
       "type": "number",
       "default": 1.0
     },
     "write_ranking_links": {
-      "description": "",
+      "description": "Output of ranked soft links (activate (1) or deactivate (0))",
       "type": "integer",
-      "default": 0
+      "default": 0,
+      "enum": [0, 1]
     },
     "write_protein_bindingsite": {
-      "description": "",
+      "description": "Write protein binding site only (activate (1) or deactivate (0))",
       "type": "integer",
-      "default": 0
+      "default": 0,
+      "enum": [0, 1]
     },
     "write_protein_conformations": {
-      "description": "",
+      "description": "Output of protein conformations for scoring functions chemplp (activate (1) or deactivate (0))",
       "type": "integer",
-      "default": 0
+      "default": 0,
+      "enum": [0, 1]
     },
     "write_merged_protein": {
-      "description": "",
+      "description": "Output of merged protein files (activate (1) or deactivate (0))",
       "type": "integer",
-      "default": 0
+      "default": 0,
+      "enum": [0, 1]
     },
     "write_merged_ligand": {
-      "description": "",
+      "description": "Output of merged ligand files (activate (1) or deactivate (0))",
       "type": "integer",
-      "default": 0
+      "default": 0,
+      "enum": [0, 1]
     },
     "write_merged_water": {
-      "description": "",
+      "description": "Output of merged water files (activate (1) or deactivate (0))",
       "type": "integer",
-      "default": 0
+      "default": 0,
+      "enum": [0, 1]
     },
     "write_protein_splitted": {
-      "description": "",
+      "description": "Write fixed and dynamic parts of the protein in separate files (activate (1) or deactivate (0))",
       "type": "integer",
-      "default": 0
+      "default": 0,
+      "enum": [0, 1]
     },
     "write_per_atom_scores": {
-      "description": "",
+      "description": "Output of per molecule atom scoring values; partial atom charges are replaced (activate (1) or deactivate (0))",
       "type": "integer",
-      "default": 0
+      "default": 0,
+      "enum": [0, 1]
     },
     "merge_multi_conf_output": {
-      "description": "",
+      "description": "Merge of multiconformer output. This is only carried out for ranked databases (activate (1) or deactivate (0))",
       "type": "integer",
-      "default": 0
+      "default": 0,
+      "enum": [0, 1]
     },
     "min_cluster_size": {
       "description": "Minimum cluster size for coordinate based clustering",

@@ -17,11 +17,14 @@
       "type": "array",
       "description": "Supported CYP prediction models",
       "default": []
+    },
+    "default_settings": {
+      "type": "object",
+      "description": "default parameters"
     }
   },
   "required": [
     "version",
-    "citation",
-    "models"
+    "citation"
   ]
 }

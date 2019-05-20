@@ -14,7 +14,7 @@
       "default": false
     },
     "output_format": {
-      "description": "SAMRTCyp result output format",
+      "description": "SMARTCyp result output format",
       "enum": ["csv", "html", "json"],
       "default": "json"
     },
