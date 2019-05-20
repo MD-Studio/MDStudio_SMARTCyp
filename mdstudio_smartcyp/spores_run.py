@@ -25,7 +25,8 @@ def spores_version_info():
     """
 
     info_dict = {'version': __spores_version__,
-                 'citation': __spores_citation__}
+                 'citation': __spores_citation__,
+                 'default_settings': {'input_format': 'mol2', 'spores_mode': "complete"}}
 
     return info_dict
 

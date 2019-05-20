@@ -20,7 +20,17 @@ def plants_docking(protein_file, ligand_file, base_work_dir=None, **kwargs):
     """
     Run a REST based PLANTS docking run
 
-    :return:
+    :param protein_file:    protein structure MOL2 file
+    :type protein_file:     :py:str
+    :param ligand_file:     ligand structure MOL2 file
+    :type ligand_file:      :py:str
+    :param base_work_dir:   optional work directory to (temporary) store PLANTS
+                            docking results.
+    :type base_work_dir:    :py:str
+
+    :return:                PLANTS docking statistics (content of features.csv)
+                            file.
+    :rtype:                 :py:dict
     """
 
     if isinstance(protein_file, FileStorage):
@@ -53,7 +63,8 @@ def plants_docking_statistics(paths=None, **kwargs):
     :param paths: list of docking solution paths
     :type paths:  :py:list
 
-    :return:
+    :return:      PLANTS docking statistics (content of features.csv) file.
+    :rtype:       :py:dict
     """
 
     base_path = list(set([os.path.dirname(p) for p in paths]))
@@ -79,7 +90,8 @@ def plants_docking_structures(paths=None):
     :param paths: list of docking solution paths
     :type paths:  :py:list
 
-    :return:
+    :return:      docking structures as combined Tripos MOL2 file
+    :rtype:       :py:str
     """
 
     base_path = list(set([os.path.dirname(p) for p in paths]))

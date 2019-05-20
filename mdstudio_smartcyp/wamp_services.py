@@ -13,9 +13,9 @@ from mdstudio.api.endpoint import endpoint
 from mdstudio.component.session import ComponentSession
 
 from mdstudio_smartcyp.smartcyp_run import SmartCypRunner, smartcyp_version_info
-from mdstudio_smartcyp.plants_run import PlantsDocking
+from mdstudio_smartcyp.plants_run import PlantsDocking, plants_version_info
 from mdstudio_smartcyp.spores_run import SporesRunner
-from mdstudio_smartcyp.utils import mol_validate_file_object, prepare_work_dir
+from mdstudio_smartcyp.utils import mol_validate_file_object
 
 
 def encoder(file_path):
@@ -43,7 +43,7 @@ class SmartCypWampApi(ComponentSession):
 
         return True
 
-    @endpoint('info', 'info_request', 'info_response', options=RegisterOptions(invoke=u'roundrobin'))
+    @endpoint('smartcyp_info', 'info_request', 'info_response', options=RegisterOptions(invoke=u'roundrobin'))
     def smartcyp_info(self, request, claims):
         """
         Returns an informative summary of the supported SMARTCyp version
@@ -51,6 +51,15 @@ class SmartCypWampApi(ComponentSession):
         """
 
         return smartcyp_version_info()
+
+    @endpoint('plants_info', 'info_request', 'info_response', options=RegisterOptions(invoke=u'roundrobin'))
+    def plants_info(self, request, claims):
+        """
+        Returns an informative summary of the supported PLANTS version
+        and configuration.
+        """
+
+        return plants_version_info()
 
     @endpoint('predict', 'predict_request', 'predict_response', options=RegisterOptions(invoke=u'roundrobin'))
     def smartcyp_prediction(self, request, claims):

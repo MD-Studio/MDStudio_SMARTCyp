@@ -30,12 +30,17 @@ settings = _schema_to_data(json.load(open(PLANTS_DOCKING_SCHEMA)))
 def plants_version_info():
     """
     :return: information on the packaged PLANTS version, supported models
-             and software citation reference.
+             default configuration and software citation reference.
     :rtype:  :py:dict
     """
 
+    default_settings = copy.deepcopy(settings)
+    for param in ('base_work_dir', 'bindingsite_center', 'output_dir'):
+        del default_settings[param]
+
     info_dict = {'version': __plants_version__,
-                 'citation': __plants_citation__}
+                 'citation': __plants_citation__,
+                 'default_settings': default_settings}
 
     return info_dict
 
