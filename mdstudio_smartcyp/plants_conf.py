@@ -40,7 +40,7 @@ PLANTS_CONF_FILE_TEMPLATE = textwrap.dedent("""
 
     # Output settings
     output_dir                   {output_dir}
-    write_multi_mol2             {write_multi_mol2}
+    write_multi_mol2             0
 
     # Ligand settings
     flip_amide_bonds             {flip_amide_bonds}
