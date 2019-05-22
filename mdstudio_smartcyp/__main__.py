@@ -60,15 +60,20 @@ if __name__ == '__main__':
     parser.add_argument('-r', '--result_storage_time',
                         help='Maximum time (hours) results are saved before cleanup. 0 will not clean',
                         type=int, default=0)
+    parser.add_argument('-p', '--http_port',
+                        help='HTTP network port the service connects to',
+                        type=int, default=8081)
     args = parser.parse_args()
 
-    # Set dynamic base_work_dir as environmental variable accessible from else where
-    os.environ['BASE_WORK_DIR'] = args.base_work_dir
+    if args.base_work_dir:
 
-    # Start results cleanup event if 'base_work_dir' and 'result_storage_time' are set
-    if args.base_work_dir and args.result_storage_time > 0:
-        p = PeriodicCleanup(args.base_work_dir, args.result_storage_time)
-        p.start()
+        # Set dynamic base_work_dir as environmental variable accessible from else where
+        os.environ['BASE_WORK_DIR'] = args.base_work_dir
+
+        # Start results cleanup event if 'base_work_dir' and 'result_storage_time' are set
+        if args.result_storage_time > 0:
+            p = PeriodicCleanup(args.base_work_dir, args.result_storage_time)
+            p.start()
 
     # Start service REST or WAMP API
     if args.api_mode == 'wamp':
@@ -82,4 +87,4 @@ if __name__ == '__main__':
         app = connexion.App(__name__, specification_dir='./rest/')
         app.add_api('smartcyp_openapi.yaml', arguments={'title': 'MDStudio SMARTCyp REST API'})
         CORS(app.app)
-        app.run(port=8081)
+        app.run(port=args.http_port)
