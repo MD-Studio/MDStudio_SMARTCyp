@@ -52,7 +52,7 @@ class SmartCypWampApi(ComponentSession):
 
         return smartcyp_version_info()
 
-    @endpoint('plants_info', 'info_request', 'info_response', options=RegisterOptions(invoke=u'roundrobin'))
+    @endpoint('docking_info', 'info_request', 'info_response', options=RegisterOptions(invoke=u'roundrobin'))
     def plants_info(self, request, claims):
         """
         Returns an informative summary of the supported PLANTS version
