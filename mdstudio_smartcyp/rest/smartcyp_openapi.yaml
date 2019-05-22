@@ -19,39 +19,6 @@ consumes:
 produces:
   - application/json
 paths:
-  /smartcyp_info:
-    get:
-      description: Information on the installed SMARTCyp version and configuration
-      operationId: mdstudio_smartcyp.smartcyp_run.smartcyp_version_info
-      consumes:
-        - application/json
-      responses:
-        '200':
-          description: MDStudio SMARTCyp info
-          schema:
-            $ref: '#/definitions/SoftwareInfo'
-  /plants_info:
-    get:
-      description: Information on the installed PLANTS version and configuration
-      operationId: mdstudio_smartcyp.plants_run.plants_version_info
-      consumes:
-        - application/json
-      responses:
-        '200':
-          description: MDStudio PLANTS info
-          schema:
-            $ref: '#/definitions/SoftwareInfo'
-  /spores_info:
-    get:
-      description: Information on the installed SPORES version and configuration
-      operationId: mdstudio_smartcyp.spores_run.spores_version_info
-      consumes:
-        - application/json
-      responses:
-        '200':
-          description: MDStudio SPORES info
-          schema:
-            $ref: '#/definitions/SoftwareInfo'
   /docking:
     post:
       description: Perform a PLANTS docking of a ligand and protein
@@ -374,6 +341,17 @@ paths:
           description: PLANTS docking results
           schema:
             $ref: '#/definitions/DockingResults'
+  /docking_info:
+    get:
+      description: Information on the installed PLANTS version and configuration
+      operationId: mdstudio_smartcyp.plants_run.plants_version_info
+      consumes:
+        - application/json
+      responses:
+        '200':
+          description: MDStudio PLANTS info
+          schema:
+            $ref: '#/definitions/SoftwareInfo'
   /docking_get_statistics:
     post:
       description: Get docking statistics for all or a subset of docking solutions initially returned by the 'docking' method
@@ -471,7 +449,18 @@ paths:
               content:
                 description: Result file content
                 type: string
-  /predict:
+  /spores_info:
+    get:
+      description: Information on the installed SPORES version and configuration
+      operationId: mdstudio_smartcyp.spores_run.spores_version_info
+      consumes:
+        - application/json
+      responses:
+        '200':
+          description: MDStudio SPORES info
+          schema:
+            $ref: '#/definitions/SoftwareInfo'
+  /smartcyp:
     post:
       description: Perform a CYP site of metabolism prediction using SMARTCyp
       operationId: mdstudio_smartcyp.rest_services.smartcyp_prediction
@@ -531,6 +520,17 @@ paths:
           description: Unexpected error
           schema:
             type: string
+  /smartcyp_info:
+    get:
+      description: Information on the installed SMARTCyp version and configuration
+      operationId: mdstudio_smartcyp.smartcyp_run.smartcyp_version_info
+      consumes:
+        - application/json
+      responses:
+        '200':
+          description: MDStudio SMARTCyp info
+          schema:
+            $ref: '#/definitions/SoftwareInfo'
 definitions:
   SoftwareInfo:
     type: object
