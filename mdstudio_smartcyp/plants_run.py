@@ -215,6 +215,10 @@ class PlantsDocking(RunnerBaseClass):
         if not isinstance(structures, (list, tuple)):
             structures = [structures]
 
+        plants_dir_id = structures[0].split('/')[0]
+        structures = [os.path.join(self.base_work_dir, struc) for struc in structures]
+        self.log.debug('Return {0} structures for {1}'.format(len(structures), plants_dir_id))
+
         return create_multi_mol2(structures)
 
     def run(self, protein, ligand, mode='screen'):
@@ -235,6 +239,9 @@ class PlantsDocking(RunnerBaseClass):
         option values are replaced by format placeholders with the
         same name as the keys in the configuration dictionary.
 
+        .. note:: the PLANTS write_multi_mol2 parameter is turned off by
+                  default to enable seperate clustering and result retrieval
+                  by the user.
 
         :param protein: protein 3D structure in mol2 format
         :type protein:  str
