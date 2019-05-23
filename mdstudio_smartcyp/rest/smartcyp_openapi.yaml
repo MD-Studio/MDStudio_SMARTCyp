@@ -1,7 +1,9 @@
 swagger: '2.0'
 info:
   title: SMARTCyp service, A 2D Method for Prediction of Cytochrome P450-Mediated Drug Metabolism
-  description: SMARTCyp providing Site of Metabolism prediction for Cytochrome P450s to the MDStudio environment using the SMARTCyp package developed by P. Rydberg et al
+  description: SMARTCyp providing Site of Metabolism prediction for Cytochrome P450s to the MDStudio environment using the
+               SMARTCyp package developed by P. Rydberg et al. In addition this server provides PLANTS based ligand
+               docking combined with SPORES ligand preperation.
   version: '1.0'
   contact:
     email: m.van.dijk4@vu.nl
