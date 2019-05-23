@@ -7,6 +7,7 @@ import argparse
 import connexion
 
 from flask_cors import CORS
+from gevent.pywsgi import WSGIServer
 from mdstudio.runner import main
 
 # Try import package
@@ -87,4 +88,7 @@ if __name__ == '__main__':
         app = connexion.App(__name__, specification_dir='./rest/')
         app.add_api('smartcyp_openapi.yaml', arguments={'title': 'MDStudio SMARTCyp REST API'})
         CORS(app.app)
-        app.run(port=args.http_port)
+
+        # Serve app using production ready gevent WSGIServer
+        http_server = WSGIServer(('', args.http_port), app)
+        http_server.serve_forever()
