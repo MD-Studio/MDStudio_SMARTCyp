@@ -1,893 +1,932 @@
 {
-	"swagger": "2.0",
-	"info": {
-		"title": "SMARTCyp service, A 2D Method for Prediction of Cytochrome P450-Mediated Drug Metabolism",
-		"description": "SMARTCyp providing Site of Metabolism prediction for Cytochrome P450s to the MDStudio environment using the\nSMARTCyp package developed by P. Rydberg et al. In addition this server provides PLANTS based ligand\ndocking combined with SPORES ligand preperation.",
-		"version": "1.0",
-		"contact": {
-			"email": "m.van.dijk4@vu.nl"
-		}
-	},
-	"schemes": [
-		"https",
-		"http"
-	],
-	"host": "localhost:8081",
-	"basePath": "/",
-	"tags": [
-		{
-			"name": "SMARTCyp"
-		},
-		{
-			"name": "SPORES"
-		},
-		{
-			"name": "PLANTS"
-		}
-	],
-	"consumes": [
-		"multipart/form-data"
-	],
-	"produces": [
-		"application/json"
-	],
-	"paths": {
-		"/docking": {
-			"post": {
-				"description": "Perform a PLANTS docking of a ligand and protein",
-				"operationId": "mdstudio_smartcyp.rest_services.plants_docking",
-				"parameters": [
-					{
-						"name": "ligand_file",
-						"description": "Ligand input file",
-						"in": "formData",
-						"required": true,
-						"type": "file"
-					},
-					{
-						"name": "protein_file",
-						"description": "Protein input file",
-						"in": "formData",
-						"required": true,
-						"type": "file"
-					},
-					{
-						"name": "bindingsite_center",
-						"description": "Center coordinates of the binding-site sphere",
-						"in": "formData",
-						"collectionFormat": "multi",
-						"required": true,
-						"type": "array",
-						"minItems": 3,
-						"maxItems": 3,
-						"items": {
-							"type": "number"
-						}
-					},
-					{
-						"name": "outside_binding_site_penalty",
-						"description": "Penalty if molecules is outside defined binding center",
-						"in": "formData",
-						"type": "number",
-						"default": 50
-					},
-					{
-						"name": "scoring_function",
-						"type": "string",
-						"description": "test",
-						"in": "formData",
-						"default": "chemplp",
-						"enum": [
-							"plp",
-							"plp95",
-							"chemplp"
-						]
-					},
-					{
-						"name": "enable_sulphur_acceptors",
-						"description": "Scoring of sulphur acceptors (activate (1) or deactivate (0)).",
-						"in": "formData",
-						"type": "integer",
-						"default": 0,
-						"enum": [
-							0,
-							1
-						]
-					},
-					{
-						"name": "ligand_intra_score",
-						"type": "string",
-						"description": "Simple heavy-atom clash terms (clash) or all-atom Lennard-Jones term (clash2)",
-						"in": "formData",
-						"default": "clash2",
-						"enum": [
-							"clash",
-							"clash2"
-						]
-					},
-					{
-						"name": "rigid_ligand",
-						"description": "Rigid ligand docking (activate (1) or deactivate (0))",
-						"in": "formData",
-						"type": "integer",
-						"default": 0,
-						"enum": [
-							0,
-							1
-						]
-					},
-					{
-						"name": "rigid_all",
-						"description": "Rigid protein and rigid ligand docking (activate (1) or deactivate (0))",
-						"in": "formData",
-						"type": "integer",
-						"default": 0,
-						"enum": [
-							0,
-							1
-						]
-					},
-					{
-						"name": "chemplp_clash_include_14",
-						"description": "Scoring of 1-4 interactions (activate (1) or deactivate (0))",
-						"in": "formData",
-						"type": "integer",
-						"default": 1,
-						"enum": [
-							0,
-							1
-						]
-					},
-					{
-						"name": "chemplp_clash_include_HH",
-						"description": "Scoring of hydrogen-hydrogen interactions (activate (1) or deactivate (0))",
-						"in": "formData",
-						"type": "integer",
-						"default": 0,
-						"enum": [
-							0,
-							1
-						]
-					},
-					{
-						"name": "plp_steric_e",
-						"description": "Well-depth for steric PLP interactions",
-						"in": "formData",
-						"type": "number",
-						"default": -0.4
-					},
-					{
-						"name": "plp_burpolar_e",
-						"description": "Well-depth for occluded polar PLP interactions",
-						"in": "formData",
-						"type": "number",
-						"default": -0.05
-					},
-					{
-						"name": "plp_hbond_e",
-						"description": "Well-depth for polar PLP interactions",
-						"in": "formData",
-						"type": "number",
-						"default": -2
-					},
-					{
-						"name": "plp_metal_e",
-						"description": "Well-depth for acceptor–metal PLP interactions",
-						"in": "formData",
-						"type": "number",
-						"default": -4
-					},
-					{
-						"name": "plp_repulsive_weight",
-						"description": "Weight for repulsive PLP interactions",
-						"in": "formData",
-						"type": "number",
-						"default": 0.5
-					},
-					{
-						"name": "plp_tors_weight",
-						"description": "Weight for the ligand torsional potential",
-						"in": "formData",
-						"type": "number",
-						"default": 1
-					},
-					{
-						"name": "chemplp_weak_cho",
-						"description": "Weak CH-O scoring (activate (1) or deactivate (0))",
-						"in": "formData",
-						"type": "integer",
-						"default": 1,
-						"enum": [
-							0,
-							1
-						]
-					},
-					{
-						"name": "chemplp_charged_hb_weight",
-						"description": "Weighting factor (multiplier) for charged hydrogen bonds",
-						"in": "formData",
-						"type": "number",
-						"default": 2
-					},
-					{
-						"name": "chemplp_charged_metal_weight",
-						"description": "Weighting factor (multiplier) for charged acceptor-metal interactions",
-						"in": "formData",
-						"type": "number",
-						"default": 2
-					},
-					{
-						"name": "chemplp_hbond_weight",
-						"description": "Weighting factor neutral-neutral and neutral-charged hydrogen bonds",
-						"in": "formData",
-						"type": "number",
-						"default": -3
-					},
-					{
-						"name": "chemplp_hbond_cho_weight",
-						"description": "Weighting factor for CH-O interactions",
-						"in": "formData",
-						"type": "number",
-						"default": -3
-					},
-					{
-						"name": "chemplp_metal_weight",
-						"description": "Weighting factor for neutral acceptor-metal interactions",
-						"in": "formData",
-						"type": "number",
-						"default": -6
-					},
-					{
-						"name": "chemplp_plp_weight",
-						"description": "Weighting factor for PLP interactions",
-						"in": "formData",
-						"type": "number",
-						"default": 1
-					},
-					{
-						"name": "chemplp_plp_steric_e",
-						"description": "Well-depth for steric PLP interactions",
-						"in": "formData",
-						"type": "number",
-						"default": -0.4
-					},
-					{
-						"name": "chemplp_plp_burpolar_e",
-						"description": "Well-depth for occluded polar PLP interactions",
-						"in": "formData",
-						"type": "number",
-						"default": -0.1
-					},
-					{
-						"name": "chemplp_plp_hbond_e",
-						"description": "Well-depth for polar PLP interactions",
-						"in": "formData",
-						"type": "number",
-						"default": -1
-					},
-					{
-						"name": "chemplp_plp_metal_e",
-						"description": "Well-depth for acceptor–metal PLP interactions",
-						"in": "formData",
-						"type": "number",
-						"default": -1
-					},
-					{
-						"name": "chemplp_plp_repulsive_weight",
-						"description": "Weight for repulsive PLP interactions",
-						"in": "formData",
-						"type": "number",
-						"default": 1
-					},
-					{
-						"name": "chemplp_tors_weight",
-						"description": "Weight for the ligand torsional potential",
-						"in": "formData",
-						"type": "number",
-						"default": 2
-					},
-					{
-						"name": "chemplp_lipo_weight",
-						"description": "Weighting factor for lipophilic interactions",
-						"in": "formData",
-						"type": "number",
-						"default": 0
-					},
-					{
-						"name": "chemplp_intercept_weight",
-						"description": "Intercept value",
-						"in": "formData",
-						"type": "number",
-						"default": -20
-					},
-					{
-						"name": "rescore_mode",
-						"description": "Perform simplex optimization during rescoring (simplex) or only direct input conformation scoring (no_simplex)",
-						"in": "formData",
-						"type": "string",
-						"default": "simplex",
-						"enum": [
-							"simplex",
-							"no_simplex"
-						]
-					},
-					{
-						"name": "search_speed",
-						"description": "Search speed setting as: highest reliability, slowest setting (speed1), good reliability, twice as fast as speed1 (speed2) or modest reliability, four times as fast as speed1 (speed4)",
-						"in": "formData",
-						"type": "string",
-						"default": "speed1",
-						"enum": [
-							"speed1",
-							"speed2",
-							"speed4"
-						]
-					},
-					{
-						"name": "aco_ants",
-						"description": "Number of ants",
-						"in": "formData",
-						"type": "integer",
-						"default": 20
-					},
-					{
-						"name": "aco_evap",
-						"description": "Evaporation factor",
-						"in": "formData",
-						"type": "number"
-					},
-					{
-						"name": "aco_sigma",
-						"description": "Iteration scaling factor sigma",
-						"in": "formData",
-						"type": "number"
-					},
-					{
-						"name": "flip_amide_bonds",
-						"description": "Flipping of amide bonds (activate (1) or deactivate (0))",
-						"in": "formData",
-						"type": "integer",
-						"default": 1,
-						"enum": [
-							0,
-							1
-						]
-					},
-					{
-						"name": "flip_planar_n",
-						"description": "Flipping of bonds next to planar nitrogens (activate (1) or deactivate (0))",
-						"in": "formData",
-						"type": "integer",
-						"default": 1,
-						"enum": [
-							0,
-							1
-						]
-					},
-					{
-						"name": "flip_ring_corners",
-						"description": "Flipping of free ring corners (activate (1) or deactivate (0))",
-						"in": "formData",
-						"type": "integer",
-						"default": 0,
-						"enum": [
-							0,
-							1
-						]
-					},
-					{
-						"name": "force_flipped_bonds_planarity",
-						"description": "Automatic planarity correction for flippable bonds (activate (1) or deactivate (0))",
-						"in": "formData",
-						"type": "integer",
-						"default": 0,
-						"enum": [
-							0,
-							1
-						]
-					},
-					{
-						"name": "force_planar_bond_rotation",
-						"description": "Free rotation of planar bonds (activate (1) or deactivate (0))",
-						"in": "formData",
-						"type": "integer",
-						"default": 1,
-						"enum": [
-							0,
-							1
-						]
-					},
-					{
-						"name": "bindingsite_radius",
-						"description": "Radius of the binding-site sphere",
-						"in": "formData",
-						"type": "number",
-						"default": 12
-					},
-					{
-						"name": "cluster_structures",
-						"description": "Number of structures generated by the cluster algorithm",
-						"in": "formData",
-						"type": "integer",
-						"default": 50
-					},
-					{
-						"name": "cluster_rmsd",
-						"description": "RMSD similarity threshold for cluster algorithm",
-						"in": "formData",
-						"type": "number",
-						"default": 1
-					},
-					{
-						"name": "write_ranking_links",
-						"description": "Output of ranked soft links (activate (1) or deactivate (0))",
-						"in": "formData",
-						"type": "integer",
-						"default": 0,
-						"enum": [
-							0,
-							1
-						]
-					},
-					{
-						"name": "write_protein_bindingsite",
-						"description": "Write protein binding site only (activate (1) or deactivate (0))",
-						"in": "formData",
-						"type": "integer",
-						"default": 0,
-						"enum": [
-							0,
-							1
-						]
-					},
-					{
-						"name": "write_protein_conformations",
-						"description": "Output of protein conformations for scoring functions chemplp (activate (1) or deactivate (0))",
-						"in": "formData",
-						"type": "integer",
-						"default": 0
-					},
-					{
-						"name": "write_merged_protein",
-						"description": "Output of merged protein files (activate (1) or deactivate (0))",
-						"in": "formData",
-						"type": "integer",
-						"default": 0,
-						"enum": [
-							0,
-							1
-						]
-					},
-					{
-						"name": "write_merged_ligand",
-						"description": "Output of merged ligand files (activate (1) or deactivate (0))",
-						"in": "formData",
-						"type": "integer",
-						"default": 0,
-						"enum": [
-							0,
-							1
-						]
-					},
-					{
-						"name": "write_merged_water",
-						"description": "Output of merged water files (activate (1) or deactivate (0))",
-						"in": "formData",
-						"type": "integer",
-						"default": 0,
-						"enum": [
-							0,
-							1
-						]
-					},
-					{
-						"name": "write_protein_splitted",
-						"description": "Write fixed and dynamic parts of the protein in separate files (activate (1) or deactivate (0))",
-						"in": "formData",
-						"type": "integer",
-						"default": 0,
-						"enum": [
-							0,
-							1
-						]
-					},
-					{
-						"name": "write_per_atom_scores",
-						"description": "Output of per molecule atom scoring values; partial atom charges are replaced (activate (1) or deactivate (0))",
-						"in": "formData",
-						"type": "integer",
-						"default": 0,
-						"enum": [
-							0,
-							1
-						]
-					},
-					{
-						"name": "merge_multi_conf_output",
-						"description": "Merge of multiconformer output. This is only carried out for ranked databases (activate (1) or deactivate (0))",
-						"in": "formData",
-						"type": "integer",
-						"default": 0,
-						"enum": [
-							0,
-							1
-						]
-					},
-					{
-						"name": "min_cluster_size",
-						"description": "Minimum cluster size for coordinate based clustering",
-						"in": "formData",
-						"type": "integer",
-						"default": 2
-					},
-					{
-						"name": "threshold",
-						"description": "Minimum RMSD threshold for defining clusters. Same a the 't' argument in the scipy.cluster.hierarchy.fcluster package",
-						"in": "formData",
-						"type": "integer",
-						"default": 8
-					},
-					{
-						"name": "criterion",
-						"description": "Cluster criterion used by the fcluster method (scipy.cluster.hierarchy.fcluster)",
-						"in": "formData",
-						"type": "string",
-						"default": "maxclust",
-						"enum": [
-							"inconsistent",
-							"distance",
-							"maxclust",
-							"monocrit",
-							"maxclust_monocrit"
-						]
-					}
-				],
-				"responses": {
-					"200": {
-						"description": "PLANTS docking results",
-						"schema": {
-							"$ref": "#/definitions/DockingResults"
-						}
-					}
-				}
-			}
-		},
-		"/docking_info": {
-			"get": {
-				"description": "Information on the installed PLANTS version and configuration",
-				"operationId": "mdstudio_smartcyp.plants_run.plants_version_info",
-				"consumes": [
-					"application/json"
-				],
-				"responses": {
-					"200": {
-						"description": "MDStudio PLANTS info",
-						"schema": {
-							"$ref": "#/definitions/SoftwareInfo"
-						}
-					}
-				}
-			}
-		},
-		"/docking_get_statistics": {
-			"post": {
-				"description": "Get docking statistics for all or a subset of docking solutions initially returned by the 'docking' method",
-				"operationId": "mdstudio_smartcyp.rest_services.plants_docking_statistics",
-				"parameters": [
-					{
-						"name": "paths",
-						"description": "Paths to docking poses for which to return statistics",
-						"in": "formData",
-						"collectionFormat": "multi",
-						"required": true,
-						"type": "array",
-						"items": {
-							"type": "string"
-						}
-					},
-					{
-						"name": "min_cluster_size",
-						"description": "Minimum cluster size for coordinate based clustering",
-						"in": "formData",
-						"type": "integer",
-						"default": 2
-					},
-					{
-						"name": "threshold",
-						"description": "Minimum RMSD threshold for defining clusters. Same a the 't' argument in the scipy.cluster.hierarchy.fcluster package",
-						"in": "formData",
-						"type": "integer",
-						"default": 8
-					},
-					{
-						"name": "criterion",
-						"description": "Cluster criterion used by the fcluster method (scipy.cluster.hierarchy.fcluster)",
-						"in": "formData",
-						"type": "string",
-						"default": "maxclust",
-						"enum": [
-							"inconsistent",
-							"distance",
-							"maxclust",
-							"monocrit",
-							"maxclust_monocrit"
-						]
-					}
-				],
-				"responses": {
-					"200": {
-						"description": "PLANTS docking results",
-						"schema": {
-							"$ref": "#/definitions/DockingResults"
-						}
-					}
-				}
-			}
-		},
-		"/docking_get_structures": {
-			"post": {
-				"description": "Get docking result structures as one combined Tripos MOL2 file",
-				"operationId": "mdstudio_smartcyp.rest_services.plants_docking_structures",
-				"parameters": [
-					{
-						"name": "paths",
-						"description": "Paths to docking poses for which to return statistics",
-						"in": "formData",
-						"collectionFormat": "multi",
-						"required": true,
-						"type": "array",
-						"items": {
-							"type": "string"
-						}
-					}
-				],
-				"produces": [
-					"text/plain"
-				],
-				"responses": {
-					"200": {
-						"description": "PLANTS docking results",
-						"schema": {
-							"type": "file"
-						}
-					}
-				}
-			}
-		},
-		"/spores": {
-			"post": {
-				"description": "Process molecular structures using the Structure PrOtonation and REcognition System (SPORES)",
-				"operationId": "mdstudio_smartcyp.rest_services.spores_run",
-				"parameters": [
-					{
-						"name": "mol",
-						"description": "Structure input file",
-						"in": "formData",
-						"required": true,
-						"type": "file"
-					},
-					{
-						"name": "input_format",
-						"description": "Input structure file format",
-						"in": "formData",
-						"required": false,
-						"type": "string",
-						"default": "mol2",
-						"enum": [
-							"pdb",
-							"sdf",
-							"mol",
-							"mol2"
-						]
-					},
-					{
-						"name": "spores_mode",
-						"description": "SPORES running mode",
-						"in": "formData",
-						"required": true,
-						"type": "string",
-						"default": "complete",
-						"enum": [
-							"complete",
-							"reprot",
-							"settypes",
-							"readbonds",
-							"protstates",
-							"stereo",
-							"tautomers",
-							"ketoenol",
-							"ringconfs"
-						]
-					}
-				],
-				"responses": {
-					"200": {
-						"description": "SMARTCyp prediction results",
-						"schema": {
-							"type": "object",
-							"properties": {
-								"extension": {
-									"description": "Result file extension",
-									"type": "string"
-								},
-								"encoding": {
-									"description": "Result file encoding",
-									"type": "string",
-									"default": "utf8"
-								},
-								"path": {
-									"description": "Result file path",
-									"type": "string"
-								},
-								"content": {
-									"description": "Result file content",
-									"type": "string"
-								}
-							}
-						}
-					}
-				}
-			}
-		},
-		"/spores_info": {
-			"get": {
-				"description": "Information on the installed SPORES version and configuration",
-				"operationId": "mdstudio_smartcyp.spores_run.spores_version_info",
-				"consumes": [
-					"application/json"
-				],
-				"responses": {
-					"200": {
-						"description": "MDStudio SPORES info",
-						"schema": {
-							"$ref": "#/definitions/SoftwareInfo"
-						}
-					}
-				}
-			}
-		},
-		"/smartcyp": {
-			"post": {
-				"description": "Perform a CYP site of metabolism prediction using SMARTCyp",
-				"operationId": "mdstudio_smartcyp.rest_services.smartcyp_prediction",
-				"parameters": [
-					{
-						"name": "mol",
-						"description": "Ligand input file",
-						"in": "formData",
-						"required": false,
-						"type": "file"
-					},
-					{
-						"name": "smiles",
-						"description": "Ligand SMILES string",
-						"in": "formData",
-						"required": false,
-						"type": "string"
-					},
-					{
-						"name": "noempcorr",
-						"description": "Do not use the empirical N-oxidation correction (smartcyp >= v2.3).",
-						"in": "formData",
-						"default": false,
-						"required": false,
-						"type": "boolean"
-					},
-					{
-						"name": "output_format",
-						"description": "SMARTCyp result output format",
-						"in": "formData",
-						"enum": [
-							"csv",
-							"html",
-							"json"
-						],
-						"default": "json",
-						"required": false,
-						"type": "string"
-					},
-					{
-						"name": "output_png",
-						"description": "Export PNG image files for the prediction",
-						"in": "formData",
-						"default": false,
-						"required": false,
-						"type": "boolean"
-					}
-				],
-				"responses": {
-					"200": {
-						"description": "SMARTCyp prediction results",
-						"schema": {
-							"type": "object",
-							"properties": {
-								"extension": {
-									"description": "Result file extension",
-									"type": "string"
-								},
-								"encoding": {
-									"description": "Result file encoding",
-									"type": "string",
-									"default": "utf8"
-								},
-								"path": {
-									"description": "Result file path",
-									"type": "string"
-								},
-								"content": {
-									"description": "Result file content",
-									"type": "string"
-								}
-							}
-						}
-					},
-					"default": {
-						"description": "Unexpected error",
-						"schema": {
-							"type": "string"
-						}
-					}
-				}
-			}
-		},
-		"/smartcyp_info": {
-			"get": {
-				"description": "Information on the installed SMARTCyp version and configuration",
-				"operationId": "mdstudio_smartcyp.smartcyp_run.smartcyp_version_info",
-				"consumes": [
-					"application/json"
-				],
-				"responses": {
-					"200": {
-						"description": "MDStudio SMARTCyp info",
-						"schema": {
-							"$ref": "#/definitions/SoftwareInfo"
-						}
-					}
-				}
-			}
-		}
-	},
-	"definitions": {
-		"SoftwareInfo": {
-			"type": "object",
-			"properties": {
-				"version": {
-					"description": "SMARTCyp version",
-					"type": "string"
-				},
-				"citation": {
-					"description": "SMARTCyp citation",
-					"type": "string"
-				},
-				"models": {
-					"type": "array",
-					"description": "Supported CYP prediction models",
-					"items": {
-						"type": "string"
-					}
-				},
-				"default_settings": {
-					"type": "object",
-					"description": "Default settings"
-				}
-			},
-			"required": [
-				"version",
-				"citation"
-			]
-		},
-		"DockingResults": {
-			"type": "object",
-			"properties": {
-				"result": {
-					"description": "Content of SMARTCyp prediction .csv file in the required format",
-					"type": "string"
-				}
-			},
-			"required": [
-				"result"
-			]
-		}
-	}
+  "swagger": "2.0",
+  "x-orn-@id": "https://mdstudio_smartcyp.prod.openrisknet.org",
+  "x-orn-@type": "x-orn:Service",
+  "x-orn-@context": {
+    "@vocab": "http://openrisknet.org/schema#",
+    "x-orn": "http://openrisknet.org/schema#",
+    "x-orn-@id": "@id",
+    "x-orn-@type": "@type",
+    "smiles": "http://semanticscience.org/resource/CHEMINF_000018",
+    "mol2": "http://edamontology.org/format_3816",
+    "bindingsite_center": "http://semanticscience.org/resource/SIO_000333",
+    "scoring_function": "http://www.semanticweb.org/ontologies/2010/3/Ontology1271664172453.owl#scoring"
+  },
+  "info": {
+    "title": "SMARTCyp service, A 2D Method for Prediction of Cytochrome P450-Mediated Drug Metabolism",
+    "description": "SMARTCyp providing Site of Metabolism prediction for Cytochrome P450s to the MDStudio environment using the SMARTCyp package developed by P. Rydberg et al. In addition this server provides PLANTS based ligand docking combined with SPORES ligand preperation.",
+    "version": "1.0",
+    "contact": {
+      "email": "m.van.dijk4@vu.nl"
+    }
+  },
+  "schemes": [
+    "https",
+    "http"
+  ],
+  "host": "localhost:8081",
+  "basePath": "/",
+  "tags": [
+    {
+      "name": "SMARTCyp"
+    },
+    {
+      "name": "SPORES"
+    },
+    {
+      "name": "PLANTS"
+    }
+  ],
+  "consumes": [
+    "multipart/form-data"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/plants_docking": {
+      "post": {
+        "x-orn-@type": "x-orn:StructureBasedModelling",
+        "x-orn:method": "Post",
+        "x-orn:path": "https://mdstudio_smartcyp.prod.openrisknet.org/plants_docking",
+        "x-orn:expects": [
+          "x-orn:3DStructure",
+          "x-orn:ParameterList"
+        ],
+        "x-orn:returns": "x-orn:PlantsTaskId",
+        "description": "Perform a PLANTS docking of a ligand and protein",
+        "operationId": "mdstudio_smartcyp.rest_services.plants_docking",
+        "parameters": [
+          {
+            "name": "ligand_file",
+            "description": "Ligand input file",
+            "in": "formData",
+            "required": true,
+            "type": "file"
+          },
+          {
+            "name": "protein_file",
+            "description": "Protein input file",
+            "in": "formData",
+            "required": true,
+            "type": "file"
+          },
+          {
+            "name": "bindingsite_center",
+            "description": "Center coordinates of the binding-site sphere",
+            "in": "formData",
+            "collectionFormat": "multi",
+            "required": true,
+            "type": "array",
+            "minItems": 3,
+            "maxItems": 3,
+            "items": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "outside_binding_site_penalty",
+            "description": "Penalty if molecules is outside defined binding center",
+            "in": "formData",
+            "type": "number",
+            "default": 50.0
+          },
+          {
+            "name": "scoring_function",
+            "type": "string",
+            "description": "test",
+            "in": "formData",
+            "default": "chemplp",
+            "enum": [
+              "plp",
+              "plp95",
+              "chemplp"
+            ]
+          },
+          {
+            "name": "enable_sulphur_acceptors",
+            "description": "Scoring of sulphur acceptors (activate (1) or deactivate (0)).",
+            "in": "formData",
+            "type": "integer",
+            "default": 0,
+            "enum": [
+              0,
+              1
+            ]
+          },
+          {
+            "name": "ligand_intra_score",
+            "type": "string",
+            "description": "Simple heavy-atom clash terms (clash) or all-atom Lennard-Jones term (clash2)",
+            "in": "formData",
+            "default": "clash2",
+            "enum": [
+              "clash",
+              "clash2"
+            ]
+          },
+          {
+            "name": "rigid_ligand",
+            "description": "Rigid ligand docking (activate (1) or deactivate (0))",
+            "in": "formData",
+            "type": "integer",
+            "default": 0,
+            "enum": [
+              0,
+              1
+            ]
+          },
+          {
+            "name": "rigid_all",
+            "description": "Rigid protein and rigid ligand docking (activate (1) or deactivate (0))",
+            "in": "formData",
+            "type": "integer",
+            "default": 0,
+            "enum": [
+              0,
+              1
+            ]
+          },
+          {
+            "name": "chemplp_clash_include_14",
+            "description": "Scoring of 1-4 interactions (activate (1) or deactivate (0))",
+            "in": "formData",
+            "type": "integer",
+            "default": 1,
+            "enum": [
+              0,
+              1
+            ]
+          },
+          {
+            "name": "chemplp_clash_include_HH",
+            "description": "Scoring of hydrogen-hydrogen interactions (activate (1) or deactivate (0))",
+            "in": "formData",
+            "type": "integer",
+            "default": 0,
+            "enum": [
+              0,
+              1
+            ]
+          },
+          {
+            "name": "plp_steric_e",
+            "description": "Well-depth for steric PLP interactions",
+            "in": "formData",
+            "type": "number",
+            "default": -0.4
+          },
+          {
+            "name": "plp_burpolar_e",
+            "description": "Well-depth for occluded polar PLP interactions",
+            "in": "formData",
+            "type": "number",
+            "default": -0.05
+          },
+          {
+            "name": "plp_hbond_e",
+            "description": "Well-depth for polar PLP interactions",
+            "in": "formData",
+            "type": "number",
+            "default": -2.0
+          },
+          {
+            "name": "plp_metal_e",
+            "description": "Well-depth for acceptor–metal PLP interactions",
+            "in": "formData",
+            "type": "number",
+            "default": -4.0
+          },
+          {
+            "name": "plp_repulsive_weight",
+            "description": "Weight for repulsive PLP interactions",
+            "in": "formData",
+            "type": "number",
+            "default": 0.5
+          },
+          {
+            "name": "plp_tors_weight",
+            "description": "Weight for the ligand torsional potential",
+            "in": "formData",
+            "type": "number",
+            "default": 1.0
+          },
+          {
+            "name": "chemplp_weak_cho",
+            "description": "Weak CH-O scoring (activate (1) or deactivate (0))",
+            "in": "formData",
+            "type": "integer",
+            "default": 1,
+            "enum": [
+              0,
+              1
+            ]
+          },
+          {
+            "name": "chemplp_charged_hb_weight",
+            "description": "Weighting factor (multiplier) for charged hydrogen bonds",
+            "in": "formData",
+            "type": "number",
+            "default": 2.0
+          },
+          {
+            "name": "chemplp_charged_metal_weight",
+            "description": "Weighting factor (multiplier) for charged acceptor-metal interactions",
+            "in": "formData",
+            "type": "number",
+            "default": 2.0
+          },
+          {
+            "name": "chemplp_hbond_weight",
+            "description": "Weighting factor neutral-neutral and neutral-charged hydrogen bonds",
+            "in": "formData",
+            "type": "number",
+            "default": -3.0
+          },
+          {
+            "name": "chemplp_hbond_cho_weight",
+            "description": "Weighting factor for CH-O interactions",
+            "in": "formData",
+            "type": "number",
+            "default": -3.0
+          },
+          {
+            "name": "chemplp_metal_weight",
+            "description": "Weighting factor for neutral acceptor-metal interactions",
+            "in": "formData",
+            "type": "number",
+            "default": -6.0
+          },
+          {
+            "name": "chemplp_plp_weight",
+            "description": "Weighting factor for PLP interactions",
+            "in": "formData",
+            "type": "number",
+            "default": 1.0
+          },
+          {
+            "name": "chemplp_plp_steric_e",
+            "description": "Well-depth for steric PLP interactions",
+            "in": "formData",
+            "type": "number",
+            "default": -0.4
+          },
+          {
+            "name": "chemplp_plp_burpolar_e",
+            "description": "Well-depth for occluded polar PLP interactions",
+            "in": "formData",
+            "type": "number",
+            "default": -0.1
+          },
+          {
+            "name": "chemplp_plp_hbond_e",
+            "description": "Well-depth for polar PLP interactions",
+            "in": "formData",
+            "type": "number",
+            "default": -1.0
+          },
+          {
+            "name": "chemplp_plp_metal_e",
+            "description": "Well-depth for acceptor–metal PLP interactions",
+            "in": "formData",
+            "type": "number",
+            "default": -1.0
+          },
+          {
+            "name": "chemplp_plp_repulsive_weight",
+            "description": "Weight for repulsive PLP interactions",
+            "in": "formData",
+            "type": "number",
+            "default": 1.0
+          },
+          {
+            "name": "chemplp_tors_weight",
+            "description": "Weight for the ligand torsional potential",
+            "in": "formData",
+            "type": "number",
+            "default": 2.0
+          },
+          {
+            "name": "chemplp_lipo_weight",
+            "description": "Weighting factor for lipophilic interactions",
+            "in": "formData",
+            "type": "number",
+            "default": 0.0
+          },
+          {
+            "name": "chemplp_intercept_weight",
+            "description": "Intercept value",
+            "in": "formData",
+            "type": "number",
+            "default": -20.0
+          },
+          {
+            "name": "rescore_mode",
+            "description": "Perform simplex optimization during rescoring (simplex) or only direct input conformation scoring (no_simplex)",
+            "in": "formData",
+            "type": "string",
+            "default": "simplex",
+            "enum": [
+              "simplex",
+              "no_simplex"
+            ]
+          },
+          {
+            "name": "search_speed",
+            "description": "Search speed setting as: highest reliability, slowest setting (speed1), good reliability, twice as fast as speed1 (speed2) or modest reliability, four times as fast as speed1 (speed4)",
+            "in": "formData",
+            "type": "string",
+            "default": "speed1",
+            "enum": [
+              "speed1",
+              "speed2",
+              "speed4"
+            ]
+          },
+          {
+            "name": "aco_ants",
+            "description": "Number of ants",
+            "in": "formData",
+            "type": "integer",
+            "default": 20
+          },
+          {
+            "name": "aco_evap",
+            "description": "Evaporation factor",
+            "in": "formData",
+            "type": "number"
+          },
+          {
+            "name": "aco_sigma",
+            "description": "Iteration scaling factor sigma",
+            "in": "formData",
+            "type": "number"
+          },
+          {
+            "name": "flip_amide_bonds",
+            "description": "Flipping of amide bonds (activate (1) or deactivate (0))",
+            "in": "formData",
+            "type": "integer",
+            "default": 1,
+            "enum": [
+              0,
+              1
+            ]
+          },
+          {
+            "name": "flip_planar_n",
+            "description": "Flipping of bonds next to planar nitrogens (activate (1) or deactivate (0))",
+            "in": "formData",
+            "type": "integer",
+            "default": 1,
+            "enum": [
+              0,
+              1
+            ]
+          },
+          {
+            "name": "flip_ring_corners",
+            "description": "Flipping of free ring corners (activate (1) or deactivate (0))",
+            "in": "formData",
+            "type": "integer",
+            "default": 0,
+            "enum": [
+              0,
+              1
+            ]
+          },
+          {
+            "name": "force_flipped_bonds_planarity",
+            "description": "Automatic planarity correction for flippable bonds (activate (1) or deactivate (0))",
+            "in": "formData",
+            "type": "integer",
+            "default": 0,
+            "enum": [
+              0,
+              1
+            ]
+          },
+          {
+            "name": "force_planar_bond_rotation",
+            "description": "Free rotation of planar bonds (activate (1) or deactivate (0))",
+            "in": "formData",
+            "type": "integer",
+            "default": 1,
+            "enum": [
+              0,
+              1
+            ]
+          },
+          {
+            "name": "bindingsite_radius",
+            "description": "Radius of the binding-site sphere",
+            "in": "formData",
+            "type": "number",
+            "default": 12
+          },
+          {
+            "name": "cluster_structures",
+            "description": "Number of structures generated by the cluster algorithm",
+            "in": "formData",
+            "type": "integer",
+            "default": 50
+          },
+          {
+            "name": "cluster_rmsd",
+            "description": "RMSD similarity threshold for cluster algorithm",
+            "in": "formData",
+            "type": "number",
+            "default": 1.0
+          },
+          {
+            "name": "write_ranking_links",
+            "description": "Output of ranked soft links (activate (1) or deactivate (0))",
+            "in": "formData",
+            "type": "integer",
+            "default": 0,
+            "enum": [
+              0,
+              1
+            ]
+          },
+          {
+            "name": "write_protein_bindingsite",
+            "description": "Write protein binding site only (activate (1) or deactivate (0))",
+            "in": "formData",
+            "type": "integer",
+            "default": 0,
+            "enum": [
+              0,
+              1
+            ]
+          },
+          {
+            "name": "write_protein_conformations",
+            "description": "Output of protein conformations for scoring functions chemplp (activate (1) or deactivate (0))",
+            "in": "formData",
+            "type": "integer",
+            "default": 0
+          },
+          {
+            "name": "write_merged_protein",
+            "description": "Output of merged protein files (activate (1) or deactivate (0))",
+            "in": "formData",
+            "type": "integer",
+            "default": 0,
+            "enum": [
+              0,
+              1
+            ]
+          },
+          {
+            "name": "write_merged_ligand",
+            "description": "Output of merged ligand files (activate (1) or deactivate (0))",
+            "in": "formData",
+            "type": "integer",
+            "default": 0,
+            "enum": [
+              0,
+              1
+            ]
+          },
+          {
+            "name": "write_merged_water",
+            "description": "Output of merged water files (activate (1) or deactivate (0))",
+            "in": "formData",
+            "type": "integer",
+            "default": 0,
+            "enum": [
+              0,
+              1
+            ]
+          },
+          {
+            "name": "write_protein_splitted",
+            "description": "Write fixed and dynamic parts of the protein in separate files (activate (1) or deactivate (0))",
+            "in": "formData",
+            "type": "integer",
+            "default": 0,
+            "enum": [
+              0,
+              1
+            ]
+          },
+          {
+            "name": "write_per_atom_scores",
+            "description": "Output of per molecule atom scoring values; partial atom charges are replaced (activate (1) or deactivate (0))",
+            "in": "formData",
+            "type": "integer",
+            "default": 0,
+            "enum": [
+              0,
+              1
+            ]
+          },
+          {
+            "name": "merge_multi_conf_output",
+            "description": "Merge of multiconformer output. This is only carried out for ranked databases (activate (1) or deactivate (0))",
+            "in": "formData",
+            "type": "integer",
+            "default": 0,
+            "enum": [
+              0,
+              1
+            ]
+          },
+          {
+            "name": "min_cluster_size",
+            "description": "Minimum cluster size for coordinate based clustering",
+            "in": "formData",
+            "type": "integer",
+            "default": 2
+          },
+          {
+            "name": "threshold",
+            "description": "Minimum RMSD threshold for defining clusters. Same a the 't' argument in the scipy.cluster.hierarchy.fcluster package",
+            "in": "formData",
+            "type": "integer",
+            "default": 8
+          },
+          {
+            "name": "criterion",
+            "description": "Cluster criterion used by the fcluster method (scipy.cluster.hierarchy.fcluster)",
+            "in": "formData",
+            "type": "string",
+            "default": "maxclust",
+            "enum": [
+              "inconsistent",
+              "distance",
+              "maxclust",
+              "monocrit",
+              "maxclust_monocrit"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "PLANTS docking results",
+            "schema": {
+              "$ref": "#/definitions/DockingResults"
+            }
+          }
+        }
+      }
+    },
+    "/plants_docking_info": {
+      "get": {
+        "x-orn-@type": "x-orn:Report",
+        "x-orn:method": "Get",
+        "x-orn:path": "https://mdstudio_smartcyp.prod.openrisknet.org/plants_docking_info",
+        "description": "Information on the installed PLANTS version and configuration",
+        "operationId": "mdstudio_smartcyp.plants_run.plants_version_info",
+        "consumes": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "MDStudio PLANTS info",
+            "schema": {
+              "$ref": "#/definitions/SoftwareInfo"
+            }
+          }
+        }
+      }
+    },
+    "/plants_docking_statistics": {
+      "post": {
+        "x-orn-@type": "x-orn:StructureBasedModelling",
+        "x-orn:method": "Post",
+        "x-orn:path": "https://mdstudio_smartcyp.prod.openrisknet.org/plants_docking_statistics",
+        "x-orn:expects": "x-orn:PlantsTaskId",
+        "x-orn:returns": "x-orn:DockingPoseList",
+        "description": "Get docking statistics for all or a subset of docking solutions initially returned by the 'docking' method",
+        "operationId": "mdstudio_smartcyp.rest_services.plants_docking_statistics",
+        "parameters": [
+          {
+            "name": "paths",
+            "description": "Paths to docking poses for which to return statistics",
+            "in": "formData",
+            "collectionFormat": "multi",
+            "required": true,
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "min_cluster_size",
+            "description": "Minimum cluster size for coordinate based clustering",
+            "in": "formData",
+            "type": "integer",
+            "default": 2
+          },
+          {
+            "name": "threshold",
+            "description": "Minimum RMSD threshold for defining clusters. Same a the 't' argument in the scipy.cluster.hierarchy.fcluster package",
+            "in": "formData",
+            "type": "integer",
+            "default": 8
+          },
+          {
+            "name": "criterion",
+            "description": "Cluster criterion used by the fcluster method (scipy.cluster.hierarchy.fcluster)",
+            "in": "formData",
+            "type": "string",
+            "default": "maxclust",
+            "enum": [
+              "inconsistent",
+              "distance",
+              "maxclust",
+              "monocrit",
+              "maxclust_monocrit"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "PLANTS docking results",
+            "schema": {
+              "$ref": "#/definitions/DockingResults"
+            }
+          }
+        }
+      }
+    },
+    "/plants_docking_structures": {
+      "post": {
+        "x-orn-@type": "x-orn:StructureBasedModelling",
+        "x-orn:method": "Post",
+        "x-orn:path": "https://mdstudio_smartcyp.prod.openrisknet.org/plants_docking_structures",
+        "x-orn:expects": "x-orn:PlantsTaskId",
+        "x-orn:returns": "x-orn:3DStructure",
+        "description": "Get docking result structures as one combined Tripos MOL2 file",
+        "operationId": "mdstudio_smartcyp.rest_services.plants_docking_structures",
+        "parameters": [
+          {
+            "name": "paths",
+            "description": "Paths to docking poses for which to return statistics",
+            "in": "formData",
+            "collectionFormat": "multi",
+            "required": true,
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        ],
+        "produces": [
+          "chemical/x-mol2"
+        ],
+        "responses": {
+          "200": {
+            "description": "PLANTS docking results",
+            "schema": {
+              "x-orn:property": "mol2",
+              "type": "file"
+            }
+          }
+        }
+      }
+    },
+    "/spores": {
+      "post": {
+        "x-orn-@type": "x-orn:StructureGeneration",
+        "x-orn:method": "Post",
+        "x-orn:path": "https://mdstudio_smartcyp.prod.openrisknet.org/spores",
+        "x-orn:expects": "x-orn:3DStructure",
+        "x-orn:returns": "x-orn:3DStructure",
+        "description": "Process molecular structures using the Structure PrOtonation and REcognition System (SPORES)",
+        "operationId": "mdstudio_smartcyp.rest_services.spores_run",
+        "parameters": [
+          {
+            "name": "mol",
+            "description": "Structure input file",
+            "in": "formData",
+            "required": true,
+            "type": "file"
+          },
+          {
+            "name": "input_format",
+            "description": "Input structure file format",
+            "in": "formData",
+            "required": false,
+            "type": "string",
+            "default": "mol2",
+            "enum": [
+              "pdb",
+              "sdf",
+              "mol",
+              "mol2"
+            ]
+          },
+          {
+            "name": "spores_mode",
+            "description": "SPORES running mode",
+            "in": "formData",
+            "required": true,
+            "type": "string",
+            "default": "complete",
+            "enum": [
+              "complete",
+              "reprot",
+              "settypes",
+              "readbonds",
+              "protstates",
+              "stereo",
+              "tautomers",
+              "ketoenol",
+              "ringconfs"
+            ]
+          }
+        ],
+        "produces": [
+          "chemical/x-mol2"
+        ],
+        "responses": {
+          "200": {
+            "description": "SPORES structure",
+            "schema": {
+              "x-orn:property": "mol2",
+              "type": "file"
+            }
+          }
+        }
+      }
+    },
+    "/spores_info": {
+      "get": {
+        "x-orn-@type": "x-orn:Report",
+        "x-orn:method": "Get",
+        "x-orn:path": "https://mdstudio_smartcyp.prod.openrisknet.org/spores_info",
+        "description": "Information on the installed SPORES version and configuration",
+        "operationId": "mdstudio_smartcyp.spores_run.spores_version_info",
+        "consumes": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "MDStudio SPORES info",
+            "schema": {
+              "$ref": "#/definitions/SoftwareInfo"
+            }
+          }
+        }
+      }
+    },
+    "/smartcyp": {
+      "post": {
+        "x-orn-@type": "x-orn:Prediction",
+        "x-orn:method": "Post",
+        "x-orn:path": "https://mdstudio_smartcyp.prod.openrisknet.org/smartcyp",
+        "x-orn:expects'": [
+          "x-orn:1DStructure",
+          "x-orn:2DStructure",
+          "x-orn:3DStructure"
+        ],
+        "x-orn:returns": "x-orn:Report",
+        "description": "Perform a CYP site of metabolism prediction using SMARTCyp",
+        "operationId": "mdstudio_smartcyp.rest_services.smartcyp_prediction",
+        "parameters": [
+          {
+            "name": "mol",
+            "description": "Ligand input file",
+            "in": "formData",
+            "required": false,
+            "type": "file"
+          },
+          {
+            "name": "smiles",
+            "description": "Ligand SMILES string",
+            "in": "formData",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "noempcorr",
+            "description": "Do not use the empirical N-oxidation correction (smartcyp >= v2.3).",
+            "in": "formData",
+            "default": false,
+            "required": false,
+            "type": "boolean"
+          },
+          {
+            "name": "output_format",
+            "description": "SMARTCyp result output format",
+            "in": "formData",
+            "enum": [
+              "csv",
+              "html",
+              "json"
+            ],
+            "default": "json",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "output_png",
+            "description": "Export PNG image files for the prediction",
+            "in": "formData",
+            "default": false,
+            "required": false,
+            "type": "boolean"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "SMARTCyp prediction results",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "extension": {
+                  "description": "Result file extension",
+                  "type": "string"
+                },
+                "encoding": {
+                  "description": "Result file encoding",
+                  "type": "string",
+                  "default": "utf8"
+                },
+                "path": {
+                  "description": "Result file path",
+                  "type": "string"
+                },
+                "content": {
+                  "description": "Result file content",
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Unexpected error",
+            "schema": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "/smartcyp_info": {
+      "get": {
+        "x-orn-@type": "x-orn:Report",
+        "x-orn:method": "Get",
+        "x-orn:path": "https://mdstudio_smartcyp.prod.openrisknet.org/smartcyp_info",
+        "description": "Information on the installed SMARTCyp version and configuration",
+        "operationId": "mdstudio_smartcyp.smartcyp_run.smartcyp_version_info",
+        "consumes": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "MDStudio SMARTCyp info",
+            "schema": {
+              "$ref": "#/definitions/SoftwareInfo"
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "SoftwareInfo": {
+      "type": "object",
+      "properties": {
+        "version": {
+          "description": "SMARTCyp version",
+          "type": "string"
+        },
+        "citation": {
+          "description": "SMARTCyp citation",
+          "type": "string"
+        },
+        "models": {
+          "type": "array",
+          "description": "Supported CYP prediction models",
+          "items": {
+            "type": "string"
+          }
+        },
+        "default_settings": {
+          "type": "object",
+          "description": "Default settings"
+        }
+      },
+      "required": [
+        "version",
+        "citation"
+      ]
+    },
+    "DockingResults": {
+      "type": "object",
+      "properties": {
+        "result": {
+          "description": "Content of SMARTCyp prediction .csv file in the required format",
+          "type": "string"
+        }
+      },
+      "required": [
+        "result"
+      ]
+    }
+  }
 }
