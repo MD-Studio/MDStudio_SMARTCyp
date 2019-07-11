@@ -53,6 +53,8 @@ class RunnerBaseClass(object):
         """
 
         # Run cli command
+        # TODO: add timeout to prevent infinite jobs
+        was_successfull = True
         self.log.info('Execute cli process: {0}'.format(' '.join(cmd)))
         try:
             process = subprocess.Popen(cmd, cwd=self.workdir,
@@ -60,14 +62,18 @@ class RunnerBaseClass(object):
                                        stderr=subprocess.PIPE)
         except subprocess.CalledProcessError as err:
             self.log.error('Process failed:', err)
+            was_successfull = False
         else:
             self.log.info('Process returncode: {0}'.format(process.returncode))
             output, errors = process.communicate()
 
             if errors:
                 self.log.error(errors.decode('utf-8'))
+                was_successfull = False
             if output:
                 self.log.info(output.decode('utf-8'))
+
+        return was_successfull
 
 
 def _schema_to_data(schema, data=None, defdict=None):

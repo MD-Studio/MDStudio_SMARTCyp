@@ -26,7 +26,7 @@ def spores_version_info():
 
     info_dict = {'version': __spores_version__,
                  'citation': __spores_citation__,
-                 'default_settings': {'input_format': 'mol2', 'spores_mode': "complete"}}
+                 'default_settings': {'input_format': 'mol2', 'spores_mode': 'complete'}}
 
     return info_dict
 
@@ -39,7 +39,7 @@ class SporesRunner(RunnerBaseClass):
         self.workdir = prepare_work_dir(path=workdir, prefix='spores-')
         self.exec_path = __spores_path__
 
-    def run(self, mol, mode, input_format='mol2'):
+    def run(self, mol, mode='complete', input_format='mol2'):
         """
         Run SMARTCyp predictions
 
@@ -51,8 +51,8 @@ class SporesRunner(RunnerBaseClass):
         :type mol:            :py:str
         :param mode:          SPORES execution mode
         :type mode:           :py:str
-        :param input_format: Input structure format
-        :type input_format:  :py:str
+        :param input_format:  Input structure format
+        :type input_format:   :py:str
 
         :return:              SPORES processed structure
         :rtype:               :py:dict
