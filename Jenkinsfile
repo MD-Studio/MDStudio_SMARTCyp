@@ -3,7 +3,7 @@ pipeline {
   stages {
     stage('Docker build image') {
       steps {
-        sh '''docker build -t mdstudio/smartcyp .'''
+        sh '''docker build -t mdstudio/mdstudio_smartcyp .'''
       }
     }
   }
