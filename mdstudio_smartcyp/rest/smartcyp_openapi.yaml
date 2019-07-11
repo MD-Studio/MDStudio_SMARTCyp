@@ -1,4 +1,16 @@
 swagger: '2.0'
+x-orn-@id: 'https://mdstudio_smartcyp.prod.openrisknet.org'
+x-orn-@type: 'x-orn:Service'
+x-orn-@context:
+  '@vocab': 'http://openrisknet.org/schema#'
+  x-orn: 'http://openrisknet.org/schema#'
+  x-orn-@id: '@id'
+  x-orn-@type: '@type'
+
+  smiles: "http://semanticscience.org/resource/CHEMINF_000018"
+  mol2: "http://edamontology.org/format_3816"
+  bindingsite_center: "http://semanticscience.org/resource/SIO_000333"
+  scoring_function: "http://www.semanticweb.org/ontologies/2010/3/Ontology1271664172453.owl#scoring"
 info:
   title: SMARTCyp service, A 2D Method for Prediction of Cytochrome P450-Mediated Drug Metabolism
   description: SMARTCyp providing Site of Metabolism prediction for Cytochrome P450s to the MDStudio environment using the
@@ -21,8 +33,15 @@ consumes:
 produces:
   - application/json
 paths:
-  /docking:
+  /plants_docking:
     post:
+      x-orn-@type: 'x-orn:StructureBasedModelling'
+      x-orn:method: Post
+      x-orn:path: 'https://mdstudio_smartcyp.prod.openrisknet.org/plants_docking'
+      x-orn:expects:
+        ['x-orn:3DStructure', 'x-orn:ParameterList']
+      x-orn:returns:
+        'x-orn:PlantsTaskId'
       description: Perform a PLANTS docking of a ligand and protein
       operationId: mdstudio_smartcyp.rest_services.plants_docking
       parameters:
@@ -343,8 +362,11 @@ paths:
           description: PLANTS docking results
           schema:
             $ref: '#/definitions/DockingResults'
-  /docking_info:
+  /plants_docking_info:
     get:
+      x-orn-@type: 'x-orn:Report'
+      x-orn:method: Get
+      x-orn:path: 'https://mdstudio_smartcyp.prod.openrisknet.org/plants_docking_info'
       description: Information on the installed PLANTS version and configuration
       operationId: mdstudio_smartcyp.plants_run.plants_version_info
       consumes:
@@ -354,8 +376,15 @@ paths:
           description: MDStudio PLANTS info
           schema:
             $ref: '#/definitions/SoftwareInfo'
-  /docking_get_statistics:
+  /plants_docking_statistics:
     post:
+      x-orn-@type: 'x-orn:StructureBasedModelling'
+      x-orn:method: Post
+      x-orn:path: 'https://mdstudio_smartcyp.prod.openrisknet.org/plants_docking_statistics'
+      x-orn:expects:
+        'x-orn:PlantsTaskId'
+      x-orn:returns:
+        'x-orn:DockingPoseList'
       description: Get docking statistics for all or a subset of docking solutions initially returned by the 'docking' method
       operationId: mdstudio_smartcyp.rest_services.plants_docking_statistics
       parameters:
@@ -388,8 +417,15 @@ paths:
           description: PLANTS docking results
           schema:
             $ref: '#/definitions/DockingResults'
-  /docking_get_structures:
+  /plants_docking_structures:
     post:
+      x-orn-@type: 'x-orn:StructureBasedModelling'
+      x-orn:method: Post
+      x-orn:path: 'https://mdstudio_smartcyp.prod.openrisknet.org/plants_docking_structures'
+      x-orn:expects:
+        'x-orn:PlantsTaskId'
+      x-orn:returns:
+        'x-orn:3DStructure'
       description: Get docking result structures as one combined Tripos MOL2 file
       operationId: mdstudio_smartcyp.rest_services.plants_docking_structures
       parameters:
@@ -402,14 +438,22 @@ paths:
           items:
             type: string
       produces:
-        - text/plain
+        - chemical/x-mol2
       responses:
         '200':
           description: PLANTS docking results
           schema:
+            x-orn:property: mol2
             type: file
   /spores:
     post:
+      x-orn-@type: 'x-orn:StructureGeneration'
+      x-orn:method: Post
+      x-orn:path: 'https://mdstudio_smartcyp.prod.openrisknet.org/spores'
+      x-orn:expects:
+        'x-orn:3DStructure'
+      x-orn:returns:
+        'x-orn:3DStructure'
       description: Process molecular structures using the Structure PrOtonation and REcognition System (SPORES)
       operationId: mdstudio_smartcyp.rest_services.spores_run
       parameters:
@@ -432,27 +476,19 @@ paths:
           type: string
           default: complete
           enum: [complete, reprot, settypes, readbonds, protstates, stereo, tautomers, ketoenol, ringconfs]
+      produces:
+        - chemical/x-mol2
       responses:
         '200':
-          description: SMARTCyp prediction results
+          description: SPORES structure
           schema:
-            type: object
-            properties:
-              extension:
-                description: Result file extension
-                type: string
-              encoding:
-                description: Result file encoding
-                type: string
-                default: utf8
-              path:
-                description: Result file path
-                type: string
-              content:
-                description: Result file content
-                type: string
+            x-orn:property: mol2
+            type: file
   /spores_info:
     get:
+      x-orn-@type: 'x-orn:Report'
+      x-orn:method: Get
+      x-orn:path: 'https://mdstudio_smartcyp.prod.openrisknet.org/spores_info'
       description: Information on the installed SPORES version and configuration
       operationId: mdstudio_smartcyp.spores_run.spores_version_info
       consumes:
@@ -464,6 +500,13 @@ paths:
             $ref: '#/definitions/SoftwareInfo'
   /smartcyp:
     post:
+      x-orn-@type: 'x-orn:Prediction'
+      x-orn:method: Post
+      x-orn:path: 'https://mdstudio_smartcyp.prod.openrisknet.org/smartcyp'
+      x-orn:expects':
+        ['x-orn:1DStructure', 'x-orn:2DStructure', 'x-orn:3DStructure']
+      x-orn:returns:
+        'x-orn:Report'
       description: Perform a CYP site of metabolism prediction using SMARTCyp
       operationId: mdstudio_smartcyp.rest_services.smartcyp_prediction
       parameters:
@@ -524,6 +567,9 @@ paths:
             type: string
   /smartcyp_info:
     get:
+      x-orn-@type: 'x-orn:Report'
+      x-orn:method: Get
+      x-orn:path: 'https://mdstudio_smartcyp.prod.openrisknet.org/smartcyp_info'
       description: Information on the installed SMARTCyp version and configuration
       operationId: mdstudio_smartcyp.smartcyp_run.smartcyp_version_info
       consumes:
