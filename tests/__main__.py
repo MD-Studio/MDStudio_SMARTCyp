@@ -27,7 +27,7 @@ def module_test_suite():
 
     print('Running MDStudio_SMARTCyp unittests')
     testpath = os.path.join(os.path.dirname(__file__), 'module')
-    suite = loader.discover(testpath, pattern='module_plants*.py')
+    suite = loader.discover(testpath, pattern='module_spores_rest*.py')
     runner = unittest.TextTestRunner(verbosity=2)
 
     return runner.run(suite).wasSuccessful()
