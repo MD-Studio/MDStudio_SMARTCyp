@@ -42,7 +42,7 @@ class SmartCypRunnerTests(unittest.TestCase):
         """
 
         self.scr = SmartCypRunner()
-        self.assertTrue(os.path.exists(self.scr.tempdir))
+        self.assertTrue(os.path.exists(self.scr.workdir))
 
     def tearDown(self):
         """
@@ -51,7 +51,7 @@ class SmartCypRunnerTests(unittest.TestCase):
 
         # Remove temporary working directory
         self.scr.delete()
-        self.assertFalse(os.path.exists(self.scr.tempdir))
+        self.assertIsNone(self.scr.workdir)
 
         for tmp_file in self.tmp_files:
             if os.path.exists(tmp_file):

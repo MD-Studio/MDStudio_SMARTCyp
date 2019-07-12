@@ -15,12 +15,12 @@ from mdstudio_smartcyp.plants_run import plants_version_info
 
 FILEPATH = os.path.abspath(os.path.join(os.path.dirname(__file__), '../files/'))
 URL = 'http://localhost:8081'
-DOCKRESULTS = ['ACC', 'ATOMS_OUTSIDE_BINDINGSITE', 'CHEMPLP_CLASH2', 'CHEMparthbond', 'CHEMparthbondCHO',
-               'CHEMpartmetal', 'CLUSTER', 'DON', 'LIG_NUM_CLASH', 'LIG_NUM_CONTACT', 'LIG_NUM_NO_CONTACT', 'MEAN',
-               'PATH', 'PLPpartburpolar', 'PLPparthbond', 'PLPpartmetal', 'PLPpartrepulsive', 'PLPpartsteric',
-               'PLPtotal', 'SCORE_NORM_CONTACT', 'SCORE_NORM_CRT_HEVATOMS', 'SCORE_NORM_CRT_WEIGHT',
-               'SCORE_NORM_HEVATOMS', 'SCORE_NORM_WEIGHT', 'SCORE_RB_PEN', 'SCORE_RB_PEN_NORM_CRT_HEVATOMS',
-               'TOTAL_SCORE', 'TRIPOS_TORS', 'UNUSED_ACC', 'UNUSED_DON']
+DOCKRESULTS = {u'ACC', u'PLPtotal', u'SCORE_NORM_WEIGHT', u'DON', u'SCORE_RB_PEN', u'TOTAL_SCORE',
+               u'PLPpartsteric', u'SCORE_RB_PEN_NORM_CRT_HEVATOMS', u'PLPpartmetal', u'PATH', u'LIG_NUM_CLASH',
+               u'LIG_NUM_NO_CONTACT', u'SCORE_NORM_CRT_WEIGHT', u'PLPparthbond', u'CLUSTER', u'PLPpartburpolar',
+               u'TRIPOS_TORS', u'SCORE_NORM_HEVATOMS', u'SCORE_NORM_CONTACT', u'UNUSED_ACC', u'MEAN', u'CHEMpartmetal',
+               u'CHEMparthbondCHO', u'CHEMparthbond', u'ATOMS_OUTSIDE_BINDINGSITE', u'UNUSED_DON', u'PLPpartrepulsive',
+               u'CHEMPLP_CLASH2', u'SCORE_NORM_CRT_HEVATOMS', u'LIG_NUM_CONTACT'}
 
 
 def test_localhost_connection():
@@ -51,13 +51,19 @@ class PlantsRestTest(unittest.TestCase):
     @unittest.skipIf(not test_localhost_connection(), 'MDStudio_SMARTCyp REST service not running on: {0}'.format(URL))
     def test_docking_info_get(self):
         """
-        Test default docking_info get response
+        Test default docking_info get response.
+        Remove 'citation' as it requires a change in encoding
         """
 
-        response = requests.get('{0}/docking_info'.format(URL))
+        response = requests.get('{0}/plants_docking_info'.format(URL))
 
         rest_response = response.json()
+        if 'citation' in rest_response:
+            del rest_response['citation']
+
         func_response = plants_version_info()
+        if 'citation' in func_response:
+            del func_response['citation']
 
         self.assertDictEqual(rest_response, func_response)
 
@@ -67,7 +73,7 @@ class PlantsRestTest(unittest.TestCase):
         Post to get endpoint not allowed
         """
 
-        response = requests.post('{0}/docking_info'.format(URL))
+        response = requests.post('{0}/plants_docking_info'.format(URL))
 
         rest_response = response.json()
         self.assertEqual(rest_response.get('status', 0), 405)
@@ -76,13 +82,18 @@ class PlantsRestTest(unittest.TestCase):
     def test_docking_info_get_data(self):
         """
         Docking_info does not accept arguments but will still return results
-        if any given.
+        if any given. Remove 'citation' as it requires a change in encoding
         """
 
-        response = requests.get('{0}/docking_info'.format(URL), params={'input': 10})
+        response = requests.get('{0}/plants_docking_info'.format(URL), params={'input': 10})
 
         rest_response = response.json()
+        if 'citation' in rest_response:
+            del rest_response['citation']
+
         func_response = plants_version_info()
+        if 'citation' in func_response:
+            del func_response['citation']
 
         self.assertDictEqual(rest_response, func_response)
 
@@ -94,16 +105,16 @@ class PlantsRestTest(unittest.TestCase):
 
         files = {'ligand_file': self.ligand_file, 'protein_file': self.protein_file}
         data = {'bindingsite_center': [7.79934, 9.49666, 3.39229]}
-        response = requests.post('{0}/docking'.format(URL), files=files, data=data)
+        response = requests.post('{0}/plants_docking'.format(URL), files=files, data=data)
 
         rest_response = response.json()
         self.assertEqual(len(rest_response), 50)
-        self.assertTrue(all([list(v.keys()) == DOCKRESULTS for v in rest_response.values()]))
+        self.assertTrue(all([set(v.keys()) == DOCKRESULTS for v in rest_response.values()]))
 
         selection = random.sample(rest_response.keys(), 25)
 
         # Get docking results for selection
-        response = requests.post('{0}/docking_get_statistics'.format(URL),
+        response = requests.post('{0}/plants_docking_statistics'.format(URL),
                                  data={'paths': [rest_response[n]['PATH'] for n in selection]})
 
         rest_stats_response = response.json()
@@ -111,7 +122,7 @@ class PlantsRestTest(unittest.TestCase):
         self.assertListEqual(sorted(rest_stats_response.keys()), sorted(selection))
 
         # Get docking solutions for selection
-        response = requests.post('{0}/docking_get_structures'.format(URL),
+        response = requests.post('{0}/plants_docking_structures'.format(URL),
                                  data={'paths': [rest_response[n]['PATH'] for n in selection]})
 
         rest_poses_response = response.text
@@ -126,7 +137,7 @@ class PlantsRestTest(unittest.TestCase):
         dummy_selection = ['docking-noexists/_entry_00001_conf_{0}.mol2'.format(n) for n in range(10)]
 
         # Get docking results for selection
-        response = requests.post('{0}/docking_get_statistics'.format(URL), data={'paths': dummy_selection})
+        response = requests.post('{0}/plants_docking_statistics'.format(URL), data={'paths': dummy_selection})
 
         self.assertEqual(response.status_code, 401)
 
@@ -138,8 +149,6 @@ class PlantsRestTest(unittest.TestCase):
 
         files = {'ligand_file': self.ligand_file, 'protein_file': self.ligand_file}
         data = {'bindingsite_center': [7.79934, 9.49666, 3.39229]}
-        response = requests.post('{0}/docking'.format(URL), files=files, data=data)
+        response = requests.post('{0}/plants_docking'.format(URL), files=files, data=data)
 
         self.assertEqual(response.status_code, 401)
-
-

@@ -98,7 +98,7 @@ class PlantsDockingTest(unittest.TestCase):
         self.assertTrue(did_run_successfully)
 
         results = plants.get_results()
-        paths = [v['path'] for v in list(results.values())[0:5]]
+        paths = [v['PATH'] for v in list(results.values())[0:5]]
         mol = plants.get_structures(paths)
 
         self.assertIsNotNone(mol)
@@ -119,7 +119,7 @@ class PlantsDockingTest(unittest.TestCase):
         self.assertTrue(did_run_successfully)
 
         results = plants.get_results()
-        paths = [v['path'] for v in list(results.values())[0:40]]
+        paths = [v['PATH'] for v in list(results.values())[0:40]]
 
         results = plants.get_results(paths)
         self.assertEqual(len(results), 40)
@@ -134,10 +134,10 @@ class PlantsDockingTest(unittest.TestCase):
         self.assertTrue(did_run_successfully)
 
         results = plants.get_results()
-        clust_orig = [b['cluster'] for b in results.values()]
+        clust_orig = [b['CLUSTER'] for b in results.values()]
 
         plants.update(threshold=4.0)
         results = plants.get_results()
-        clust_new = [b['cluster'] for b in results.values()]
+        clust_new = [b['CLUSTER'] for b in results.values()]
 
         self.assertNotEqual(clust_orig, clust_new)

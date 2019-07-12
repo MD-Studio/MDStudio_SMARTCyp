@@ -9,7 +9,6 @@ Unit tests for the REST interface to SporesRunner methods
 import os
 import unittest
 import requests
-import json
 
 from mdstudio_smartcyp.spores_run import spores_version_info
 
