@@ -45,8 +45,8 @@ setup(
     package_data={'mdstudio_smartcyp': ['bin/*']},
     py_modules=[distribution_name],
     include_package_data=True,
-    install_requires=['mdstudio', 'connexion', 'flask', 'flask-cors', 'swagger-ui-bundle',
-                      'matplotlib', 'scipy', 'gevent'],
+    install_requires=['flask', 'flask-cors', 'connexion', 'swagger-ui-bundle', 'gevent',
+                      'mdstudio', 'matplotlib', 'scipy'],
     tests_require=['requests'],
     zip_safe=True,
     classifiers=[
