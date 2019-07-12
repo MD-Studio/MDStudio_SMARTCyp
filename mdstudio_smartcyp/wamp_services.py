@@ -109,7 +109,6 @@ class SmartCypWampApi(ComponentSession):
 
         else:
             self.log.error('PLANTS docking failed')
-            docking.delete()
             return {'status': 'failed'}
 
         return {'status': status, 'output': output}

@@ -279,6 +279,7 @@ class PlantsDocking(RunnerBaseClass):
             check_valid = False
 
         if not check_valid:
+            self.delete()
             return check_valid
 
         # Copy files to working directory
@@ -301,4 +302,8 @@ class PlantsDocking(RunnerBaseClass):
         with open(conf_file, 'w') as conf:
             conf.write(PLANTS_CONF_FILE_TEMPLATE.format(**self.config))
 
-        return self.cmd_runner([exec_path, '--mode', mode, 'plants.config'])
+        results = self.cmd_runner([exec_path, '--mode', mode, 'plants.config'])
+        if not results:
+            self.delete()
+
+        return results

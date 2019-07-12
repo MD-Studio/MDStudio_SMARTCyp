@@ -49,9 +49,9 @@ def plants_docking(protein_file, ligand_file, base_work_dir=None, **kwargs):
 
     if success:
         results = docking.get_results()
-        return results
+        if results:
+            return results
 
-    docking.delete()
     return 'PLANTS docking failed', 401
 
 
@@ -77,9 +77,12 @@ def plants_docking_statistics(paths=None, **kwargs):
     docking = PlantsDocking(base_work_dir=os.environ.get('BASE_WORK_DIR'))
     docking.workdir = base_path[0]
     docking.update(kwargs)
-    results = docking.get_results(structures=paths)
 
-    return results
+    results = docking.get_results(structures=paths)
+    if results:
+        return results
+
+    return 'PLANTS docking failed', 401
 
 
 def plants_docking_structures(paths=None):
