@@ -22,9 +22,9 @@ ENV JAVA_HOME /usr/lib/jvm/java-8-openjdk-amd64/
 RUN export JAVA_HOME
 
 # Install package
-COPY . /home/mdstudio/mdstudio_smartcyp
-RUN chown mdstudio:mdstudio /home/mdstudio/mdstudio_smartcyp
-WORKDIR /home/mdstudio/mdstudio_smartcyp
+COPY . /home/mdstudio
+RUN chown mdstudio:mdstudio /home/mdstudio
+WORKDIR /home/mdstudio
 RUN pip install .
 USER mdstudio
 
