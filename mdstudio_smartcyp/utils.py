@@ -69,7 +69,6 @@ class RunnerBaseClass(object):
 
             if errors:
                 self.log.error(errors.decode('utf-8'))
-                was_successfull = False
             if output:
                 self.log.info(output.decode('utf-8'))
 
