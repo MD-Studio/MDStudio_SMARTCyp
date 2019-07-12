@@ -189,7 +189,12 @@ class PlantsDocking(RunnerBaseClass):
 
         # Run a clustering
         xyz = coords_from_mol2(structures)
-        c = ClusterStructures(xyz, labels=list(results.keys()))
+        try:
+            c = ClusterStructures(xyz, labels=list(results.keys()))
+        except AssertionError as e:
+            logging.error(e)
+            return None
+
         clusters = c.cluster(threshold=self.config.get('threshold', 8.0),
                              criterion=self.config.get('criterion', 'maxclust'),
                              min_cluster_count=self.config.get('min_cluster_size', 2))
