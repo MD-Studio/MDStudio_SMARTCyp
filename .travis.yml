@@ -1,0 +1,28 @@
+sudo: false
+language: python
+
+os:
+  - linux
+
+python:
+  - "2.7"
+  - "3.6"
+
+global:
+  env:
+    - COMMIT_AUTHOR_EMAIL: "m4.van.dijk@vu.nl"
+
+install:
+  # install library
+  - pip install codecov
+  - pip install .
+
+script:
+  - coverage run tests
+
+branches:
+  only:
+    - master
+
+after_success:
+  - codecov
