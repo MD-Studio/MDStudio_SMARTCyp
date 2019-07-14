@@ -1,5 +1,7 @@
 # mdstudio_smartcyp
 
+[![Build Status](https://travis-ci.org/MD-Studio/MDStudio_SMARTCyp.svg?branch=master)](https://travis-ci.org/MD-Studio/MDStudio_SMARTCyp)
+
 ## Installation Quickstart
 MDStudio SMARTCyp can be used in three different ways: in the MDStudio environment, as REST service or as local installation.
 
@@ -50,8 +52,6 @@ to use the endpoints directly from the ui. Access the ui as:
 The mdstudio_smartcyp python process accepts the following command line configuration options:
 
 - -a/--api_mode: *rest* or *wamp* to start the service in the REST or WAMP mode respectively.
-- -w/--base_work_dir: the base directory where SMARTCyp, PLANTS or SPORES work directories will be stored. 
-                      The systems temporary (/tmp) directory will be used by default.
-- -r/--result_storage_time: how many hours the calculated results will remain available before cleanup. 0 by default 
-                            which means no cleanup.
+- -w/--base_work_dir: the base directory where SMARTCyp, PLANTS or SPORES work directories will be stored. The systems temporary (/tmp) directory will be used by default.
+- -r/--result_storage_time: how many hours the calculated results will remain available before cleanup. 0 by default which means no cleanup.
 - -p/--http_port: the network port the REST or WAMP service will be started on. 8081 by default.
