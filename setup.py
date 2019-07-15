@@ -42,6 +42,7 @@ setup(
     keywords='MDStudio SMARTCyp',
     platforms=['Any'],
     packages=find_packages(),
+    package_data={'mdstudio_smartcyp': ['bin/*', 'rest/*', 'schemas/endpoints/*']},
     py_modules=[distribution_name],
     include_package_data=True,
     install_requires=['flask', 'flask-cors', 'connexion', 'swagger-ui-bundle', 'gevent',
