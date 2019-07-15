@@ -1,0 +1,3 @@
+include bin/*
+include rest/*
+include schemas/endpoints/*.json

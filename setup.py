@@ -42,12 +42,11 @@ setup(
     keywords='MDStudio SMARTCyp',
     platforms=['Any'],
     packages=find_packages(),
-    package_data={'mdstudio_smartcyp': ['bin/*']},
     py_modules=[distribution_name],
     include_package_data=True,
     install_requires=['flask', 'flask-cors', 'connexion', 'swagger-ui-bundle', 'gevent',
                       'mdstudio', 'matplotlib', 'scipy'],
-    tests_require=['requests'],
+    extras_require={'test': ['requests']},
     zip_safe=True,
     classifiers=[
         'Development Status :: 3 - Alpha',

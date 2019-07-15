@@ -18,7 +18,7 @@ install:
 
   # install library
   - pip install codecov
-  - pip install .
+  - pip install .[test]
 
 script:
   - coverage run tests
