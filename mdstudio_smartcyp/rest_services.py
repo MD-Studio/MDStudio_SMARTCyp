@@ -162,7 +162,7 @@ def smartcyp_prediction(mol=None, smiles=None, output_format='json', noempcorr=F
     return result_dict
 
 
-def spores_run(mol, spores_mode='complete', input_format='mol2'):
+def spores_run(mol, spores_mode='complete', input_format='mol2', base_work_dir=None):
     """
     Perform a SPORES (Structure PrOtonation and REcognition System) structure preparation.
     For a detail description of the input see the file:
@@ -189,7 +189,7 @@ def spores_run(mol, spores_mode='complete', input_format='mol2'):
     if path_file_object['content'] is None:
         return "Structure input from file 'mol' required", 401
 
-    spores = SporesRunner()
+    spores = SporesRunner(base_work_dir=os.environ.get('BASE_WORK_DIR', base_work_dir))
     try:
         result_dict = spores.run(path_file_object['content'], mode=spores_mode, input_format=input_format)
     except Exception as e:

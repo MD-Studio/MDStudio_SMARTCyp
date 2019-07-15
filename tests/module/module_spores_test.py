@@ -54,7 +54,7 @@ class SporesTest(unittest.TestCase):
         Docking is unable to start if the PLANTS executable is not found
         """
 
-        spores = SporesRunner(workdir=FILEPATH,
+        spores = SporesRunner(base_work_dir=FILEPATH,
                               exec_path='/Users/_dummy_user/smartcyp/tests/spores')
 
         self.assertFalse(spores.run(self.protein, self.ligand))
