@@ -33,10 +33,10 @@ def spores_version_info():
 
 class SporesRunner(RunnerBaseClass):
 
-    def __init__(self, log=logger, workdir=None, exec_path=None):
+    def __init__(self, log=logger, base_work_dir=None, exec_path=None):
 
         self.log = log
-        self.workdir = prepare_work_dir(path=workdir, prefix='spores-')
+        self.base_work_dir = base_work_dir
         self.exec_path = exec_path or __spores_path__
 
     def run(self, mol, mode='complete', input_format='mol2'):
@@ -58,8 +58,13 @@ class SporesRunner(RunnerBaseClass):
         :rtype:               :py:dict
         """
 
+        # Create a working directory
+        self.workdir = prepare_work_dir(path=self.base_work_dir, prefix='spores-')
+        self.log.info('Created docking directory {0}'.format(self.workdir))
+
         if not os.path.exists(self.exec_path):
             self.log.error('Spores executable not available at: {0}'.format(self.exec_path))
+            self.delete()
             return None
 
         # Copy files to working directory
@@ -84,4 +89,5 @@ class SporesRunner(RunnerBaseClass):
             return result
         else:
             self.log.error('SPORES failed to create output file {0}'.format(output_file))
+            self.delete()
             return None
