@@ -33,11 +33,11 @@ def spores_version_info():
 
 class SporesRunner(RunnerBaseClass):
 
-    def __init__(self, log=logger, workdir=None):
+    def __init__(self, log=logger, workdir=None, exec_path=None):
 
         self.log = log
         self.workdir = prepare_work_dir(path=workdir, prefix='spores-')
-        self.exec_path = __spores_path__
+        self.exec_path = exec_path or __spores_path__
 
     def run(self, mol, mode='complete', input_format='mol2'):
         """
@@ -57,6 +57,10 @@ class SporesRunner(RunnerBaseClass):
         :return:              SPORES processed structure
         :rtype:               :py:dict
         """
+
+        if not os.path.exists(self.exec_path):
+            self.log.error('Spores executable not available at: {0}'.format(self.exec_path))
+            return None
 
         # Copy files to working directory
         input_file = 'structure.{0}'.format(input_format)
