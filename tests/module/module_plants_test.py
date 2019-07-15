@@ -68,7 +68,7 @@ class PlantsDockingTest(unittest.TestCase):
         """
 
         plants = PlantsDocking(workdir=FILEPATH,
-                               exec_path='/Users/_dummy_user/lie_plants_docking/tests/plants',
+                               exec_path='/Users/_dummy_user/smartcyp/tests/plants',
                                bindingsite_center=[7.79934, 9.49666, 3.39229])
 
         self.assertFalse(plants.run(self.protein, self.ligand))
