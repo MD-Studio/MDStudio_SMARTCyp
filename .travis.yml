@@ -13,6 +13,9 @@ global:
     - COMMIT_AUTHOR_EMAIL: "m4.van.dijk@vu.nl"
 
 install:
+  # install dependencies
+  - (git clone git://github.com/MD-Studio/MDStudio.git --branch master --single-branch && pip install -e MDStudio/mdstudio)
+  
   # install library
   - pip install codecov
   - pip install .
