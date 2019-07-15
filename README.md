@@ -1,6 +1,7 @@
 # mdstudio_smartcyp
 
 [![Build Status](https://travis-ci.org/MD-Studio/MDStudio_SMARTCyp.svg?branch=master)](https://travis-ci.org/MD-Studio/MDStudio_SMARTCyp)
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/697c033fd7674ecea28c089150a25dfa)](https://www.codacy.com/app/marcvdijk/MDStudio_SMARTCyp?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=MD-Studio/MDStudio_SMARTCyp&amp;utm_campaign=Badge_Grade)
 
 ## Installation Quickstart
 MDStudio SMARTCyp can be used in three different ways: in the MDStudio environment, as REST service or as local installation.
