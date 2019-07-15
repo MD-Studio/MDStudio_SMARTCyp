@@ -11,9 +11,13 @@ import unittest
 import requests
 import json
 
-from html.parser import HTMLParser
-
 from mdstudio_smartcyp.smartcyp_run import smartcyp_version_info
+from . import MAJOR_PY_VERSION
+
+if MAJOR_PY_VERSION == 2:
+    from HTMLParser import HTMLParser
+else:
+    from html.parser import HTMLParser
 
 FILEPATH = os.path.abspath(os.path.join(os.path.dirname(__file__), '../files/'))
 URL = 'http://localhost:8081'

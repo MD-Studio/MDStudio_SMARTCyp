@@ -18,7 +18,7 @@ URL = 'http://localhost:8081'
 
 def import_mol2(mol):
 
-    l = []
+    lines = []
     read = False
     for line in mol.split('\n'):
 
@@ -32,9 +32,9 @@ def import_mol2(mol):
 
         if read:
             line = line.strip()
-            l.append(line.split())
+            lines.append(line.split())
 
-    return l
+    return lines
 
 
 def test_localhost_connection():
