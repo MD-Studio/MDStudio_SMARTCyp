@@ -1,0 +1,273 @@
+{
+  "kind": "Template",
+  "apiVersion": "v1",
+  "metadata": {
+    "name": "mdstudio-smartcyp",
+    "annotations": {
+      "openshift.io/display-name": "Cytochrome P450-Mediated Drug Metabolism",
+      "openshift.io/provider-display-name": "Vrij Universiteit Amsterdam, AIMMS Division of Molecular and Computational Toxicology",
+      "openshift.io/documentation-url": "https://github.com/MD-Studio/MDStudio_SMARTCyp",
+      "openshift.io/support-url": "https://github.com/MD-Studio/MDStudio_SMARTCyp/issues",
+      "iconClass": "icon-3scale",
+      "description": "3D structure and 2D reactivity-based Prediction of Cytochrome P450-Mediated Drug Metabolism",
+      "tags": "MDStudio, SMARTCyp, PLANTS, SPORES, docking, CYP, P450, SOM, prediction"
+    },
+    "labels": {
+      "template": "mdstudio-smartcyp",
+      "app": "mdstudio-smartcyp"
+    }
+  },
+  "message": "MDStudio SMARTCyp has been deployed to your project. To remove the deployment you can use the command-line and run \"oc delete all --selector template=mdstudio_smartcyp\" for the project you deployed to.",
+  "parameters": [
+    {
+      "name": "IMAGE_DOCKER_TAG",
+      "description": "The MDStudio SMARTCyp docker image tag",
+      "value": "latest"
+    },
+    {
+      "name": "ROUTES_BASENAME",
+      "description": "The base name of the service endpoint.",
+      "value": "prod.openrisknet.org"
+    },
+    {
+      "name": "ROUTE_NAME",
+      "description": "The name of the service endpoint.",
+      "value": "mdstudio-smartcyp"
+    },
+    {
+      "name": "SERVICE_PORT",
+      "description": "The port for the MDStudio SMARTCyp service inside your project",
+      "value": "8081"
+    },
+    {
+      "name": "TLS",
+      "description": "If you want TLS certificate",
+      "value": "false"
+    },
+    {
+      "name": "CPU_LIMIT",
+      "description": "Set CPU limit",
+      "value": "2000m"
+    },
+    {
+      "name": "CPU_REQUEST",
+      "description": "Set CPU request",
+      "value": "1000m"
+    },
+    {
+      "name": "MEMORY_LIMIT",
+      "description": "Set RAM limit",
+      "value": "4Gi"
+    },
+    {
+      "name": "MEMORY_REQUEST",
+      "description": "Set RAM request",
+      "value": "2Gi"
+    }
+  ],
+  "objects": [
+    {
+      "kind": "ImageStream",
+      "apiVersion": "v1",
+      "metadata": {
+        "name": "mdstudio-smartcyp"
+      },
+      "spec": {
+        "dockerImageRepository": "docker.io/mdstudio/mdstudio_smartcyp",
+        "lookupPolicy": {
+          "local": false
+        },
+        "tags": [
+          {
+            "annotations": {
+              "openshift.io/display-name": "mdstudio-smartcyp"
+            },
+            "from": {
+              "kind": "DockerImage",
+              "name": "docker.io/mdstudio/mdstudio_smartcyp:${IMAGE_TAG}"
+            },
+            "importPolicy": {
+              "scheduled": true
+            },
+            "name": "latest",
+            "referencePolicy": {
+              "type": "Source"
+            }
+          }
+        ]
+      },
+      "status": {
+        "dockerImageRepository": "docker.io/mdstudio/mdstudio_smartcyp"
+      }
+    },
+    {
+      "kind": "DeploymentConfig",
+      "apiVersion": "v1",
+      "metadata": {
+        "name": "mdstudio-smartcyp"
+      },
+      "spec": {
+        "strategy": {
+          "rollingUpdate": {
+            "maxUnavailable": 0
+          }
+        },
+        "triggers": [
+          {
+            "type": "ConfigChange"
+          },
+          {
+            "imageChangeParams": {
+              "automatic": true,
+              "containerNames": [
+                "mdstudio-smartcyp"
+              ],
+              "from": {
+                "kind": "ImageStreamTag",
+                "name": "mdstudio-smartcyp:${IMAGE_TAG}"
+              }
+            },
+            "type": "ImageChange"
+          }
+        ],
+        "replicas": 1,
+        "revisionHistoryLimit": 5,
+        "selector": {
+          "name": "mdstudio-smartcyp"
+        },
+        "template": {
+          "metadata": {
+            "labels": {
+              "name": "mdstudio-smartcyp"
+            }
+          },
+          "spec": {
+            "containers": [
+              {
+                "name": "mdstudio-smartcyp",
+                "image": "docker.io/mdstudio/mdstudio_smartcyp:${IMAGE_DOCKER_TAG}",
+                "ports": [
+                  {
+                    "containerPort": 8081
+                  }
+                ],
+                "imagePullPolicy": "Always",
+                "readinessProbe": {
+                  "httpGet": {
+                    "path": "/ui/",
+                    "port": 8081,
+                    "scheme": "HTTP"
+                  },
+                  "initialDelaySeconds": 300,
+                  "failureTreshold": 6,
+                  "periodSeconds": 30,
+                  "timeoutSeconds": 1
+                },
+                "livenessProbe": {
+                  "httpGet": {
+                    "path": "/ui/",
+                    "port": 8081,
+                    "scheme": "HTTP"
+                  },
+                  "initialDelaySeconds": 300,
+                  "failureTreshold": 6,
+                  "periodSeconds": 30,
+                  "timeoutSeconds": 1
+                },
+                "resources": {
+                  "requests": {
+                    "cpu": "${CPU_REQUEST}",
+                    "memory": "${MEMORY_REQUEST}"
+                  },
+                  "limits": {
+                    "cpu": "${CPU_LIMIT}",
+                    "memory": "${MEMORY_LIMIT}"
+                  }
+                }
+              }
+            ],
+            "restartPolicy": "Always",
+            "dnsPolicy": "ClusterFirst"
+          }
+        }
+      }
+    },
+    {
+      "kind": "Service",
+      "apiVersion": "v1",
+      "metadata": {
+        "name": "mdstudio-smartcyp",
+        "annotations": {
+          "openrisknet-static-services": "http://${ROUTE_NAME}.mdstudio-smartcyp.svc.cluster.local:8088/api/api.json"
+        }
+      },
+      "spec": {
+        "ports": [
+          {
+            "name": "mdstudio-smartcyp",
+            "protocol": "TCP",
+            "port": "${SERVICE_PORT}",
+            "targetPort": 8081
+          }
+        ],
+        "selector": {
+          "name": "mdstudio-smartcyp"
+        }
+      }
+    },
+    {
+      "kind": "Service",
+      "apiVersion": "v1",
+      "metadata": {
+        "name": "mdstudio-smartcyp-swagger"
+      },
+      "spec": {
+        "ports": [
+          {
+            "name": "mdstudio-smartcyp-swagger",
+            "port": "${SERVICE_PORT}",
+            "targetPort": 8081
+          }
+        ],
+        "selector": {
+          "name": "mdstudio-smartcyp"
+        }
+      }
+    },
+    {
+      "kind": "Route",
+      "apiVersion": "v1",
+      "metadata": {
+        "name": "mdstudio-smartcyp",
+        "annotations": {
+          "kubernetes.io/tls-acme": "${TLS}"
+        }
+      },
+      "spec": {
+        "host": "${ROUTE_NAME}.${ROUTES_BASENAME}",
+        "to": {
+          "kind": "Service",
+          "name": "mdstudio-smartcyp"
+        }
+      }
+    },
+    {
+      "kind": "Route",
+      "apiVersion": "v1",
+      "metadata": {
+        "name": "mdstudio-smartcyp-swagger",
+        "annotations": {
+          "kubernetes.io/tls-acme": "${TLS}"
+        }
+      },
+      "spec": {
+        "host": "${ROUTE_NAME}.${ROUTES_BASENAME}",
+        "path": "/ui/",
+        "to": {
+          "kind": "Service",
+          "name": "mdstudio-smartcyp-swagger"
+        }
+      }
+    }
+  ]
+}
