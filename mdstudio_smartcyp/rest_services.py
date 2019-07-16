@@ -197,7 +197,7 @@ def spores_run(mol, spores_mode='complete', input_format='mol2', base_work_dir=N
     finally:
         spores.delete()
 
-    if result_dict is None:
+    if result_dict is None or 'content' not in result_dict:
         return 'SPORES processing of file {0} failed'.format(path_file_object['path']), 401
 
-    return result_dict
+    return result_dict['content']
