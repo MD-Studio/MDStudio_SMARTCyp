@@ -127,7 +127,7 @@ class SmartCypRunnerTests(unittest.TestCase):
         Test SMARTCyp HTML export
         """
 
-        html_result = self.scr.run(mol='O=Cc1ccc(s1)c2cccnc2', is_smiles=True, output_format='html')
+        self.scr.run(mol='O=Cc1ccc(s1)c2cccnc2', is_smiles=True, output_format='html')
 
     def test_smartcyp_png(self):
         """

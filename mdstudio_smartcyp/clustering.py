@@ -174,16 +174,16 @@ class ClusterStructures(object):
         self.labels = labels or range(len(labels))
 
         # All xyz coordinate sets need to be of type numpy.ndarray
-        cond = all([isinstance(coords, numpy.ndarray) for coords in self.xyz])
-        assert cond, 'Structure coordinates need to be of type numpy.ndarray'
+        if not all([isinstance(coords, numpy.ndarray) for coords in self.xyz]):
+            raise AssertionError('Structure coordinates need to be of type numpy.ndarray')
 
         # Equality in number and order of atoms for all coordinate sets is assumed
-        cond = len(set([coords.size for coords in self.xyz])) == 1
-        assert cond, 'Structure coordinates have an unequal number of atoms'
+        if not len(set([coords.size for coords in self.xyz])) == 1:
+            raise AssertionError('Structure coordinates have an unequal number of atoms')
 
         # Optional list of labels (e.a. structure id's) need to match coordinate set in length
-        cond = len(self.labels) == len(self.xyz)
-        assert cond, 'Number of labels is not matching number of coordinate sets'
+        if not len(self.labels) == len(self.xyz):
+            raise AssertionError('Number of labels is not matching number of coordinate sets')
 
         self._condensed_distance_matrix = self._build_pdist()
         self._clusters = []

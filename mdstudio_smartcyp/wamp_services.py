@@ -124,7 +124,7 @@ class SmartCypWampApi(ComponentSession):
         # Validate input path_file object for mol
         mol = mol_validate_file_object(request['mol'])
 
-        spores = SporesRunner(log=self.log, workdir=request.get('workdir'))
+        spores = SporesRunner(log=self.log, base_work_dir=request.get('workdir'))
         result_dict = spores.run(mol['content'], mode=request['spores_mode'], input_format=request['input_format'])
         spores.delete()
 

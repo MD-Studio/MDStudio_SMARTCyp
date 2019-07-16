@@ -26,7 +26,7 @@ URL = 'http://localhost:8081'
 def test_localhost_connection():
 
     try:
-        result = requests.get(URL)
+        requests.get(URL)
     except requests.exceptions.ConnectionError:
         return False
 
