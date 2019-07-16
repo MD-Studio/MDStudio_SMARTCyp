@@ -12,7 +12,7 @@ x-orn-@context:
   bindingsite_center: "http://semanticscience.org/resource/SIO_000333"
   scoring_function: "http://www.semanticweb.org/ontologies/2010/3/Ontology1271664172453.owl#scoring"
 info:
-  title: SMARTCyp service, A 2D Method for Prediction of Cytochrome P450-Mediated Drug Metabolism
+  title: 3D structure and 2D reactivity-based Prediction of Cytochrome P450-Mediated Drug Metabolism
   description: SMARTCyp providing Site of Metabolism prediction for Cytochrome P450s to the MDStudio environment using the
                SMARTCyp package developed by P. Rydberg et al. In addition this server provides PLANTS based ligand
                docking combined with SPORES ligand preperation.
