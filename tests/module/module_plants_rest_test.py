@@ -26,7 +26,7 @@ DOCKRESULTS = {u'ACC', u'PLPtotal', u'SCORE_NORM_WEIGHT', u'DON', u'SCORE_RB_PEN
 def test_localhost_connection():
 
     try:
-        result = requests.get(URL)
+        requests.get(URL)
     except requests.exceptions.ConnectionError:
         return False
 
