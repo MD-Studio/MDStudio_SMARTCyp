@@ -21,11 +21,12 @@ ENV JAVA_HOME /usr/lib/jvm/java-8-openjdk-amd64/
 RUN export JAVA_HOME
 
 # Install package
-USER mdstudio
 COPY . /home/mdstudio
 RUN chown -R mdstudio:mdstudio /home/mdstudio
+RUN chmod -R 755 /home/mdstudio
 WORKDIR /home/mdstudio
 RUN pip install .
+USER mdstudio
 
 # Set entrypoint and start process
 CMD ["bash", "entry_point_mdstudio_smartcyp.sh"]
