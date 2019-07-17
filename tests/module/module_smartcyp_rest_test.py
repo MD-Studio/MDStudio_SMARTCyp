@@ -12,7 +12,7 @@ import requests
 import json
 
 from mdstudio_smartcyp.smartcyp_run import smartcyp_version_info
-from . import MAJOR_PY_VERSION
+from tests.module import MAJOR_PY_VERSION
 
 if MAJOR_PY_VERSION == 2:
     from HTMLParser import HTMLParser
