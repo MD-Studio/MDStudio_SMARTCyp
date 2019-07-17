@@ -86,9 +86,8 @@ class SporesRestTest(unittest.TestCase):
         files = {'mol': self.ligand_mol2}
         response = requests.post('{0}/spores'.format(URL), files=files, data=data)
 
-        rest_response = response.json()
         reffile = open(os.path.join(FILEPATH, 'ligand.mol2'))
-        self.assertListEqual(import_mol2(reffile.read()), import_mol2(rest_response['content']))
+        self.assertListEqual(import_mol2(reffile.read()), import_mol2(response.text))
 
     # @unittest.skipIf(not test_localhost_connection(), 'MDStudio_SMARTCyp REST service not running on: {0}'.format(URL))
     # def test_smartcyp_html(self):
