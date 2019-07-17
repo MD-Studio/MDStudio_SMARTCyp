@@ -57,12 +57,12 @@
     {
       "name": "MEMORY_LIMIT",
       "description": "Set RAM limit",
-      "value": "4Gi"
+      "value": "2Gi"
     },
     {
       "name": "MEMORY_REQUEST",
       "description": "Set RAM request",
-      "value": "2Gi"
+      "value": "1Gi"
     }
   ],
   "objects": [
@@ -84,7 +84,7 @@
             },
             "from": {
               "kind": "DockerImage",
-              "name": "docker.io/mdstudio/mdstudio_smartcyp:${IMAGE_TAG}"
+              "name": "docker.io/mdstudio/mdstudio_smartcyp:${IMAGE_DOCKER_TAG}"
             },
             "importPolicy": {
               "scheduled": true
@@ -124,14 +124,13 @@
               ],
               "from": {
                 "kind": "ImageStreamTag",
-                "name": "mdstudio-smartcyp:${IMAGE_TAG}"
+                "name": "mdstudio-smartcyp:${IMAGE_DOCKER_TAG}"
               }
             },
             "type": "ImageChange"
           }
         ],
         "replicas": 1,
-        "revisionHistoryLimit": 5,
         "selector": {
           "name": "mdstudio-smartcyp"
         },
@@ -148,14 +147,17 @@
                 "image": "docker.io/mdstudio/mdstudio_smartcyp:${IMAGE_DOCKER_TAG}",
                 "ports": [
                   {
-                    "containerPort": 8081
+                    "containerPort": "${SERVICE_PORT}"
+                  },
+                  {
+                    "containerPort": 8080
                   }
                 ],
                 "imagePullPolicy": "Always",
                 "readinessProbe": {
                   "httpGet": {
                     "path": "/ui/",
-                    "port": 8081,
+                    "port": "${SERVICE_PORT}",
                     "scheme": "HTTP"
                   },
                   "initialDelaySeconds": 300,
@@ -166,7 +168,7 @@
                 "livenessProbe": {
                   "httpGet": {
                     "path": "/ui/",
-                    "port": 8081,
+                    "port": "${SERVICE_PORT}",
                     "scheme": "HTTP"
                   },
                   "initialDelaySeconds": 300,
@@ -185,9 +187,7 @@
                   }
                 }
               }
-            ],
-            "restartPolicy": "Always",
-            "dnsPolicy": "ClusterFirst"
+            ]
           }
         }
       }
@@ -198,14 +198,13 @@
       "metadata": {
         "name": "mdstudio-smartcyp",
         "annotations": {
-          "openrisknet-static-services": "http://${ROUTE_NAME}.mdstudio-smartcyp.svc.cluster.local:8088/api/api.json"
+          "openrisknet-static-services": "http://${ROUTE_NAME}.mdstudio-smartcyp.svc.cluster.local:${SERVICE_PORT}/swagger.json"
         }
       },
       "spec": {
         "ports": [
           {
             "name": "mdstudio-smartcyp",
-            "protocol": "TCP",
             "port": "${SERVICE_PORT}",
             "targetPort": 8081
           }
