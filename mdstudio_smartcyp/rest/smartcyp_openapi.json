@@ -24,7 +24,6 @@
     "https",
     "http"
   ],
-  "host": "localhost:8081",
   "basePath": "/",
   "tags": [
     {

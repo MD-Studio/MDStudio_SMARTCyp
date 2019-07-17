@@ -22,7 +22,6 @@ info:
 schemes:
   - https
   - http
-host: localhost:8081
 basePath: "/"
 tags:
   - name: SMARTCyp
