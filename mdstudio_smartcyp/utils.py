@@ -235,22 +235,35 @@ def import_plants_csv(result_dir, structures=None, files=('features.csv', 'ranki
         resultcsv = os.path.join(result_dir, resultcsv)
         if os.path.isfile(resultcsv):
 
-            with open(resultcsv, 'r') as csvfile:
-                reader = csv.DictReader(csvfile)
-                for i, row in enumerate(reader):
-                    mol2 = row.get('TOTAL_SCORE', i)
-                    path = os.path.join(result_dir, '{0}.mol2'.format(mol2))
+            header = []
+            with open(resultcsv, 'r') as csv_file:
+                for line in csv_file.readlines():
+
+                    line = line.strip().split(',')
+                    if not header:
+                        header = line
+                        continue
 
                     # Only import structure selection if needed
+                    mol2 = line[0]
+                    path = os.path.join(result_dir, '{0}.mol2'.format(mol2))
                     if structures is not None and not path in structures:
                         continue
 
-                    row = dict(row)
-                    if None in row:
-                        del row[None]
+                    row = {}
+                    for i, val in enumerate(line[1:]):
 
+                        if not len(val):
+                            row[header[i]] = None
+
+                        elif '.' in val:
+                            row[header[i]] = float(val)
+
+                        else:
+                            row[header[i]] = int(val)
+
+                    row['PATH'] = os.path.join(docking_dir_name, '{0}.mol2'.format(mol2))
                     results[mol2] = row
-                    results[mol2]['PATH'] = os.path.join(docking_dir_name, '{0}.mol2'.format(mol2))
             break
 
     return results
