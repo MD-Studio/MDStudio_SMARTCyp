@@ -54,7 +54,7 @@
         ],
         "x-orn:returns": "x-orn:PlantsTaskId",
         "description": "Perform a PLANTS docking of a ligand and protein",
-        "operationId": "mdstudio_smartcyp.rest_services.plants_docking",
+        "operationId": "mdstudio_smartcyp.rest.rest_services.plants_docking",
         "parameters": [
           {
             "name": "ligand_file",
@@ -599,7 +599,7 @@
         "x-orn:expects": "x-orn:PlantsTaskId",
         "x-orn:returns": "x-orn:DockingPoseList",
         "description": "Get docking statistics for all or a subset of docking solutions initially returned by the 'docking' method",
-        "operationId": "mdstudio_smartcyp.rest_services.plants_docking_statistics",
+        "operationId": "mdstudio_smartcyp.rest.rest_services.plants_docking_statistics",
         "parameters": [
           {
             "name": "paths",
@@ -659,7 +659,7 @@
         "x-orn:expects": "x-orn:PlantsTaskId",
         "x-orn:returns": "x-orn:3DStructure",
         "description": "Get docking result structures as one combined Tripos MOL2 file",
-        "operationId": "mdstudio_smartcyp.rest_services.plants_docking_structures",
+        "operationId": "mdstudio_smartcyp.rest.rest_services.plants_docking_structures",
         "parameters": [
           {
             "name": "paths",
@@ -695,7 +695,7 @@
         "x-orn:expects": "x-orn:3DStructure",
         "x-orn:returns": "x-orn:3DStructure",
         "description": "Process molecular structures using the Structure PrOtonation and REcognition System (SPORES)",
-        "operationId": "mdstudio_smartcyp.rest_services.spores_run",
+        "operationId": "mdstudio_smartcyp.rest.rest_services.spores_run",
         "parameters": [
           {
             "name": "mol",
@@ -784,7 +784,7 @@
         ],
         "x-orn:returns": "x-orn:Report",
         "description": "Perform a CYP site of metabolism prediction using SMARTCyp",
-        "operationId": "mdstudio_smartcyp.rest_services.smartcyp_prediction",
+        "operationId": "mdstudio_smartcyp.rest.rest_services.smartcyp_prediction",
         "parameters": [
           {
             "name": "mol",
