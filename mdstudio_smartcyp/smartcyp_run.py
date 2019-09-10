@@ -95,6 +95,11 @@ class SmartCypRunner(RunnerBaseClass):
                 except ValueError:
                     self.log.warning('Unable to convert {0}: {1} to {2}'.format(key, value, convert_to))
 
+            # Add atom number
+            atnum = drow['Atom'].split('.')[-1]
+            if atnum.isdigit():
+                drow['Atom_id'] = int(atnum)
+
             csv_rows[drow['Atom']] = drow
 
         return csv_rows
