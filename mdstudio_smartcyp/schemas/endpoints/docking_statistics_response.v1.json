@@ -1,0 +1,28 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema",
+  "id": "http://mdstudio/schemas/endpoints/docking_statistics_response.v1.json",
+  "title": "docking output",
+  "description": "docking output",
+  "type": "object",
+  "properties": {
+    "status": {
+      "type": "string",
+      "description": "Plants Docking final status",
+      "enum": [
+        "failed",
+        "completed"
+      ]
+    },
+    "output": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "description": "Dictionary containing the Plants docking output files"
+    }
+  },
+  "required": [
+    "status",
+    "output"
+  ]
+}

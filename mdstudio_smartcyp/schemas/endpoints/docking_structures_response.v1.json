@@ -1,0 +1,25 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema",
+  "id": "http://mdstudio/schemas/endpoints/docking_structures_response.v1.json",
+  "title": "PLANTS docking solutions as combined ensemble file",
+  "description": "",
+  "type": "object",
+  "properties": {
+    "status": {
+      "type": "string",
+      "description": "Plants Docking final status",
+      "enum": [
+        "failed",
+        "completed"
+      ]
+    },
+    "output": {
+      "description": "Docking solutions as combined ensemble file",
+      "type": "string"
+    }
+  },
+  "required": [
+    "status",
+    "output"
+  ]
+}

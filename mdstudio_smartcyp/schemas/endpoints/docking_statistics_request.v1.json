@@ -1,0 +1,39 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "id": "http://mdstudio/schemas/endpoints/docking_statistics_request.v1.json",
+  "title": "Plants docking statistics",
+  "description": "Get docking statistics for all or a subset of docking solutions initially returned by the 'docking' method",
+  "type": "object",
+  "properties": {
+    "base_work_dir": {
+      "type": "string",
+      "description": "Base directory for PLANTS docking results directories"
+    },
+    "paths": {
+      "description": "Path to docking poses for which to return statistics",
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "min_cluster_size": {
+      "description": "Minimum cluster size for coordinate based clustering",
+      "type": "integer",
+      "default": 2
+    },
+    "threshold": {
+      "description": "Minimum RMSD threshold for defining clusters. Same a the 't' argument in the scipy.cluster.hierarchy.fcluster package",
+      "type": "number",
+      "default": 8
+    },
+    "criterion": {
+      "description": "Cluster criterion used by the fcluster method (scipy.cluster.hierarchy.fcluster)",
+      "type": "string",
+      "default": "maxclust",
+      "enum": ["inconsistent", "distance", "maxclust", "monocrit", "maxclust_monocrit"]
+    }
+  },
+  "required": [
+    "paths"
+  ]
+}

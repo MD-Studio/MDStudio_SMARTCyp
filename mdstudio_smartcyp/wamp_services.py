@@ -52,16 +52,7 @@ class SmartCypWampApi(ComponentSession):
 
         return smartcyp_version_info()
 
-    @endpoint('docking_info', 'info_request', 'info_response', options=RegisterOptions(invoke=u'roundrobin'))
-    def plants_info(self, request, claims):
-        """
-        Returns an informative summary of the supported PLANTS version
-        and configuration.
-        """
-
-        return plants_version_info()
-
-    @endpoint('predict', 'predict_request', 'predict_response', options=RegisterOptions(invoke=u'roundrobin'))
+    @endpoint('smartcyp', 'smartcyp_request', 'smartcyp_response', options=RegisterOptions(invoke=u'roundrobin'))
     def smartcyp_prediction(self, request, claims):
         """
         Run a SMARTCyp prediction for a molecule
@@ -86,6 +77,15 @@ class SmartCypWampApi(ComponentSession):
 
         return result_dict
 
+    @endpoint('docking_info', 'info_request', 'info_response', options=RegisterOptions(invoke=u'roundrobin'))
+    def plants_info(self, request, claims):
+        """
+        Returns an informative summary of the supported PLANTS version
+        and configuration.
+        """
+
+        return plants_version_info()
+
     @endpoint('docking', 'docking_request', 'docking_response', options=RegisterOptions(invoke='roundrobin'))
     def plants_docking(self, request, claims):
         """
@@ -99,12 +99,12 @@ class SmartCypWampApi(ComponentSession):
         ligand_file = mol_validate_file_object(request['ligand_file'])
 
         # Run docking
-        docking = PlantsDocking(workdir=request.get('workdir'), **request)
+        docking = PlantsDocking(workdir=os.environ.get('BASE_WORK_DIR', request.get('base_workdir')), **request)
         success = docking.run(protein_file['content'], ligand_file['content'])
 
         if success:
             status = 'completed'
-            results = docking.results()
+            results = docking.get_results()
             output = {key: encode_file(value) for key, value in results.items()}
 
         else:
@@ -112,6 +112,59 @@ class SmartCypWampApi(ComponentSession):
             return {'status': 'failed'}
 
         return {'status': status, 'output': output}
+
+    @endpoint('docking_statistics', 'docking_statistics_request', 'docking_statistics_response',
+              options=RegisterOptions(invoke='roundrobin'))
+    def plants_docking_statistics(self, request, claims):
+        """
+        Return PLANTS docking statistics for particular docking solutions run previously.
+        Clustering will also be redone and optionally adjusted.
+        """
+
+        base_dir = os.environ.get('BASE_WORK_DIR', request.get('base_workdir'))
+        base_path = list(set([os.path.dirname(p) for p in request['paths']]))
+        if len(base_path) > 1:
+            self.log.error('Unable to combine results for more then one docking run')
+            return {'status': 'failed'}
+
+        if not os.path.exists(os.path.join(base_dir or '', base_path[0])):
+            self.log.error('Docking results (no longer) exist: {0}'.format(os.path.basename(base_path[0])))
+            return {'status': 'failed'}
+
+        docking = PlantsDocking(base_work_dir=base_dir)
+        docking.workdir = base_path[0]
+        docking.update(**request)
+
+        results = docking.get_results(structures=request['paths'])
+        if results:
+            return {'status': 'completed', 'output': results}
+
+        self.log.error('PLANTS docking failed')
+        return {'status': 'failed'}
+
+    @endpoint('docking_structures', 'docking_structures_request', 'docking_structures_response',
+              options=RegisterOptions(invoke='roundrobin'))
+    def plants_docking_structures(self, request, claims):
+        """
+        Return PLANTS docking statistics for particular docking solutions run previously.
+        Clustering will also be redone and optionally adjusted.
+        """
+
+        base_dir = os.environ.get('BASE_WORK_DIR', request.get('base_workdir'))
+        base_path = list(set([os.path.dirname(p) for p in request['paths']]))
+        if len(base_path) > 1:
+            self.log.error('Unable to combine results for more then one docking run')
+            return {'status': 'failed'}
+
+        if not os.path.exists(os.path.join(base_dir or '', base_path[0])):
+            self.log.error('Docking results (no longer) exist: {0}'.format(os.path.basename(base_path[0])))
+            return {'status': 'failed'}
+
+        docking = PlantsDocking(base_work_dir=base_dir)
+        docking.workdir = base_path[0]
+        results = docking.get_structures(**request)
+
+        return results
 
     @endpoint('spores', 'spores_request', 'spores_response', options=RegisterOptions(invoke='roundrobin'))
     def spores_run(self, request, claims):
