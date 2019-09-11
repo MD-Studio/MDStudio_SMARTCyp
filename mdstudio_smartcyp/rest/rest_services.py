@@ -85,7 +85,7 @@ def plants_docking_statistics(paths=None, **kwargs):
     return 'PLANTS docking failed', 401
 
 
-def plants_docking_structures(paths=None):
+def plants_docking_structures(paths=None, **kwargs):
     """
     Return PLANTS docking statistics for particular docking solutions run previously.
     Clustering will also be redone and optionally adjusted.
@@ -106,7 +106,7 @@ def plants_docking_structures(paths=None):
 
     docking = PlantsDocking(base_work_dir=os.environ.get('BASE_WORK_DIR'))
     docking.workdir = base_path[0]
-    results = docking.get_structures(paths)
+    results = docking.get_structures(paths, **kwargs)
 
     return results
 

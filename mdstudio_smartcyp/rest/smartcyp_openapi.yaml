@@ -436,6 +436,18 @@ paths:
           type: array
           items:
             type: string
+        - name: output_format
+          description: Structure file format to return
+          in: formData
+          type: string
+          default: mol2
+          enum: [mol2, pdb]
+        - name: include_protein
+          description: Include protein structure in ensemble
+          in: formData
+          default: false
+          required: false
+          type: boolean
       produces:
         - chemical/x-mol2
       responses:

@@ -18,7 +18,7 @@ import glob
 from mdstudio_smartcyp import __module__, __package_path__, __plants_path__, __plants_version__, __plants_citation__
 from mdstudio_smartcyp.plants_conf import PLANTS_CONF_FILE_TEMPLATE
 from mdstudio_smartcyp.utils import (_schema_to_data, RunnerBaseClass, prepare_work_dir, create_multi_mol2,
-                                     import_plants_csv)
+                                     create_multi_pdb, import_plants_csv)
 from mdstudio_smartcyp.clustering import coords_from_mol2, ClusterStructures
 
 logger = logging.getLogger(__module__)
@@ -174,6 +174,10 @@ class PlantsDocking(RunnerBaseClass):
         identifier as key. These identifiers are already sorted by
         PLANTS docking score.
 
+        :param structures:      docking pose structure path IDs for which to
+                                return results. Defaults to all poses.
+        :type structures:       :py:list
+
         :return: general PLANTS docking results
         :rtype:  dict
         """
@@ -208,10 +212,24 @@ class PlantsDocking(RunnerBaseClass):
 
         return results
 
-    def get_structures(self, structures):
+    def get_structures(self, structures, output_format='mol2', include_protein=False):
         """
-        Create a multi-molecule MOL2 file by concatenating
+        Create a multi-molecule (ensemble) MOL2 or PDB file by concatenating
         single PLANTS MOL2 docking pose files.
+
+        The structures to concatenate are identified by their unique path ID
+        listed in the docking results as the 'PATH' variable. It consists of
+        the '<docking results directory name>/<pose name>' that retained on
+        the server for the duration defined by 'result_storage_time'.
+
+        :param structures:      docking pose structure path IDs for which to
+                                return ensemble file.
+        :type structures:       :py:list
+        :param output_format:   return ensemble in MOL2 or PDB format
+        :type output_format:    :py:str
+        :param include_protein: return ensemble including the protein
+                                structure or only the ligand structures
+        :type include_protein:  :py:bool
 
         :return: docking results as single Tripos MOL2 file
         :rtype:  :py:str
@@ -220,11 +238,19 @@ class PlantsDocking(RunnerBaseClass):
         if not isinstance(structures, (list, tuple)):
             structures = [structures]
 
-        plants_dir_id = structures[0].split('/')[0]
         structures = [os.path.join(self.base_work_dir, struc) for struc in structures]
-        self.log.debug('Return {0} structures for {1}'.format(len(structures), plants_dir_id))
 
-        return create_multi_mol2(structures)
+        protein = None
+        if include_protein:
+            protein = os.path.join(self.workdir, 'protein.mol2')
+
+        self.log.debug('Return {0} structures for {1}'.format(len(structures), self.workdir))
+
+        # Return structure ensemble in PDB or MOL2 format
+        if output_format == 'mol2':
+            return create_multi_mol2(structures, protein=protein)
+        elif output_format == 'pdb':
+            return create_multi_pdb(structures, protein=protein)
 
     def run(self, protein, ligand, mode='screen'):
         """

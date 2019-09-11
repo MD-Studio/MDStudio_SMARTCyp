@@ -190,7 +190,100 @@ def prepare_work_dir(path=None, prefix='', suffix='', create=True):
     return path
 
 
-def create_multi_mol2(mol2_file_paths):
+def parse_tripos_atom(mol2):
+    """
+    Parse Tripos MOL2 ATOM records to a dictionary
+
+    :param mol2:    Tripos MOL2 file as string
+    :type mol2:     :py:str
+
+    :return:        Tripos atom records
+    :rtype:         :py:dict
+    """
+
+    read = False
+    atom_dict = {}
+    headers = ('atom_name', 'x', 'y', 'z', 'atom_type', 'subst_id', 'subst_name', 'charge')
+    for line in mol2.split('\n'):
+
+        if line.startswith('@<TRIPOS>ATOM'):
+            read = True
+            continue
+
+        if line.startswith('@<TRIPOS>BOND'):
+            read = False
+            break
+
+        if read:
+            line = line.split()
+            if line:
+                atom_dict[int(line[0])] = dict(zip(headers, line[1:]))
+
+    for value in atom_dict.values():
+        for key in ('charge', 'x', 'y', 'z'):
+            value[key] = float(value[key])
+        value['subst_id'] = int(value['subst_id'])
+
+    return atom_dict
+
+
+def parse_tripos_bond(mol2):
+    """
+    Parse Tripos MOL2 BOND records to a dictionary
+
+    :param mol2:    Tripos MOL2 file as string
+    :type mol2:     :py:str
+
+    :return:        Tripos bond records
+    :rtype:         :py:dict
+    """
+
+    read = False
+    bond_dict = {}
+    headers = ('b_start', 'b_end', 'b_type')
+    for line in mol2.split('\n'):
+
+        if line.startswith('@<TRIPOS>BOND'):
+            read = True
+            continue
+
+        if line.startswith('@<TRIPOS>') and read:
+            read = False
+            break
+
+        if read:
+            line = line.split()
+            if line:
+                bond_dict[int(line[0])] = dict(zip(headers, line[1:]))
+
+    for value in bond_dict.values():
+        for key in ('b_start', 'b_end'):
+            value[key] = int(value[key])
+
+    return bond_dict
+
+
+def mol2_to_pdb(mol2, record='ATOM', chain='A'):
+
+    pdb = []
+    for atom_id, values in mol2.items():
+        atom = [record]
+        atom.append(atom_id)
+        atom.append(values['atom_name'])
+        atom.append(values['subst_name'][0:3])
+        atom.append(chain)
+        atom.append(values['subst_id'])
+        atom.append(values['x'])
+        atom.append(values['y'])
+        atom.append(values['z'])
+        atom.append('1.00')
+
+        pdb.append(atom)
+
+    return pdb
+
+
+def create_multi_mol2(mol2_file_paths, protein=None):
     """
     Create a multi-molecule MOL2 file by concatenating
     single MOL2 files.
@@ -203,6 +296,11 @@ def create_multi_mol2(mol2_file_paths):
     """
 
     multimol2 = StringIO()
+    if protein:
+
+        with open(protein, 'r') as singleprotein:
+            multimol2.write(singleprotein.read())
+
     for path in mol2_file_paths:
         if os.path.exists(path):
 
@@ -211,6 +309,105 @@ def create_multi_mol2(mol2_file_paths):
 
     multimol2.seek(0)
     return multimol2.read()
+
+
+def create_multi_pdb(mol2_file_paths, protein=None):
+    """
+    Create a multi-molecule PDB file by converting independent MOL2 files
+    to PDB format and concatenating them in a single multi MODEL PDB file
+
+    :param mol2_file_paths: single MOL2 file paths
+    :type mol2_file_paths:  :py:list
+
+    :return:                multi MODEL PDB file
+    :rtype:                 :py:str
+    """
+
+    prot_pdb = None
+    if protein:
+
+        with open(protein, 'r') as singleprotein:
+            prot_mol2 = parse_tripos_atom(singleprotein.read())
+            prot_pdb = mol2_to_pdb(prot_mol2)
+
+    multi_pdb = StringIO()
+    for model, path in enumerate(mol2_file_paths, start=1):
+
+        multi_pdb.write('MODEL {0}\n'.format(model))
+        if prot_pdb:
+            for line in prot_pdb:
+                multi_pdb.write('{0:6}{1:>5} {2:^5}{3:>3} {4}{5:>4}    {6:8.3f}{7:8.3f}{8:8.3f}  {9:6}\n'.format(*line))
+            multi_pdb.write('TER\n')
+
+        with open(path, 'r') as singlemol2:
+            lig_mol2 = parse_tripos_atom(singlemol2.read())
+            lig_pdb = mol2_to_pdb(lig_mol2, record='HETATM', chain='B')
+
+            for line in lig_pdb:
+                multi_pdb.write('{0:6}{1:>5} {2:^5}{3:>3} {4}{5:>4}    {6:8.3f}{7:8.3f}{8:8.3f}  {9:6}\n'.format(*line))
+
+        multi_pdb.write('ENDMDL\n')
+    multi_pdb.write('END\n')
+
+    multi_pdb.seek(0)
+    return multi_pdb.read()
+
+
+def merge_protein_ligand_mol2(protein, ligand, name='system'):
+    """
+    Merge a protein and ligand structure in Tripos MOL2 format together
+    as one structure system.
+
+    :param protein:    Tripos MOL2 file of the protein as string
+    :type protein:     :py:str
+    :param protein:    Tripos MOL2 file of the ligand as string
+    :type protein:     :py:str
+    :param name:       new system name
+    :type name:        :py:str
+
+    :return:           combined mol2 file
+    :rtype:            :py:str
+    """
+
+    prot_atom = parse_tripos_atom(protein)
+    prot_bond = parse_tripos_bond(protein)
+    lig_atom = parse_tripos_atom(ligand)
+    lig_bond = parse_tripos_bond(ligand)
+
+    # Stats
+    total_atoms = len(prot_atom) + len(lig_atom)
+    total_bonds = len(prot_bond) + len(lig_bond)
+    id_trans_dict = {}
+
+    merged_mol = StringIO()
+    merged_mol.write('@<TRIPOS>MOLECULE\n{0}\n'.format(name))
+    merged_mol.write('{0} {1} 1\n'.format(total_atoms, total_bonds))
+    merged_mol.write('SMALL\nGASTEIGER\n\n')
+
+    merged_mol.write('@<TRIPOS>ATOM\n')
+    for i, a in enumerate(sorted(prot_atom.keys()), start=1):
+        merged_mol.write('{0:>7}  {1:8}{2:9.4f} {3:9.4f} {4:9.4f} {5:<5}{6:>4}  {7:8} {8:9.4f}\n'.format(i,
+            prot_atom[a]['atom_name'], prot_atom[a]['x'], prot_atom[a]['y'], prot_atom[a]['z'],
+            prot_atom[a]['atom_type'], prot_atom[a]['subst_id'], prot_atom[a]['subst_name'], prot_atom[a]['charge']))
+
+    for i, a in enumerate(sorted(lig_atom.keys()), start=i+1):
+        id_trans_dict[a] = i
+        merged_mol.write('{0:>7}  {1:8}{2:9.4f} {3:9.4f} {4:9.4f} {5:<5}{6:>4}  {7:8} {8:9.4f}\n'.format(i,
+            lig_atom[a]['atom_name'], lig_atom[a]['x'], lig_atom[a]['y'], lig_atom[a]['z'], lig_atom[a]['atom_type'],
+            lig_atom[a]['subst_id'], lig_atom[a]['subst_name'], lig_atom[a]['charge']))
+
+    merged_mol.write('@<TRIPOS>BOND\n')
+    for i, a in enumerate(sorted(prot_bond.keys()), start=1):
+        merged_mol.write('{0:>6}{1:>6}{2:>6} {3:>4}\n'.format(i, prot_bond[a]['b_start'], prot_bond[a]['b_end'],
+                                                              prot_bond[a]['b_type']))
+
+    for i, a in enumerate(sorted(lig_bond.keys()), start=i+1):
+        merged_mol.write('{0:>6}{1:>6}{2:>6} {3:>4}\n'.format(i, id_trans_dict[lig_bond[a]['b_start']],
+                                                              id_trans_dict[lig_bond[a]['b_end']],
+                                                              lig_bond[a]['b_type']))
+
+    merged_mol.seek(0)
+    return merged_mol.read()
 
 
 def import_plants_csv(result_dir, structures=None, files=('features.csv', 'ranking.csv')):
@@ -247,7 +444,7 @@ def import_plants_csv(result_dir, structures=None, files=('features.csv', 'ranki
                     # Only import structure selection if needed
                     mol2 = line[0]
                     path = os.path.join(result_dir, '{0}.mol2'.format(mol2))
-                    if structures is not None and not path in structures:
+                    if structures is not None and path not in structures:
                         continue
 
                     row = {}
