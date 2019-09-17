@@ -1,3 +1,4 @@
 include bin/*
 include rest/*
+include data/*
 include schemas/endpoints/*.json

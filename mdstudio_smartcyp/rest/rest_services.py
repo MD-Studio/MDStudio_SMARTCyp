@@ -14,6 +14,49 @@ from mdstudio_smartcyp.smartcyp_run import SmartCypRunner
 from mdstudio_smartcyp.plants_run import PlantsDocking
 from mdstudio_smartcyp.spores_run import SporesRunner
 from mdstudio_smartcyp.utils import mol_validate_file_object
+from mdstudio_smartcyp.combined_prediction import CombinedPrediction
+
+
+def som_prediction(ligand_file, base_work_dir=None, cyp='3A4', filter_clusters=True, smartcyp_score_label='Score',
+                   **kwargs):
+    """
+    Run a REST based SOM prediction run
+
+    :param ligand_file:          ligand structure MOL2 file
+    :type ligand_file:           :py:str
+    :param base_work_dir:        optional work directory to (temporary) store
+                                 PLANTS docking results.
+    :type base_work_dir:         :py:str
+    :param cyp:                  CYP isoform to make prediction for
+    :type cyp:                   :py:str
+    :param filter_clusters:      make prediction for clustered docking results
+                                 only
+    :type filter_clusters:       :py:bool
+    :param smartcyp_score_label: SMARTCyp output 'score' values to use for
+                                 prediction
+    :type smartcyp_score_label:  :py:str
+    :param kwargs:               additional docking configuration parameters
+    :type kwargs:                :py:dict
+
+    :return:                     PLANTS docking statistics (content of features.csv)
+                                 file.
+    :rtype:                      :py:dict
+    """
+
+    if isinstance(ligand_file, FileStorage):
+        ligand_file = ligand_file.read().decode('utf-8')
+    else:
+        return 'Unsupported protein file structure: {0}'.format(type(ligand_file)), 401
+
+    # Run combined structure/reactivity prediction
+    sompred = CombinedPrediction(base_work_dir=os.environ.get('BASE_WORK_DIR', base_work_dir), cyp=cyp,
+                                 smartcyp_score_label=smartcyp_score_label, **kwargs)
+    prediction = sompred.run(ligand_file, filter_clusters=filter_clusters)
+
+    if prediction:
+        return prediction
+
+    return 'SOM prediction failed', 401
 
 
 def plants_docking(protein_file, ligand_file, base_work_dir=None, **kwargs):

@@ -1,0 +1,28 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema",
+  "id": "http://mdstudio/schemas/endpoints/som_prediction_response.v1.json",
+  "title": "SOM prediction output",
+  "description": "SOM prediction output",
+  "type": "object",
+  "properties": {
+    "status": {
+      "type": "string",
+      "description": "SOM prediction final status",
+      "enum": [
+        "failed",
+        "completed"
+      ]
+    },
+    "output": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "description": "Dictionary containing the SOM prediction output files"
+    }
+  },
+  "required": [
+    "status",
+    "output"
+  ]
+}

@@ -11,7 +11,6 @@ import logging
 import re
 import tempfile
 import shutil
-import csv
 import glob
 import time
 
@@ -25,6 +24,24 @@ else:
 
 logger = logging.getLogger(__name__)
 smiles_regex = re.compile('^([^J][A-Za-z0-9@+\-\[\]\(\)\\\/%=#$]+)$')
+molmass = {'Ru': 101.072, 'Re': 186.2071, 'Rf': 267.0, 'Rg': 282.0, 'Ra': 226.0, 'Rb': 85.46783, 'Rn': 222.0,
+           'Rh': 102.905502, 'Be': 9.01218315, 'Ba': 137.3277, 'Bh': 270.0, 'Bi': 208.980401, 'Bk': 247.0,
+           'Br': 79.904, 'Og': 294.0, 'H': 1.008, 'P': 30.9737619985, 'Os': 190.233, 'Es': 252.0, 'Hg': 200.5923,
+           'Ge': 72.6308, 'Gd': 157.253, 'Ga': 69.7231, 'Pr': 140.907662, 'Pt': 195.0849, 'Pu': 244.0, 'C': 12.011,
+           'Pb': 207.21, 'Pa': 231.035882, 'Pd': 106.421, 'Cd': 112.4144, 'Po': 209.0, 'Pm': 145.0, 'Hs': 269.0,
+           'Ho': 164.930332, 'Uue': 315.0, 'Hf': 178.492, 'K': 39.09831, 'He': 4.0026022, 'Md': 258.0, 'Mg': 24.305,
+           'Mc': 289.0, 'Mo': 95.951, 'Mn': 54.9380443, 'O': 15.999, 'Mt': 278.0, 'S': 32.06, 'W': 183.841,
+           'Zn': 65.382, 'Eu': 151.9641, 'Zr': 91.2242, 'Er': 167.2593, 'Nh': 286.0, 'Ni': 58.69344, 'No': 259.0,
+           'Na': 22.989769282, 'Nb': 92.906372, 'Nd': 144.2423, 'Ne': 20.17976, 'Np': 237.0, 'Fr': 223.0,
+           'Fe': 55.8452, 'Fl': 289.0, 'Fm': 257.0, 'B': 10.81, 'F': 18.9984031636, 'Sr': 87.621, 'N': 14.007,
+           'Kr': 83.7982, 'Si': 28.085, 'Sn': 118.7107, 'Sm': 150.362, 'V': 50.94151, 'Sc': 44.9559085, 'Sb': 121.7601,
+           'Sg': 269.0, 'Se': 78.9718, 'Co': 58.9331944, 'Cn': 285.0, 'Cm': 247.0, 'Cl': 35.45, 'Ca': 40.0784,
+           'Cf': 251.0, 'Ce': 140.1161, 'Xe': 131.2936, 'Lu': 174.96681, 'Cs': 132.905451966, 'Cr': 51.99616,
+           'Cu': 63.5463, 'La': 138.905477, 'Ts': 294.0, 'Li': 6.94, 'Lv': 293.0, 'Tl': 204.38, 'Tm': 168.934222,
+           'Lr': 266.0, 'Th': 232.03774, 'Ti': 47.8671, 'Te': 127.603, 'Tb': 158.925352, 'Tc': 98.0, 'Ta': 180.947882,
+           'Yb': 173.0451, 'Db': 268.0, 'Dy': 162.5001, 'Ds': 281.0, 'I': 126.904473, 'U': 238.028913, 'Y': 88.905842,
+           'Ac': 227.0, 'Ag': 107.86822, 'Ir': 192.2173, 'Am': 243.0, 'Al': 26.98153857, 'As': 74.9215956,
+           'Ar': 39.9481, 'Au': 196.9665695, 'At': 210.0, 'In': 114.8181}
 
 
 class RunnerBaseClass(object):
@@ -93,6 +110,46 @@ def _schema_to_data(schema, data=None, defdict=None):
         default_data.update(data)
 
     return default_data
+
+
+def hydrophobic_atom_count(mol2_dict, hphob_types=('C.1', 'C.2', 'C.3', 'C.ar', 'S.3')):
+    """
+    Calculate the number of hydrophobic atoms in a Tripos MOL2 file based on
+    SYBYL atom types in `hphob_types`.
+
+    :param mol2_dict:   Tripos MOL2 atom records as returned by `parse_tripos_atom`
+    :type mol2_dict:    :py:dict
+    :param hphob_types: hydrophic atoms as SYBYL atom type
+    :type hphob_types:  :py:tuple, :py:list
+
+    :return:            hydrophobic atom count
+    :rtype:             :py:int
+    """
+
+    return sum([1 for atoms in mol2_dict.values() if atoms['atom_type'] in hphob_types])
+
+
+def molecular_weight(mol2_dict):
+    """
+    Calculate the molecular weight of a ligand based on the atom elements
+    contained in the Tripos MOL2 SYBYL atom types.
+
+    :param mol2_dict:   Tripos MOL2 atom records as returned by `parse_tripos_atom`
+    :type mol2_dict:    :py:dict
+
+    :return:            molecular weight
+    :rtype:             :py:float
+    """
+
+    mol_weight = 0.0
+    for atom in mol2_dict.values():
+        element = atom['atom_type'].split('.')[0]
+        if element in molmass:
+            mol_weight += molmass[element]
+        else:
+            logging.warning('Unknown element: {0}'.format(element))
+
+    return mol_weight
 
 
 def mol_validate_file_object(path_file):

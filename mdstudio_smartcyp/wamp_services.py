@@ -12,6 +12,7 @@ from autobahn.wamp import RegisterOptions
 from mdstudio.api.endpoint import endpoint
 from mdstudio.component.session import ComponentSession
 
+from mdstudio_smartcyp.combined_prediction import CombinedPrediction
 from mdstudio_smartcyp.smartcyp_run import SmartCypRunner, smartcyp_version_info
 from mdstudio_smartcyp.plants_run import PlantsDocking, plants_version_info
 from mdstudio_smartcyp.spores_run import SporesRunner
@@ -78,6 +79,27 @@ class SmartCypWampApi(ComponentSession):
 
         return result_dict
 
+    @endpoint('som_prediction', 'som_prediction_request', 'som_prediction_response',
+              options=RegisterOptions(invoke='roundrobin'))
+    def som_prediction(self, request, claims):
+        """
+        Run a REST based SOM prediction run
+        """
+
+        # Validate input path_file object for protein and ligand file
+        ligand_file = mol_validate_file_object(request['ligand_file'])
+
+        # Run combined structure/reactivity prediction
+        base_dir = os.environ.get('BASE_WORK_DIR', request.get('base_work_dir'))
+        sompred = CombinedPrediction(base_work_dir=base_dir, **request)
+        prediction = sompred.run(ligand_file, filter_clusters=request['filter_clusters'])
+
+        if prediction:
+            return {'status': 'completed', 'output': prediction}
+
+        self.log.error('SOM prediction failed')
+        return {'status': 'failed'}
+
     @endpoint('docking_info', 'info_request', 'info_response', options=RegisterOptions(invoke=u'roundrobin'))
     def plants_info(self, request, claims):
         """
@@ -100,7 +122,8 @@ class SmartCypWampApi(ComponentSession):
         ligand_file = mol_validate_file_object(request['ligand_file'])
 
         # Run docking
-        docking = PlantsDocking(workdir=os.environ.get('BASE_WORK_DIR', request.get('base_workdir')), **request)
+        base_dir = os.environ.get('BASE_WORK_DIR', request.get('base_work_dir'))
+        docking = PlantsDocking(base_work_dir=base_dir)
         success = docking.run(protein_file['content'], ligand_file['content'])
 
         if success:
@@ -122,7 +145,7 @@ class SmartCypWampApi(ComponentSession):
         Clustering will also be redone and optionally adjusted.
         """
 
-        base_dir = os.environ.get('BASE_WORK_DIR', request.get('base_workdir'))
+        base_dir = os.environ.get('BASE_WORK_DIR', request.get('base_work_dir'))
         base_path = list(set([os.path.dirname(p) for p in request['paths']]))
         if len(base_path) > 1:
             self.log.error('Unable to combine results for more then one docking run')
@@ -151,7 +174,7 @@ class SmartCypWampApi(ComponentSession):
         Clustering will also be redone and optionally adjusted.
         """
 
-        base_dir = os.environ.get('BASE_WORK_DIR', request.get('base_workdir'))
+        base_dir = os.environ.get('BASE_WORK_DIR', request.get('base_work_dir'))
         base_path = list(set([os.path.dirname(p) for p in request['paths']]))
         if len(base_path) > 1:
             self.log.error('Unable to combine results for more then one docking run')
@@ -178,7 +201,8 @@ class SmartCypWampApi(ComponentSession):
         # Validate input path_file object for mol
         mol = mol_validate_file_object(request['mol'])
 
-        spores = SporesRunner(log=self.log, base_work_dir=request.get('workdir'))
+        base_dir = os.environ.get('BASE_WORK_DIR', request.get('base_work_dir'))
+        spores = SporesRunner(log=self.log, base_work_dir=base_dir)
         result_dict = spores.run(mol['content'], mode=request['spores_mode'], input_format=request['input_format'])
         spores.delete()
 

@@ -5,6 +5,11 @@
   "description": "Perform Structure PrOtonation and REcognition System (SPORES)",
   "type": "object",
   "properties": {
+    "base_work_dir": {
+      "type": "string",
+      "description": "Directory to run the docking simulation",
+      "default": "/tmp/mdstudio/lie_plants_docking"
+    },
     "mol": {
       "$ref": "resource://mdgroup/common_resources/path_file/v1",
       "description": "Input structure file, PDB or MOL2"
