@@ -112,6 +112,32 @@ def _schema_to_data(schema, data=None, defdict=None):
     return default_data
 
 
+def atom_count(mol2_file):
+    """
+    Get atom count from Tripos MOL2 header
+
+    :param mol2_file: mol2 file
+    :type mol2_file:  :py:str
+
+    :return:          atom count
+    :rtype:           :py:int
+    """
+
+    atomcount = 0
+    with open(mol2_file, 'r') as infile:
+        for line in infile.readlines():
+
+            if line.startswith('@<TRIPOS>ATOM'):
+                break
+
+            line = line.strip().split()
+            if len(line) and line[0].isdigit():
+                atomcount = int(line[0])
+                break
+
+    return atomcount
+
+
 def hydrophobic_atom_count(mol2_dict, hphob_types=('C.1', 'C.2', 'C.3', 'C.ar', 'S.3')):
     """
     Calculate the number of hydrophobic atoms in a Tripos MOL2 file based on

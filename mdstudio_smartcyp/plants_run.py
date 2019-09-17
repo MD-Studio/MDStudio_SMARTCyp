@@ -18,7 +18,7 @@ import glob
 from mdstudio_smartcyp import __module__, __package_path__, __plants_path__, __plants_version__, __plants_citation__
 from mdstudio_smartcyp.plants_conf import PLANTS_CONF_FILE_TEMPLATE
 from mdstudio_smartcyp.utils import (_schema_to_data, RunnerBaseClass, prepare_work_dir, create_multi_mol2,
-                                     create_multi_pdb, import_plants_csv)
+                                     create_multi_pdb, import_plants_csv, atom_count)
 from mdstudio_smartcyp.clustering import coords_from_mol2, ClusterStructures
 
 logger = logging.getLogger(__module__)
@@ -183,10 +183,14 @@ class PlantsDocking(RunnerBaseClass):
         """
 
         # Structure selection to return results for
-        if not structures:
+        structures = structures or []
+        structures = [os.path.join(self.base_work_dir, struc) for struc in structures]
+        if not structures and self.workdir:
             structures = [struc for struc in glob.glob(os.path.join(self.workdir, '*_entry_*_conf_*.mol2'))]
-        else:
-            structures = [os.path.join(self.base_work_dir, struc) for struc in structures]
+
+        if not len(structures):
+            return None
+
         self.workdir = os.path.dirname(structures[0])
 
         # Read docking results: first try features.csv, else ranking.csv
@@ -306,10 +310,6 @@ class PlantsDocking(RunnerBaseClass):
             self.log.error('Malformed binding site center definition: {0}'.format(self.config['bindingsite_center']))
             check_valid = False
 
-        if not check_valid:
-            self.delete()
-            return check_valid
-
         # Copy files to working directory
         if os.path.isfile(protein):
             self.config['protein_file'] = protein
@@ -324,6 +324,16 @@ class PlantsDocking(RunnerBaseClass):
             with open(os.path.join(self.workdir, 'ligand.mol2'), 'w') as ligand_file:
                 ligand_file.write(ligand)
                 self.config['ligand_file'] = 'ligand.mol2'
+
+        if atom_count(os.path.join(self.workdir, self.config['ligand_file'])) > atom_count(os.path.join(self.workdir,
+                                                                                        self.config['protein_file'])):
+            self.log.error('Ligand structure contains more atoms than protein structure. Swapped input?')
+            check_valid = False
+
+        # Delete PLANTS working directory if validation failed
+        if not check_valid:
+            self.delete()
+            return check_valid
 
         # Write PLANTS configuration file
         conf_file = os.path.join(self.workdir, 'plants.config')
