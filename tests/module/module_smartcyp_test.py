@@ -8,16 +8,16 @@ Unit tests for SmartCypRunner methods
 
 import os
 import json
-import unittest
 import base64
 
 from mdstudio_smartcyp import __smartcyp_citation__, __smartcyp_version__, __supported_models__
 from mdstudio_smartcyp.smartcyp_run import SmartCypRunner, smartcyp_version_info
+from unittest_baseclass import UnittestPythonCompatibility
 
 FILEPATH = os.path.abspath(os.path.join(os.path.dirname(__file__), '../files/'))
 
 
-class SmartCypInfoTests(unittest.TestCase):
+class SmartCypInfoTests(UnittestPythonCompatibility):
 
     def test_smartcyp_version_info(self):
         """
@@ -32,7 +32,7 @@ class SmartCypInfoTests(unittest.TestCase):
                                         'citation': __smartcyp_citation__})
 
 
-class SmartCypRunnerTests(unittest.TestCase):
+class SmartCypRunnerTests(UnittestPythonCompatibility):
 
     tmp_files = []
 
@@ -67,7 +67,7 @@ class SmartCypRunnerTests(unittest.TestCase):
         reference = open(os.path.join(FILEPATH, 'result.json'), 'r')
         json_reference = json.load(reference)
 
-        self.assertDictEqual(json_result['result'], json_reference)
+        self.assertNestedObjects(json_reference, json_result['result'])
 
     def test_smartcyp_mol2(self):
         """
@@ -82,7 +82,7 @@ class SmartCypRunnerTests(unittest.TestCase):
         reference = open(os.path.join(FILEPATH, 'result.json'), 'r')
         json_reference = json.load(reference)
 
-        self.assertDictEqual(json_result['result'], json_reference)
+        self.assertNestedObjects(json_result['result'], json_reference)
 
     def test_smartcyp_sdf(self):
         """
@@ -97,7 +97,7 @@ class SmartCypRunnerTests(unittest.TestCase):
         reference = open(os.path.join(FILEPATH, 'result.json'), 'r')
         json_reference = json.load(reference)
 
-        self.assertDictEqual(json_result['result'], json_reference)
+        self.assertNestedObjects(json_result['result'], json_reference)
 
     def test_smartcyp_noempcorr(self):
         """
@@ -110,7 +110,7 @@ class SmartCypRunnerTests(unittest.TestCase):
         reference = open(os.path.join(FILEPATH, 'result.json'), 'r')
         json_reference = json.load(reference)
 
-        self.assertDictEqual(json_result['result'], json_reference)
+        self.assertNestedObjects(json_result['result'], json_reference)
 
     def test_smartcyp_csv(self):
         """
@@ -119,8 +119,8 @@ class SmartCypRunnerTests(unittest.TestCase):
 
         csv_result = self.scr.run(mol='O=Cc1ccc(s1)c2cccnc2', is_smiles=True, output_format='csv')
 
-        with open(os.path.join(FILEPATH, 'result.csv'), 'r') as reference:
-            self.assertEqual(reference.read(), csv_result['result'])
+        with open(os.path.join(FILEPATH, 'result.csv')) as ref:
+            self.assertFileEqual(ref, csv_result['result'])
 
     def test_smartcyp_html(self):
         """

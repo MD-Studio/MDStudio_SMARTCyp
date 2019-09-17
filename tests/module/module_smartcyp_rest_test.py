@@ -12,6 +12,7 @@ import requests
 import json
 
 from mdstudio_smartcyp.smartcyp_run import smartcyp_version_info
+from unittest_baseclass import UnittestPythonCompatibility
 from tests.module import MAJOR_PY_VERSION
 
 if MAJOR_PY_VERSION == 2:
@@ -33,7 +34,7 @@ def test_localhost_connection():
     return True
 
 
-class SmartcypRestTest(unittest.TestCase):
+class SmartcypRestTest(UnittestPythonCompatibility):
 
     ligand_file = open(os.path.join(FILEPATH, 'ligand.sdf'), 'rb')
 
@@ -74,7 +75,7 @@ class SmartcypRestTest(unittest.TestCase):
         json_reference = json.load(reference)
 
         rest_response = response.json()
-        self.assertDictEqual(rest_response['result'], json_reference)
+        self.assertNestedObjects(rest_response['result'], json_reference)
 
     @unittest.skipIf(not test_localhost_connection(), 'MDStudio_SMARTCyp REST service not running on: {0}'.format(URL))
     def test_smartcyp_html(self):
@@ -101,8 +102,8 @@ class SmartcypRestTest(unittest.TestCase):
         response = requests.post('{0}/smartcyp'.format(URL), data=data)
 
         rest_response = response.json()
-        with open(os.path.join(FILEPATH, 'result.csv'), 'r') as reference:
-            self.assertEqual(reference.read(), rest_response['result'])
+        with open(os.path.join(FILEPATH, 'result.csv')) as ref:
+            self.assertFileEqual(ref, rest_response['result'])
 
     @unittest.skipIf(not test_localhost_connection(), 'MDStudio_SMARTCyp REST service not running on: {0}'.format(URL))
     def test_smartcyp_fileupload(self):
@@ -110,7 +111,7 @@ class SmartcypRestTest(unittest.TestCase):
         Test default smartcyp post response, file upload
         """
 
-        files = {'mol': self.ligand_file}
+        files = {'ligand_file': self.ligand_file}
         response = requests.post('{0}/smartcyp'.format(URL), files=files)
 
         rest_response = response.json()
