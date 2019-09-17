@@ -187,6 +187,7 @@ class PlantsDocking(RunnerBaseClass):
             structures = [struc for struc in glob.glob(os.path.join(self.workdir, '*_entry_*_conf_*.mol2'))]
         else:
             structures = [os.path.join(self.base_work_dir, struc) for struc in structures]
+        self.workdir = os.path.dirname(structures[0])
 
         # Read docking results: first try features.csv, else ranking.csv
         results = import_plants_csv(self.workdir, structures)
@@ -239,6 +240,7 @@ class PlantsDocking(RunnerBaseClass):
             structures = [structures]
 
         structures = [os.path.join(self.base_work_dir, struc) for struc in structures]
+        self.workdir = os.path.dirname(structures[0])
 
         protein = None
         if include_protein:
