@@ -8,7 +8,7 @@ Java code and parsing the output to structured JSON.
 """
 
 import glob
-import csv
+import pandas
 import os
 import logging
 import base64
@@ -18,9 +18,6 @@ from mdstudio_smartcyp import (__smartcyp_version__, __smartcyp_citation__, __su
 from mdstudio_smartcyp.utils import prepare_work_dir, RunnerBaseClass
 
 logger = logging.getLogger(__module__)
-result_types = {'Ranking': int, '2DSASA': float, 'N+Dist': int, '2D6ranking': int, 'Energy': float,
-                'Molecule': int, 'Span2End': int, 'Score': float, 'Relative Span': float,
-                '2Cscore': float, 'Atom': str, '2Cranking': int, 'COODist': int, '2D6score': float}
 
 
 def smartcyp_version_info():
@@ -45,19 +42,21 @@ class SmartCypRunner(RunnerBaseClass):
     to structured JSON.
     """
 
-    def __init__(self, log=logger, workdir=None):
+    def __init__(self, log=logger, base_work_dir=None):
         """
         Implement class __init__
 
-        :param log:     external logger instance
-        :param workdir: path to base working directory
-        :type workdir:  :py:str
+        :param log:           external logger instance
+        :type log:            :py:logging
+        :param base_work_dir: base directory for unique docking results dirs.
+        :type base_work_dir:  :py:str
         """
 
         self.log = log
 
         # Make a temporary directory
-        self.workdir = prepare_work_dir(path=workdir, prefix='smartcyp-')
+        self.workdir = prepare_work_dir(path=base_work_dir, prefix='smartcyp-')
+        self.results = None
 
     def _parse_csv(self, csvfile):
         """
@@ -74,35 +73,10 @@ class SmartCypRunner(RunnerBaseClass):
         :rtype:         :py:dict
         """
 
-        csv_rows = {}
-        reader = csv.DictReader(csvfile)
-        title = reader.fieldnames
-        for row in reader:
-            drow = {title[i]: row[title[i]] for i in range(len(title))}
+        results = pandas.read_csv(csvfile, index_col='Atom')
+        results['Atom_id'] = [int(i.split('.')[-1]) for i in results.index]
 
-            # Type convert
-            for key, value in drow.items():
-                if not key in result_types:
-                    self.log.warning('Unknown results parameter: {0}'.format(key))
-
-                convert_to = result_types[key]
-                try:
-                    # 'null' to None
-                    if value == 'null':
-                        drow[key] = None
-                    else:
-                        drow[key] = convert_to(value)
-                except ValueError:
-                    self.log.warning('Unable to convert {0}: {1} to {2}'.format(key, value, convert_to))
-
-            # Add atom number
-            atnum = drow['Atom'].split('.')[-1]
-            if atnum.isdigit():
-                drow['Atom_id'] = int(atnum)
-
-            csv_rows[drow['Atom']] = drow
-
-        return csv_rows
+        self.results = results.where((pandas.notnull(results)), None)
 
     def _parse_html(self, htmlfile):
         """
@@ -198,33 +172,33 @@ class SmartCypRunner(RunnerBaseClass):
             cmd.append(os.path.join(self.workdir, 'ligand.mol2'))
 
         # Run SMARTCyp
-        self.cmd_runner(cmd)
-
         result = {'result': None}
-        if output_format in ('csv', 'json'):
+        if self.cmd_runner(cmd):
 
-            # Get output CSV
             csvfile = glob.glob('{0}/*.csv'.format(self.workdir))
             if len(csvfile):
-                with open(csvfile[0], 'r') as csvfile:
-                    if output_format == 'csv':
-                        result['result'] = csvfile.read()
-                    elif output_format == 'json':
-                        result['result'] = self._parse_csv(csvfile)
+                self._parse_csv(csvfile[0])
+                if output_format == 'csv':
+                    result['result'] = self.results.to_csv()
+                elif output_format == 'json':
+                    self.results['Atom'] = self.results.index
+                    result['result'] = self.results.to_dict(orient='index')
             else:
                 self.log.error('SMARTCyp did not create a results .csv file')
 
+            if output_format == 'html':
+                # Get output HTML
+                htmlfile = glob.glob('{0}/*.html'.format(self.workdir))
+                if len(htmlfile):
+                    result['result'] = self._parse_html(htmlfile[0])
+                else:
+                    self.log.error('SMARTCyp did not create a results .html file')
+
+            if output_png:
+                image_results = self._parse_images()
+                result['images'] = image_results
+
         else:
-
-            # Get output HTML
-            htmlfile = glob.glob('{0}/*.html'.format(self.workdir))
-            if len(htmlfile):
-                result['result'] = self._parse_html(htmlfile[0])
-            else:
-                self.log.error('SMARTCyp did not create a results .html file')
-
-        if output_png:
-            image_results = self._parse_images()
-            result['images'] = image_results
+            self.log.error('Failed to run SMARTCyp')
 
         return result
