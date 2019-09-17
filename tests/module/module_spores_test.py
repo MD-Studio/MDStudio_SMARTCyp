@@ -61,6 +61,6 @@ class SporesTest(unittest.TestCase):
         self.assertIsNone(spores.workdir)
 
     @unittest.skipIf(not os.path.exists(PLANTS_EXEC), 'This test requires proprietary software')
-    def test_plants_docking(self):
+    def test_spores(self):
 
         pass
