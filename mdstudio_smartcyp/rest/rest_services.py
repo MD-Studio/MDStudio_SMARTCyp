@@ -36,12 +36,12 @@ def plants_docking(protein_file, ligand_file, base_work_dir=None, **kwargs):
     if isinstance(protein_file, FileStorage):
         protein_file = protein_file.read().decode('utf-8')
     else:
-        return 'Unsuported protein file structure: {0}'.format(type(protein_file)), 401
+        return 'Unsupported protein file structure: {0}'.format(type(protein_file)), 401
 
     if isinstance(ligand_file, FileStorage):
         ligand_file = ligand_file.read().decode('utf-8')
     else:
-        return 'Unsuported protein file structure: {0}'.format(type(ligand_file)), 401
+        return 'Unsupported protein file structure: {0}'.format(type(ligand_file)), 401
 
     # Run docking
     docking = PlantsDocking(base_work_dir=os.environ.get('BASE_WORK_DIR', base_work_dir), **kwargs)
