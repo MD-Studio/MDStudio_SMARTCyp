@@ -63,12 +63,13 @@ class SmartCypWampApi(ComponentSession):
         """
 
         # Validate input path_file object for mol
-        mol = mol_validate_file_object(request['mol'])
+        ligand_file = mol_validate_file_object(request['ligand_file'])
 
         # Run smartcyp
-        smartcyp = SmartCypRunner(log=self.log, workdir=request.get('workdir'))
-        result_dict = smartcyp.run(mol['content'],
-                                   is_smiles=mol['extension'] == 'smi',
+        base_dir = os.environ.get('BASE_WORK_DIR', request.get('base_work_dir'))
+        smartcyp = SmartCypRunner(log=self.log, base_work_dir=base_dir)
+        result_dict = smartcyp.run(ligand_file['content'],
+                                   is_smiles=ligand_file['extension'] == 'smi',
                                    output_format=request['output_format'],
                                    noempcorr=request['noempcorr'])
 

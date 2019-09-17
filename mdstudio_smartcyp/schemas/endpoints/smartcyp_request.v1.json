@@ -5,7 +5,12 @@
   "description": "Perform a CYP site of metabolism prediction using SMARTCyp",
   "type": "object",
   "properties": {
-    "mol": {
+    "base_work_dir": {
+      "type": "string",
+      "description": "Directory to run the docking simulation",
+      "default": "/tmp/mdstudio/lie_plants_docking"
+    },
+    "ligand_file": {
       "$ref": "resource://mdgroup/common_resources/path_file/v1",
       "description": "Ligand input file"
     },
@@ -23,6 +28,6 @@
       "default": false
     }
   },
-  "required": ["mol"],
+  "required": ["ligand_file"],
   "additionalProperties": false
 }

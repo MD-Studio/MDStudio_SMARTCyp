@@ -111,12 +111,12 @@ def plants_docking_structures(paths=None, **kwargs):
     return results
 
 
-def smartcyp_prediction(mol=None, smiles=None, output_format='json', noempcorr=False, output_png=False):
+def smartcyp_prediction(ligand_file=None, smiles=None, output_format='json', noempcorr=False, output_png=False):
     """
     Run a REST based SMARTCyp prediction for a molecule
 
-    :param mol:           molecule to make prediction for
-    :type mol:            :py:str
+    :param ligand_file:   molecule to make prediction for
+    :type ligand_file:    :py:str
     :param smiles:        molecule as SMILES or InChI string
     :type smiles:         :py:str
     :param is_smiles:     is the molecule a SMILES string
@@ -134,11 +134,11 @@ def smartcyp_prediction(mol=None, smiles=None, output_format='json', noempcorr=F
 
     # Input molecule is either a SMILES/InChI string or file object
     path_file_object = {'content': smiles, 'extension': 'smi' if smiles else None, 'path': None}
-    if isinstance(mol, FileStorage):
-        path_file_object['content'] = mol.read().decode('utf-8')
-        if '.' in os.path.basename(mol.filename):
-            path_file_object['extension'] = mol.filename.split('.')[-1]
-        path_file_object['path'] = mol.filename
+    if isinstance(ligand_file, FileStorage):
+        path_file_object['content'] = ligand_file.read().decode('utf-8')
+        if '.' in os.path.basename(ligand_file.filename):
+            path_file_object['extension'] = ligand_file.filename.split('.')[-1]
+        path_file_object['path'] = ligand_file.filename
 
     if path_file_object['content'] is None:
         return "Ligand input from file 'mol' or as 'smiles' string required", 401
