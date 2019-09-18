@@ -118,7 +118,6 @@ def plants_docking_statistics(paths=None, **kwargs):
         return 'Docking results (no longer) exist: {0}'.format(os.path.basename(base_path[0])), 401
 
     docking = PlantsDocking(base_work_dir=os.environ.get('BASE_WORK_DIR'))
-    docking.workdir = base_path[0]
     docking.update(kwargs)
 
     results = docking.get_results(structures=paths)
@@ -148,7 +147,6 @@ def plants_docking_structures(paths=None, **kwargs):
         return 'Docking results (no longer) exist: {0}'.format(os.path.basename(base_path[0])), 401
 
     docking = PlantsDocking(base_work_dir=os.environ.get('BASE_WORK_DIR'))
-    docking.workdir = base_path[0]
     results = docking.get_structures(paths, **kwargs)
 
     return results
