@@ -17,8 +17,8 @@ from mdstudio_smartcyp.utils import mol_validate_file_object, MDStudioException
 from mdstudio_smartcyp.combined_prediction import CombinedPrediction
 
 
-def som_prediction(ligand_file, base_work_dir=None, cyp='3A4', filter_clusters=True, smartcyp_score_label='Score',
-                   **kwargs):
+def som_prediction(ligand_file, base_work_dir=None, cyp='3A4', filter_clusters=True, explicit_oxygen=False,
+                   smartcyp_score_label='Score', **kwargs):
     """
     Run a REST based SOM prediction run
 
@@ -32,6 +32,9 @@ def som_prediction(ligand_file, base_work_dir=None, cyp='3A4', filter_clusters=T
     :param filter_clusters:      make prediction for clustered docking results
                                  only
     :type filter_clusters:       :py:bool
+    :param explicit_oxygen:      Use protein structure with explicit oxygen on
+                                 the heme
+    :type explicit_oxygen:       :py:bool
     :param smartcyp_score_label: SMARTCyp output 'score' values to use for
                                  prediction
     :type smartcyp_score_label:  :py:str
@@ -50,7 +53,7 @@ def som_prediction(ligand_file, base_work_dir=None, cyp='3A4', filter_clusters=T
 
     # Run combined structure/reactivity prediction
     sompred = CombinedPrediction(base_work_dir=os.environ.get('BASE_WORK_DIR', base_work_dir), cyp=cyp,
-                                 smartcyp_score_label=smartcyp_score_label, **kwargs)
+                                 explicit_oxygen=explicit_oxygen, smartcyp_score_label=smartcyp_score_label, **kwargs)
     prediction = sompred.run(ligand_file, filter_clusters=filter_clusters)
 
     if prediction:

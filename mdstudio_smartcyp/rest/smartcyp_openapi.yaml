@@ -57,6 +57,12 @@ paths:
           default: true
           required: false
           type: boolean
+        - name: explicit_oxygen
+          description: Use protein structure with explicit oxygen on the heme
+          in: formData
+          default: false
+          required: false
+          type: boolean
         - name: smartcyp_score_label
           description: SMARTCyp output 'score' values to use for prediction
           in: formData

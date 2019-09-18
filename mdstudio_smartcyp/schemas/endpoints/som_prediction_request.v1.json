@@ -25,6 +25,11 @@
       "description": "Make prediction for clustered docking results only",
       "default": true
     },
+    "explicit_oxygen": {
+      "type": "boolean",
+      "description": "Use protein structure with explicit oxygen on the heme",
+      "default": false
+    },
     "smartcyp_score_label": {
       "type": "string",
       "description": "SMARTCyp output 'score' values to use for prediction",
@@ -342,8 +347,6 @@
     }
   },
   "required": [
-    "bindingsite_center",
-    "ligand_file",
-    "protein_file"
+    "ligand_file"
   ]
 }

@@ -21,14 +21,15 @@ from mdstudio_smartcyp.utils import (parse_tripos_atom, merge_protein_ligand_mol
 logger = logging.getLogger(__module__)
 
 # Cyp conformation decision tree
-cyp_conf = {'3A4': [{'max_mw': 354, 'conf': '3UA1_apo_5901.mol2'},
-                    {'min_mw': 354, 'max_mw': 500, 'conf': '3UA1_apo_6091.mol2'},
-                    {'min_mw': 354, 'conf': '3UA1_BCP_3521.mol2'}],
-            '1A2': [{'conf': '1A2_nathan.mol2'}],
-            '2D6': [{'max_mw': 280, 'conf': '2D6_PPD_70_216.mol2'},
-                    {'min_mw': 280, 'max_hydrophob': 18, 'conf': '2D6_CHZ_170_79.mol2'},
-                    {'min_mw': 280, 'conf': '2D6_TMF_70_3.mol2'}]
-            }
+cyp_conf = {
+    '3A4': [{'max_mw': 354, 'conf': '3UA1_apo_5901.mol2', 'conf_ox': '3UA1_OX_apo_5901.mol2'},
+            {'min_mw': 354, 'max_mw': 500, 'conf': '3UA1_apo_6091.mol2', 'conf_ox': '3UA1_OX_apo_6091.mol2'},
+            {'min_mw': 354, 'conf': '3UA1_BCP_3521.mol2', 'conf_ox': '3UA1_OX_BCP_3521.mol2'}],
+    '1A2': [{'conf': '1A2_nathan.mol2', 'conf_ox': '1A2_OX_nathan.mol2'}],
+    '2D6': [{'max_mw': 280, 'conf': '2D6_PPD_70_216.mol2', 'conf_ox': '2D6_OX_PPD_70_216.mol2'},
+            {'min_mw': 280, 'max_hydrophob': 18, 'conf': '2D6_CHZ_170_79.mol2', 'conf_ox': '2D6_OX_CHZ_170_79.mol2'},
+            {'min_mw': 280, 'conf': '2D6_TMF_70_3.mol2', 'conf_ox': '2D6_OX_TMF_70_3.mol2'}]
+    }
 
 
 class CombinedPrediction(object):
@@ -46,6 +47,9 @@ class CombinedPrediction(object):
     :param filter_clusters:      make prediction for clustered docking results
                                  only
     :type filter_clusters:       :py:bool
+    :param explicit_oxygen:      Use protein structure with explicit oxygen on
+                                 the heme
+    :type explicit_oxygen:       :py:bool
     :param smartcyp_score_label: SMARTCyp output 'score' values to use for
                                  prediction
     :type smartcyp_score_label:  :py:str
@@ -53,12 +57,14 @@ class CombinedPrediction(object):
     :type kwargs:                :py:dict
     """
 
-    def __init__(self, log=logger, base_work_dir=None, cyp='3A4', smartcyp_score_label='Score',  **kwargs):
+    def __init__(self, log=logger, base_work_dir=None, cyp='3A4', smartcyp_score_label='Score', explicit_oxygen=False,
+                 **kwargs):
 
         self.log = log
         self.base_work_dir = base_work_dir
         self.docking_config = kwargs
         self.smartcyp_score_label = smartcyp_score_label
+        self.explicit_oxygen = explicit_oxygen
         self._workdir = None
 
         self.cyp = cyp.upper()
@@ -82,6 +88,10 @@ class CombinedPrediction(object):
         * 2D6   > 280, < 18 n_hydroph   2D6_CHZ_170_79                  Hritz
         * 2D6   > 280, > 18 n_hydroph   2D6_TMF_70_3                    Hritz
 
+        If the class 'explicit_oxygen' argument is enabled then the CYP isoform
+        variant including an explicit oxygen covalently bonded to the Heme FE is
+        returned.
+
         :param lig_mol2_atoms:  Tripos MOL2 atom records as returned by `parse_tripos_atom`
         :type lig_mol2_atoms:   :py:dict
 
@@ -89,6 +99,7 @@ class CombinedPrediction(object):
         :rtype:                 :py:str
         """
 
+        conf_selector = 'conf_ox' if self.explicit_oxygen else 'conf'
         molw = molecular_weight(lig_mol2_atoms)
         n_hydrophob = hydrophobic_atom_count(lig_mol2_atoms)
 
@@ -100,7 +111,7 @@ class CombinedPrediction(object):
                 if n_hydrophob > conf.get('max_hydrophob', 9999):
                     continue
 
-                choice = conf['conf']
+                choice = conf[conf_selector]
 
         self.log.info('Use {0} conformation {1}, molecular weight: {2:.3f} and hydrophobic atom count: {3}'.format(
             self.cyp, choice, molw, n_hydrophob))
