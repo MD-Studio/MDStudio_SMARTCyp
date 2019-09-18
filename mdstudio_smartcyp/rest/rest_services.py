@@ -127,16 +127,21 @@ def plants_docking_statistics(paths=None, **kwargs):
     return 'PLANTS docking failed', 401
 
 
-def plants_docking_structures(paths=None, **kwargs):
+def plants_docking_structures(paths=None, output_format='mol2', include_protein=False, **kwargs):
     """
     Return PLANTS docking statistics for particular docking solutions run previously.
     Clustering will also be redone and optionally adjusted.
 
-    :param paths: list of docking solution paths
-    :type paths:  :py:list
+    :param paths:           list of docking solution paths
+    :type paths:            :py:list
+    :param output_format:   return ensemble in MOL2 or PDB format
+    :type output_format:    :py:str
+    :param include_protein: return ensemble including the protein
+                            structure or only the ligand structures
+    :type include_protein:  :py:bool
 
-    :return:      docking structures as combined Tripos MOL2 file
-    :rtype:       :py:str
+    :return:                docking structures as combined Tripos MOL2 file
+    :rtype:                 :py:str
     """
 
     base_path = list(set([os.path.dirname(p) for p in paths]))
@@ -147,7 +152,9 @@ def plants_docking_structures(paths=None, **kwargs):
         return 'Docking results (no longer) exist: {0}'.format(os.path.basename(base_path[0])), 401
 
     docking = PlantsDocking(base_work_dir=os.environ.get('BASE_WORK_DIR'))
-    results = docking.get_structures(paths, **kwargs)
+    docking.update(kwargs)
+
+    results = docking.get_structures(paths, output_format=output_format, include_protein=include_protein)
 
     return results
 
