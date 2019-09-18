@@ -244,7 +244,7 @@ class CombinedPrediction(object):
         lig_resname = set([n['subst_name'][0:3] for n in lig_mol2_atoms.values()])
         rings = None
         combined = []
-        for frame, nr in molsys:
+        for frame, nr in molsys.iter_frames(auto_chunk=False):
 
             logging.info('Evaluate heme-coordination on docking pose: {0}'.format(nr + 1))
 
