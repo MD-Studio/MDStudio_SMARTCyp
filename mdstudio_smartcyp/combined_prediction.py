@@ -21,13 +21,13 @@ from mdstudio_smartcyp.utils import (parse_tripos_atom, merge_protein_ligand_mol
 logger = logging.getLogger(__module__)
 
 # Cyp conformation decision tree
-cyp_conf = {'3A4': [{'min_mw': 0, 'max_mw': 354, 'conf': '3UA1_apo_5901.mol2'},
+cyp_conf = {'3A4': [{'max_mw': 354, 'conf': '3UA1_apo_5901.mol2'},
                     {'min_mw': 354, 'max_mw': 500, 'conf': '3UA1_apo_6091.mol2'},
-                    {'min_mw': 354, 'max_mw': 9999, 'conf': '3UA1_BCP_3521.mol2'}],
+                    {'min_mw': 354, 'conf': '3UA1_BCP_3521.mol2'}],
             '1A2': [{'conf': '1A2_nathan.mol2'}],
-            '2D6': [{'min_mw': 0, 'max_mw': 280, 'conf': '2D6_PPD_70_216.mol2'},
-                    {'min_mw': 280, 'max_mw': 9999, 'max_hydrophob': 18, 'conf': '2D6_CHZ_170_79.mol2'},
-                    {'min_mw': 280, 'max_mw': 9999, 'conf': '2D6_TMF_70_3.mol2'}]
+            '2D6': [{'max_mw': 280, 'conf': '2D6_PPD_70_216.mol2'},
+                    {'min_mw': 280, 'max_hydrophob': 18, 'conf': '2D6_CHZ_170_79.mol2'},
+                    {'min_mw': 280, 'conf': '2D6_TMF_70_3.mol2'}]
             }
 
 
@@ -94,7 +94,8 @@ class CombinedPrediction(object):
 
         choice = None
         for conf in cyp_conf[self.cyp]:
-            if conf['min_mw'] < molw < conf['max_mw']:
+
+            if conf.get('min_mw', 0) < molw < conf.get('max_mw', 9999):
 
                 if n_hydrophob > conf.get('max_hydrophob', 9999):
                     continue
