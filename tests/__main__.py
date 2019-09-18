@@ -12,7 +12,7 @@ import unittest
 import logging
 
 # Init basic logging
-logging.basicConfig(level=logging.WARN)
+logging.basicConfig(level=logging.INFO)
 
 # Add modules in package to path so we can import them
 modulepath = os.path.abspath(os.path.join(os.path.dirname(__file__), '../'))
