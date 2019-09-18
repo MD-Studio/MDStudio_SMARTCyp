@@ -162,8 +162,6 @@ def smartcyp_prediction(ligand_file=None, smiles=None, output_format='json', noe
     :type ligand_file:    :py:str
     :param smiles:        molecule as SMILES or InChI string
     :type smiles:         :py:str
-    :param is_smiles:     is the molecule a SMILES string
-    :type is_smiles:      :py:bool
     :param output_format: output format as CSV, JSON or HTML
     :type output_format:  :py:str
     :param noempcorr:     do not use the empirical N-oxidation correction
@@ -211,12 +209,15 @@ def spores_run(mol, spores_mode='complete', input_format='mol2', base_work_dir=N
     For a detail description of the input see the file:
     schemas/endpoints/spores-request.v1.json
 
-    :param mol:          SPORES input structure
-    :type mol:           :py:str
-    :param spores_mode:  SPORES running mode
-    :type spores_mode:   :py:str
-    :param input_format: Input structure format
-    :type input_format:  :py:str
+    :param mol:           SPORES input structure
+    :type mol:            :py:str
+    :param spores_mode:   SPORES running mode
+    :type spores_mode:    :py:str
+    :param input_format:  Input structure format
+    :type input_format:   :py:str
+    :param base_work_dir: optional work directory to (temporary) store SPORES
+                          results.
+    :type base_work_dir:  :py:str
 
     :return:             SPORES processed structure
     :rtype:              :py:str
