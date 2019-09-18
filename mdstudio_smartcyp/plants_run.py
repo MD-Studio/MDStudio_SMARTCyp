@@ -18,7 +18,7 @@ import glob
 from mdstudio_smartcyp import __module__, __package_path__, __plants_path__, __plants_version__, __plants_citation__
 from mdstudio_smartcyp.plants_conf import PLANTS_CONF_FILE_TEMPLATE
 from mdstudio_smartcyp.utils import (_schema_to_data, RunnerBaseClass, prepare_work_dir, create_multi_mol2,
-                                     create_multi_pdb, import_plants_csv, atom_count)
+                                     create_multi_pdb, import_plants_csv, atom_count, MDStudioException)
 from mdstudio_smartcyp.clustering import coords_from_mol2, ClusterStructures
 
 logger = logging.getLogger(__module__)
@@ -104,6 +104,45 @@ class PlantsDocking(RunnerBaseClass):
         else:
             dict.__setattr__(self, key, value)
 
+    def _absolute_paths(self, rel_paths=None):
+        """
+        Construct absolute paths based relative 'docking workdir/pose name'
+        paths
+
+        :param rel_paths:   docking pose structure path IDs for which to
+                            return results. Defaults to all poses.
+        :type rel_paths:    :py:list
+
+        :return:            absolute paths
+        :rtype:             :py:list
+        """
+
+        if rel_paths is None:
+            if self.workdir:
+                rel_paths = [path for path in glob.glob(os.path.join(self.workdir, '*_entry_*_conf_*.mol2'))]
+
+        if isinstance(rel_paths, str):
+            rel_paths = [rel_paths]
+
+        if isinstance(rel_paths, (list, tuple)):
+            rel_paths = [os.path.join(self.base_work_dir, path) if not os.path.exists(path) else path for
+                         path in rel_paths]
+
+            # Cannot combine results from different docking runs
+            if len(set([os.path.dirname(path) for path in rel_paths])) > 1:
+                raise MDStudioException('Unable to combine results for more then one docking run')
+
+            # Do the results still exist
+            if any([not os.path.exists(path) for path in rel_paths]):
+                raise MDStudioException('Docking results (no longer) exist: {0}'.format(os.path.basename(rel_paths[0])))
+
+        if rel_paths:
+
+            # Set the docking working directory
+            self.workdir = os.path.dirname(rel_paths[0])
+
+        return rel_paths
+
     @property
     def workdir(self):
         """
@@ -132,7 +171,7 @@ class PlantsDocking(RunnerBaseClass):
 
             wdir = os.path.abspath(wdir)
             if not os.path.isdir(wdir):
-                raise IOError('Docking results (no longer) exist: {0}'.format(wdir))
+                raise MDStudioException('Docking results (no longer) exist: {0}'.format(wdir))
             self.config['workdir'] = wdir
             self._workdir = wdir
         else:
@@ -178,20 +217,12 @@ class PlantsDocking(RunnerBaseClass):
                                 return results. Defaults to all poses.
         :type structures:       :py:list
 
-        :return: general PLANTS docking results
-        :rtype:  dict
+        :return:                general PLANTS docking results
+        :rtype:                 :py:dict
         """
 
         # Structure selection to return results for
-        structures = structures or []
-        structures = [os.path.join(self.base_work_dir, struc) for struc in structures]
-        if not structures and self.workdir:
-            structures = [struc for struc in glob.glob(os.path.join(self.workdir, '*_entry_*_conf_*.mol2'))]
-
-        if not len(structures):
-            return None
-
-        self.workdir = os.path.dirname(structures[0])
+        structures = self._absolute_paths(structures)
 
         # Read docking results: first try features.csv, else ranking.csv
         results = import_plants_csv(self.workdir, structures)
@@ -236,15 +267,11 @@ class PlantsDocking(RunnerBaseClass):
                                 structure or only the ligand structures
         :type include_protein:  :py:bool
 
-        :return: docking results as single Tripos MOL2 file
-        :rtype:  :py:str
+        :return:                docking results as single Tripos MOL2 file
+        :rtype:                 :py:str
         """
 
-        if not isinstance(structures, (list, tuple)):
-            structures = [structures]
-
-        structures = [os.path.join(self.base_work_dir, struc) for struc in structures]
-        self.workdir = os.path.dirname(structures[0])
+        structures = self._absolute_paths(structures)
 
         protein = None
         if include_protein:
@@ -292,23 +319,21 @@ class PlantsDocking(RunnerBaseClass):
         :rtype:         bool
         """
 
+        # Check required PLANTS configuration arguments
+        exec_path = self.config.get('exec_path')
+        if not os.path.exists(exec_path):
+            raise MDStudioException('Plants executable not available at: {0}'.format(exec_path))
+
+        if not os.access(exec_path, os.X_OK):
+            raise MDStudioException('Plants executable {0} does not have exacutable permissions'.format(exec_path))
+
+        if sum(self.config['bindingsite_center']) == 0 or len(self.config['bindingsite_center']) != 3:
+            raise MDStudioException('Malformed binding site center definition: {0}'.format(
+                self.config['bindingsite_center']))
+
         # Create a working directory
         self.workdir = prepare_work_dir(path=self.base_work_dir, prefix='docking-')
         self.log.info('Created docking directory {0}'.format(self.workdir))
-
-        # Check required PLANTS configuration arguments
-        check_valid = True
-        exec_path = self.config.get('exec_path')
-        if not os.path.exists(exec_path):
-            self.log.error('Plants executable not available at: {0}'.format(exec_path))
-            check_valid = False
-        elif not os.access(exec_path, os.X_OK):
-            self.log.error('Plants executable {0} does not have exacutable permissions'.format(exec_path))
-            check_valid = False
-
-        if sum(self.config['bindingsite_center']) == 0 or len(self.config['bindingsite_center']) != 3:
-            self.log.error('Malformed binding site center definition: {0}'.format(self.config['bindingsite_center']))
-            check_valid = False
 
         # Copy files to working directory
         if os.path.isfile(protein):
@@ -325,23 +350,19 @@ class PlantsDocking(RunnerBaseClass):
                 ligand_file.write(ligand)
                 self.config['ligand_file'] = 'ligand.mol2'
 
-        if atom_count(os.path.join(self.workdir, self.config['ligand_file'])) > atom_count(os.path.join(self.workdir,
-                                                                                        self.config['protein_file'])):
-            self.log.error('Ligand structure contains more atoms than protein structure. Swapped input?')
-            check_valid = False
-
-        # Delete PLANTS working directory if validation failed
-        if not check_valid:
+        lig_atm_count = atom_count(os.path.join(self.workdir, self.config['ligand_file']))
+        prot_atm_count = atom_count(os.path.join(self.workdir, self.config['protein_file']))
+        if lig_atm_count > prot_atm_count:
             self.delete()
-            return check_valid
+            raise MDStudioException('Ligand structure contains more atoms than protein structure. Swapped input?')
 
         # Write PLANTS configuration file
         conf_file = os.path.join(self.workdir, 'plants.config')
         with open(conf_file, 'w') as conf:
             conf.write(PLANTS_CONF_FILE_TEMPLATE.format(**self.config))
 
-        results = self.cmd_runner([exec_path, '--mode', mode, 'plants.config'])
-        if not results:
+        success = self.cmd_runner([exec_path, '--mode', mode, 'plants.config'])
+        if not success:
             self.delete()
 
-        return results
+        return success

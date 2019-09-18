@@ -14,6 +14,7 @@ import platform
 
 from mdstudio_smartcyp import __package_path__
 from mdstudio_smartcyp.plants_run import PlantsDocking
+from mdstudio_smartcyp.plants_run import MDStudioException
 
 FILEPATH = os.path.abspath(os.path.join(os.path.dirname(__file__), '../files/'))
 PLANTS_EXEC = os.path.join(__package_path__, 'bin/plants_{0}'.format(platform.system().lower()))
@@ -71,8 +72,7 @@ class PlantsDockingTest(unittest.TestCase):
                                exec_path='/Users/_dummy_user/smartcyp/tests/plants',
                                bindingsite_center=[7.79934, 9.49666, 3.39229])
 
-        self.assertFalse(plants.run(self.protein, self.ligand))
-        self.assertIsNone(plants.workdir)
+        self.assertRaises(MDStudioException, plants.run, self.ligand, self.protein)
 
     @unittest.skipIf(not os.path.exists(PLANTS_EXEC), 'This test requires proprietary software')
     def test_plants_docking(self):
@@ -110,6 +110,29 @@ class PlantsDockingTest(unittest.TestCase):
         self.assertEqual(molcount, 5)
 
     @unittest.skipIf(not os.path.exists(PLANTS_EXEC), 'This test requires proprietary software')
+    def test_plants_docking_get_structures_not_exist(self):
+        """
+        Get specific poses for docking run that no longer exists
+        """
+
+        plants = PlantsDocking(base_work_dir=FILEPATH, bindingsite_center=[7.79934, 9.49666, 3.39229])
+
+        paths = ['not_exist/_entry_00001_conf_{0}.mol2'.format(i) for i in range(10)]
+        self.assertRaises(MDStudioException, plants.get_structures, paths)
+
+    @unittest.skipIf(not os.path.exists(PLANTS_EXEC), 'This test requires proprietary software')
+    def test_plants_docking_get_results_not_exist(self):
+        """
+        Get specific results for docking run that no longer exists
+        """
+
+        plants = PlantsDocking(base_work_dir=FILEPATH, bindingsite_center=[7.79934, 9.49666, 3.39229])
+
+        paths = ['not_exist/_entry_00001_conf_{0}.mol2'.format(i) for i in range(10)]
+        self.assertRaises(MDStudioException, plants.get_results, paths)
+
+
+    @unittest.skipIf(not os.path.exists(PLANTS_EXEC), 'This test requires proprietary software')
     def test_plants_docking_get_results(self):
         """
         Get results for subset of structures, will redo clustering
@@ -118,7 +141,11 @@ class PlantsDockingTest(unittest.TestCase):
         did_run_successfully, plants = self.run_plants()
         self.assertTrue(did_run_successfully)
 
+        # Get all results
         results = plants.get_results()
+        self.assertEqual(len(results.values()), 50)
+
+        # Get results subset
         paths = [v['PATH'] for v in list(results.values())[0:40]]
 
         results = plants.get_results(paths)
@@ -141,3 +168,12 @@ class PlantsDockingTest(unittest.TestCase):
         clust_new = [b['CLUSTER'] for b in results.values()]
 
         self.assertNotEqual(clust_orig, clust_new)
+
+    @unittest.skipIf(not os.path.exists(PLANTS_EXEC), 'This test requires proprietary software')
+    def test_plants_docking_wrong_structures(self):
+        """
+        Faulty docking with a ligand uploaded as protein
+        """
+
+        plants = PlantsDocking(base_work_dir=FILEPATH, bindingsite_center=[7.79934, 9.49666, 3.39229])
+        self.assertRaises(MDStudioException, plants.run, self.ligand, self.protein)

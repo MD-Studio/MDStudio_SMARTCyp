@@ -44,6 +44,16 @@ molmass = {'Ru': 101.072, 'Re': 186.2071, 'Rf': 267.0, 'Rg': 282.0, 'Ra': 226.0,
            'Ar': 39.9481, 'Au': 196.9665695, 'At': 210.0, 'In': 114.8181}
 
 
+class MDStudioException(Exception):
+
+    def __init__(self, message):
+        self.message = message
+        logger.error(message)
+
+    def __repr__(self):
+        return self.message
+
+
 class RunnerBaseClass(object):
 
     def delete(self):
