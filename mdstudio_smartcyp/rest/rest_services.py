@@ -13,7 +13,7 @@ from werkzeug import FileStorage
 from mdstudio_smartcyp.smartcyp_run import SmartCypRunner
 from mdstudio_smartcyp.plants_run import PlantsDocking
 from mdstudio_smartcyp.spores_run import SporesRunner
-from mdstudio_smartcyp.utils import mol_validate_file_object
+from mdstudio_smartcyp.utils import mol_validate_file_object, MDStudioException
 from mdstudio_smartcyp.combined_prediction import CombinedPrediction
 
 
@@ -88,12 +88,16 @@ def plants_docking(protein_file, ligand_file, base_work_dir=None, **kwargs):
 
     # Run docking
     docking = PlantsDocking(base_work_dir=os.environ.get('BASE_WORK_DIR', base_work_dir), **kwargs)
-    success = docking.run(protein_file, ligand_file)
 
-    if success:
-        results = docking.get_results()
-        if results:
-            return results
+    results = None
+    try:
+        if docking.run(protein_file, ligand_file):
+            results = docking.get_results()
+    except MDStudioException as error:
+        return repr(error), 401
+
+    if results:
+        return results
 
     return 'PLANTS docking failed', 401
 
@@ -110,17 +114,13 @@ def plants_docking_statistics(paths=None, **kwargs):
     :rtype:       :py:dict
     """
 
-    base_path = list(set([os.path.dirname(p) for p in paths]))
-    if len(base_path) > 1:
-        return 'Unable to combine results for more then one docking run', 401
+    docking = PlantsDocking(base_work_dir=os.environ.get('BASE_WORK_DIR'), **kwargs)
 
-    if not os.path.exists(os.path.join(os.environ.get('BASE_WORK_DIR', ''), base_path[0])):
-        return 'Docking results (no longer) exist: {0}'.format(os.path.basename(base_path[0])), 401
+    try:
+        results = docking.get_results(structures=paths)
+    except MDStudioException as error:
+        return repr(error), 401
 
-    docking = PlantsDocking(base_work_dir=os.environ.get('BASE_WORK_DIR'))
-    docking.update(kwargs)
-
-    results = docking.get_results(structures=paths)
     if results:
         return results
 
@@ -144,19 +144,17 @@ def plants_docking_structures(paths=None, output_format='mol2', include_protein=
     :rtype:                 :py:str
     """
 
-    base_path = list(set([os.path.dirname(p) for p in paths]))
-    if len(base_path) > 1:
-        return 'Unable to combine results for more then one docking run', 401
+    docking = PlantsDocking(base_work_dir=os.environ.get('BASE_WORK_DIR'), **kwargs)
 
-    if not os.path.exists(os.path.join(os.environ.get('BASE_WORK_DIR', ''), base_path[0])):
-        return 'Docking results (no longer) exist: {0}'.format(os.path.basename(base_path[0])), 401
+    try:
+        results = docking.get_structures(paths, output_format=output_format, include_protein=include_protein)
+    except MDStudioException as error:
+        return repr(error), 401
 
-    docking = PlantsDocking(base_work_dir=os.environ.get('BASE_WORK_DIR'))
-    docking.update(kwargs)
+    if results:
+        return results
 
-    results = docking.get_structures(paths, output_format=output_format, include_protein=include_protein)
-
-    return results
+    return 'PLANTS docking failed', 401
 
 
 def smartcyp_prediction(ligand_file=None, smiles=None, output_format='json', noempcorr=False, output_png=False):
