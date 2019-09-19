@@ -91,7 +91,7 @@
             "name": "smartcyp_score_label",
             "description": "SMARTCyp output 'score' values to use for prediction",
             "in": "formData",
-            "default": "Score",
+            "default": "Energy",
             "type": "string"
           },
           {
@@ -1205,7 +1205,7 @@
       "description": "Radius of the binding-site sphere",
       "in": "formData",
       "type": "number",
-      "default": 12
+      "default": 10
     },
     "cluster_structures": {
       "name": "cluster_structures",

@@ -18,7 +18,7 @@ from mdstudio_smartcyp.combined_prediction import CombinedPrediction
 
 
 def som_prediction(ligand_file, base_work_dir=None, cyp='3A4', filter_clusters=True, explicit_oxygen=False,
-                   smartcyp_score_label='Score', **kwargs):
+                   smartcyp_score_label='Energy', **kwargs):
     """
     Run a REST based SOM prediction run
 

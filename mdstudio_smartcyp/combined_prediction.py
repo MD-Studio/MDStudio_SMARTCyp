@@ -7,6 +7,7 @@ Combining SMARTCyp SOM prediction with PLANTS docking based SOM predictions
 import os
 import logging
 import pandas
+import numpy
 
 from fnmatch import fnmatch
 from interact import System
@@ -57,7 +58,7 @@ class CombinedPrediction(object):
     :type kwargs:                :py:dict
     """
 
-    def __init__(self, log=logger, base_work_dir=None, cyp='3A4', smartcyp_score_label='Score', explicit_oxygen=False,
+    def __init__(self, log=logger, base_work_dir=None, cyp='3A4', smartcyp_score_label='Energy', explicit_oxygen=False,
                  **kwargs):
 
         self.log = log
@@ -133,17 +134,10 @@ class CombinedPrediction(object):
           custom selection). Dividing the count sum by the number of poses
           for every atom. Normalize by the atom with the maximum value from
           the previous output.
-        *
-
-        Count the number of times ligand atoms participate in possible heme
-        coordination according to the MDInteract results.
-        Normalize the counts between 0 and 1 by dividing by the number of
-        evaluated poses (`pose_count`). The latter is either all generated
-        poses or the ones filtered for non-clustered poses.
-
-        Normalize the SMARTCyp score used for prediction
-        (`smartcyp_score_label`) between 0 and 1 for easy comparison to docking
-        results.
+        * SMARTCyp: select the 'smartcyp_score_label' column ('Energy') by
+          default and replace all unlikely atoms having a score of 999 or
+          higher by NaN. Normalize the resulting values by dividing the
+          minimum value by all values.
 
         :param hemecoor:    MDInteract heme coordination evaluation for docking
                             poses
@@ -169,9 +163,13 @@ class CombinedPrediction(object):
         norm = docmat[poses].sum(axis=1) / pose_count
         docmat['Docking'] = norm / max(norm)
 
+        # Replace SMARTCyp score values equal to or above 999 with NaN
+        self.smartcyp_results.loc[self.smartcyp_results[self.smartcyp_score_label] >= 999,
+                                  self.smartcyp_score_label] = numpy.nan
+
         # Add SMARTCyp prediction. Normalize defined score column
-        norm_smartcyp_score = 1.0 - (self.smartcyp_results[self.smartcyp_score_label] /
-                                     max(self.smartcyp_results[self.smartcyp_score_label]))
+        norm_smartcyp_score = (min(self.smartcyp_results[self.smartcyp_score_label]) /
+                               self.smartcyp_results[self.smartcyp_score_label])
         docmat['SMARTCyp'] = norm_smartcyp_score.values
 
         # Change index and columns
