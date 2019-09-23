@@ -300,6 +300,7 @@ class ClusterStructures(object):
             return fig
 
         fig.savefig(to_file)
+        plt.close(fig)
 
     def cluster(self, threshold=5, method='single', criterion='maxclust', min_cluster_count=1):
         """
