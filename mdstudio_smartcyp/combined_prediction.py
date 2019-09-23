@@ -168,7 +168,7 @@ class CombinedPrediction(object):
                                   self.smartcyp_score_label] = numpy.nan
 
         # Add SMARTCyp prediction. Normalize defined score column
-        norm_smartcyp_score = (min(self.smartcyp_results[self.smartcyp_score_label]) /
+        norm_smartcyp_score = (self.smartcyp_results[self.smartcyp_score_label].min() /
                                self.smartcyp_results[self.smartcyp_score_label])
         docmat['SMARTCyp'] = norm_smartcyp_score.values
 
