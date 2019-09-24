@@ -15,12 +15,13 @@ import platform
 from mdstudio_smartcyp import __package_path__
 from mdstudio_smartcyp.plants_run import PlantsDocking
 from mdstudio_smartcyp.plants_run import MDStudioException
+from tests.module.unittest_baseclass import UnittestPythonCompatibility
 
 FILEPATH = os.path.abspath(os.path.join(os.path.dirname(__file__), '../files/'))
 PLANTS_EXEC = os.path.join(__package_path__, 'bin/plants_{0}'.format(platform.system().lower()))
 
 
-class PlantsDockingTest(unittest.TestCase):
+class PlantsDockingTest(UnittestPythonCompatibility):
 
     workdir = None
     ligand_file = os.path.join(FILEPATH, 'ligand.mol2')
@@ -130,7 +131,6 @@ class PlantsDockingTest(unittest.TestCase):
 
         paths = ['not_exist/_entry_00001_conf_{0}.mol2'.format(i) for i in range(10)]
         self.assertRaises(MDStudioException, plants.get_results, paths)
-
 
     @unittest.skipIf(not os.path.exists(PLANTS_EXEC), 'This test requires proprietary software')
     def test_plants_docking_get_results(self):

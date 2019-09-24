@@ -12,7 +12,7 @@ import base64
 
 from mdstudio_smartcyp import __smartcyp_citation__, __smartcyp_version__, __supported_models__
 from mdstudio_smartcyp.smartcyp_run import SmartCypRunner, smartcyp_version_info
-from unittest_baseclass import UnittestPythonCompatibility
+from tests.module.unittest_baseclass import UnittestPythonCompatibility
 
 FILEPATH = os.path.abspath(os.path.join(os.path.dirname(__file__), '../files/'))
 

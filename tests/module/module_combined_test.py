@@ -15,12 +15,13 @@ import platform
 from mdstudio_smartcyp import __package_path__
 from mdstudio_smartcyp.combined_prediction import CombinedPrediction
 from mdstudio_smartcyp.plants_run import PlantsDocking
+from tests.module.unittest_baseclass import UnittestPythonCompatibility
 
 FILEPATH = os.path.abspath(os.path.join(os.path.dirname(__file__), '../files/'))
 PLANTS_EXEC = os.path.join(__package_path__, 'bin/plants_{0}'.format(platform.system().lower()))
 
 
-class CombinedPredictionTest(unittest.TestCase):
+class CombinedPredictionTest(UnittestPythonCompatibility):
 
     workdir = None
     prediction = None

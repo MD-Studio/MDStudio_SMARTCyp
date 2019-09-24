@@ -8,17 +8,17 @@ Unit tests MDStudio_SMARTCyp utility functions
 
 import os
 import shutil
-import unittest
 import platform
 
 from mdstudio_smartcyp import __package_path__
 from mdstudio_smartcyp.utils import prepare_work_dir
+from tests.module.unittest_baseclass import UnittestPythonCompatibility
 
 FILEPATH = os.path.abspath(os.path.join(os.path.dirname(__file__), '../files/'))
 PLANTS_EXEC = os.path.join(__package_path__, 'bin/plants_{0}'.format(platform.system().lower()))
 
 
-class UtilsTest(unittest.TestCase):
+class UtilsTest(UnittestPythonCompatibility):
 
     tempdirs = []
 

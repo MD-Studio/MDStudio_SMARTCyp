@@ -14,12 +14,13 @@ import platform
 
 from mdstudio_smartcyp import __package_path__
 from mdstudio_smartcyp.spores_run import SporesRunner
+from tests.module.unittest_baseclass import UnittestPythonCompatibility
 
 FILEPATH = os.path.abspath(os.path.join(os.path.dirname(__file__), '../files/'))
 PLANTS_EXEC = os.path.join(__package_path__, 'bin/spores_{0}'.format(platform.system().lower()))
 
 
-class SporesTest(unittest.TestCase):
+class SporesTest(UnittestPythonCompatibility):
 
     workdir = None
     ligand_file = os.path.join(FILEPATH, 'ligand.mol2')

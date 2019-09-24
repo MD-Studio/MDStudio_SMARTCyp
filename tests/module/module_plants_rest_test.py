@@ -12,6 +12,7 @@ import requests
 import random
 
 from mdstudio_smartcyp.plants_run import plants_version_info
+from tests.module.unittest_baseclass import UnittestPythonCompatibility
 
 FILEPATH = os.path.abspath(os.path.join(os.path.dirname(__file__), '../files/'))
 URL = 'http://localhost:8081'
@@ -43,7 +44,7 @@ def count_poses_mulimol(mol):
     return pose_count
 
 
-class PlantsRestTest(unittest.TestCase):
+class PlantsRestTest(UnittestPythonCompatibility):
 
     ligand_file = open(os.path.join(FILEPATH, 'ligand.mol2'), 'rb')
     protein_file = open(os.path.join(FILEPATH, 'protein.mol2'), 'rb')

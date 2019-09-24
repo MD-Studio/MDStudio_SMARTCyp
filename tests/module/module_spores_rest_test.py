@@ -11,6 +11,7 @@ import unittest
 import requests
 
 from mdstudio_smartcyp.spores_run import spores_version_info
+from tests.module.unittest_baseclass import UnittestPythonCompatibility
 
 FILEPATH = os.path.abspath(os.path.join(os.path.dirname(__file__), '../files/'))
 URL = 'http://localhost:8081'
@@ -47,7 +48,7 @@ def test_localhost_connection():
     return True
 
 
-class SporesRestTest(unittest.TestCase):
+class SporesRestTest(UnittestPythonCompatibility):
 
     ligand_sdf = open(os.path.join(FILEPATH, 'ligand.sdf'), 'rb')
     ligand_mol2 = open(os.path.join(FILEPATH, 'ligand.mol2'), 'rb')
