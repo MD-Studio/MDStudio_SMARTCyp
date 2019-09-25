@@ -91,7 +91,6 @@
             "name": "smartcyp_score_label",
             "description": "SMARTCyp output 'score' values to use for prediction",
             "in": "formData",
-            "default": "Energy",
             "type": "string"
           },
           {

@@ -32,8 +32,7 @@
     },
     "smartcyp_score_label": {
       "type": "string",
-      "description": "SMARTCyp output 'score' values to use for prediction",
-      "default": "Energy"
+      "description": "SMARTCyp output 'score' values to use for prediction"
     },
     "ligand_file": {
       "description": "Source ligand structure to dock. Multi-structure mol2 suported",

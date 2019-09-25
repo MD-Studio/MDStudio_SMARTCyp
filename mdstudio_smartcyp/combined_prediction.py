@@ -32,6 +32,8 @@ cyp_conf = {
             {'min_mw': 280, 'min_hydrophob': 18, 'conf': '2D6_TMF_70_3.mol2', 'conf_ox': '2D6_OX_TMF_70_3.mol2'}]
     }
 
+smartcyp_isform_scores = {'3A4': 'Energy', '2C9': '2Cscore', '2D6': '2D6score'}
+
 
 class CombinedPrediction(object):
     """
@@ -58,20 +60,41 @@ class CombinedPrediction(object):
     :type kwargs:                :py:dict
     """
 
-    def __init__(self, log=logger, base_work_dir=None, cyp='3A4', smartcyp_score_label='Energy', explicit_oxygen=False,
+    def __init__(self, log=logger, base_work_dir=None, cyp='3A4', smartcyp_score_label=None, explicit_oxygen=False,
                  **kwargs):
 
         self.log = log
         self.base_work_dir = base_work_dir
         self.docking_config = kwargs
-        self.smartcyp_score_label = smartcyp_score_label
         self.explicit_oxygen = explicit_oxygen
         self._workdir = None
 
-        self.cyp = cyp.upper()
+        self.cyp = self.format_isoform(cyp)
+        self.smartcyp_score_label = smartcyp_score_label or smartcyp_isform_scores.get(self.cyp, 'Energy')
         self.smartcyp_results = None
         self.docking_results = None
         self.combined = None
+
+    def format_isoform(self, isoform):
+        """
+        Select appropriate CYP isoform amongst supported isoforms.
+
+        :param isoform: CYP isoform in 3 letter code. Wildcards supported
+        :type isoform:  :py:str
+
+        :return:        supported CYP isoform
+        """
+
+        # Get CYP isoform to use
+        isoform = isoform.upper()
+        isoforms = [c for c in cyp_conf.keys() if fnmatch(isoform, c)]
+        if not len(isoforms):
+            self.log.error('Unsupported CYP isoform: {0}'.format(isoform))
+            return
+        elif len(isoforms) > 1:
+            isoforms = [c for c in isoforms if '*' not in c]
+
+        return isoforms[0]
 
     def cyp_decision_tree(self, lig_mol2_atoms):
         """
@@ -197,21 +220,9 @@ class CombinedPrediction(object):
         :rtype:                  :py:dict
         """
 
-        # Get CYP isoform to use
-        isoforms = [c for c in cyp_conf.keys() if fnmatch(self.cyp, c)]
-        if not len(isoforms):
-            self.log.error('Unsupported CYP isoform: {0}'.format(self.cyp))
-            return
-        elif len(isoforms) > 1:
-            isoforms = [c for c in isoforms if '*' not in c]
-
-        self.cyp = isoforms[0]
-
-        # Determine protein conformation to use
-        lig_mol2_atoms = parse_tripos_atom(ligand)
-        protein = self.cyp_decision_tree(lig_mol2_atoms)
-
         # Run SMARTCyp
+        self.log.info('Run SMARTCyp for CYP: {0} using score data: {1}'.format(self.cyp, self.smartcyp_score_label))
+
         smartcyp = SmartCypRunner()
         smartcyp_results = smartcyp.run(ligand, is_smiles=False)
         if smartcyp_results['result'] is None:
@@ -220,6 +231,10 @@ class CombinedPrediction(object):
 
         # Import SMARTCyp results as Pandas DataFrame
         self.smartcyp_results = pandas.DataFrame.from_dict(smartcyp_results['result'], orient='index')
+
+        # Determine protein conformation to use
+        lig_mol2_atoms = parse_tripos_atom(ligand)
+        protein = self.cyp_decision_tree(lig_mol2_atoms)
 
         # Perform PLANTS docking
         docking = PlantsDocking(base_work_dir=self.base_work_dir, bindingsite_center=[-0.989, 3.261, 0.826],
