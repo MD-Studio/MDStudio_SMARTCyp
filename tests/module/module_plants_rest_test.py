@@ -105,7 +105,7 @@ class PlantsRestTest(UnittestPythonCompatibility):
         """
 
         files = {'ligand_file': self.ligand_file, 'protein_file': self.protein_file}
-        data = {'bindingsite_center': [7.79934, 9.49666, 3.39229]}
+        data = {'bindingsite_center': [-0.989, 3.261, 0.826]}
         response = requests.post('{0}/plants_docking'.format(URL), files=files, data=data)
 
         rest_response = response.json()
@@ -149,7 +149,7 @@ class PlantsRestTest(UnittestPythonCompatibility):
         """
 
         files = {'ligand_file': self.ligand_file, 'protein_file': self.ligand_file}
-        data = {'bindingsite_center': [7.79934, 9.49666, 3.39229]}
+        data = {'bindingsite_center': [-0.989, 3.261, 0.826]}
         response = requests.post('{0}/plants_docking'.format(URL), files=files, data=data)
 
         self.assertEqual(response.status_code, 401)

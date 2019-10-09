@@ -53,7 +53,7 @@ class PlantsDockingTest(UnittestPythonCompatibility):
 
     def run_plants(self):
 
-        plants = PlantsDocking(base_work_dir=FILEPATH, bindingsite_center=[7.79934, 9.49666, 3.39229])
+        plants = PlantsDocking(base_work_dir=FILEPATH, bindingsite_center=[-0.989, 3.261, 0.826])
 
         did_run_successfully = True
         if self.__class__.workdir is None:
@@ -71,7 +71,7 @@ class PlantsDockingTest(UnittestPythonCompatibility):
 
         plants = PlantsDocking(workdir=FILEPATH,
                                exec_path='/Users/_dummy_user/smartcyp/tests/plants',
-                               bindingsite_center=[7.79934, 9.49666, 3.39229])
+                               bindingsite_center=[-0.989, 3.261, 0.826])
 
         self.assertRaises(MDStudioException, plants.run, self.ligand, self.protein)
 
@@ -116,7 +116,7 @@ class PlantsDockingTest(UnittestPythonCompatibility):
         Get specific poses for docking run that no longer exists
         """
 
-        plants = PlantsDocking(base_work_dir=FILEPATH, bindingsite_center=[7.79934, 9.49666, 3.39229])
+        plants = PlantsDocking(base_work_dir=FILEPATH, bindingsite_center=[-0.989, 3.261, 0.826])
 
         paths = ['not_exist/_entry_00001_conf_{0}.mol2'.format(i) for i in range(10)]
         self.assertRaises(MDStudioException, plants.get_structures, paths)
@@ -127,7 +127,7 @@ class PlantsDockingTest(UnittestPythonCompatibility):
         Get specific results for docking run that no longer exists
         """
 
-        plants = PlantsDocking(base_work_dir=FILEPATH, bindingsite_center=[7.79934, 9.49666, 3.39229])
+        plants = PlantsDocking(base_work_dir=FILEPATH, bindingsite_center=[-0.989, 3.261, 0.826])
 
         paths = ['not_exist/_entry_00001_conf_{0}.mol2'.format(i) for i in range(10)]
         self.assertRaises(MDStudioException, plants.get_results, paths)
@@ -175,5 +175,5 @@ class PlantsDockingTest(UnittestPythonCompatibility):
         Faulty docking with a ligand uploaded as protein
         """
 
-        plants = PlantsDocking(base_work_dir=FILEPATH, bindingsite_center=[7.79934, 9.49666, 3.39229])
+        plants = PlantsDocking(base_work_dir=FILEPATH, bindingsite_center=[-0.989, 3.261, 0.826])
         self.assertRaises(MDStudioException, plants.run, self.ligand, self.protein)
