@@ -45,10 +45,10 @@ parameters:
   value: "1000m"
 - name: MEMORY_LIMIT
   description: Set RAM limit
-  value: "2Gi"
+  value: "4Gi"
 - name: MEMORY_REQUEST
   description: Set RAM request
-  value: "1Gi"
+  value: "2Gi"
 
 # -----------------------------------------------------------------------------
 # MDStudio SMARTCyp
@@ -118,8 +118,8 @@ objects:
                 scheme: HTTP
               initialDelaySeconds: 300
               failureTreshold: 6
-              periodSeconds: 30
-              timeoutSeconds: 1
+              periodSeconds: 60
+              timeoutSeconds: 2
             livenessProbe:
               httpGet:
                 path: /ui/
@@ -127,8 +127,8 @@ objects:
                 scheme: HTTP
               initialDelaySeconds: 300
               failureTreshold: 6
-              periodSeconds: 30
-              timeoutSeconds: 1
+              periodSeconds: 60
+              timeoutSeconds: 2
             resources:
               requests:
                 cpu: ${CPU_REQUEST}
