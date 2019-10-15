@@ -199,7 +199,7 @@ class PlantsDocking(RunnerBaseClass):
                 self.log.warn('PLANTS configuration file has no setting named: {0}'.format(key))
         self.log.info('Override PLANTS configuration for options: {0}'.format(', '.join(config.keys())))
 
-    def get_results(self, structures=None):
+    def get_results(self, structures=None, do_cluster=True):
         """
         Return PLANTS results
 
@@ -227,24 +227,26 @@ class PlantsDocking(RunnerBaseClass):
         # Read docking results: first try features.csv, else ranking.csv
         results = import_plants_csv(self.workdir, structures)
 
-        # Run a clustering
-        xyz = coords_from_mol2(structures)
-        try:
-            c = ClusterStructures(xyz, labels=list(results.keys()))
-        except AssertionError as e:
-            logging.error(e)
-            return None
+        if do_cluster:
 
-        clusters = c.cluster(threshold=self.config.get('threshold', 8.0),
-                             criterion=self.config.get('criterion', 'maxclust'),
-                             min_cluster_count=self.config.get('min_cluster_size', 2))
+            # Run a clustering
+            xyz = coords_from_mol2(structures)
+            try:
+                c = ClusterStructures(xyz, labels=list(results.keys()))
+            except AssertionError as e:
+                logging.error(e)
+                return None
 
-        for structure, res in clusters.items():
-            results[structure].update(res)
+            clusters = c.cluster(threshold=self.config.get('threshold', 8.0),
+                                 criterion=self.config.get('criterion', 'maxclust'),
+                                 min_cluster_count=self.config.get('min_cluster_size', 2))
 
-        # Plot cluster results
-        clusterplot = os.path.join(self.workdir, 'cluster_dendrogram.pdf')
-        c.plot(to_file=clusterplot)
+            for structure, res in clusters.items():
+                results[structure].update(res)
+
+            # Plot cluster results
+            clusterplot = os.path.join(self.workdir, 'cluster_dendrogram.pdf')
+            c.plot(to_file=clusterplot)
 
         return results
 
