@@ -7,7 +7,7 @@ import pandas
 from rdkit import Chem
 from rdkit.Chem.Draw import rdMolDraw2D
 
-no_wrap_div = '<div style="white-space: nowrap">{}{}{}</div>'
+no_wrap_div = '<div><div style="white-space: nowrap">{}{}</div><div style="white-space: nowrap">{}{}</div></div>'
 
 
 def show_predictions(mol, prob, cutoff=0.75, show_prob_label=False):
@@ -27,7 +27,7 @@ def show_predictions(mol, prob, cutoff=0.75, show_prob_label=False):
         else:
             atom.SetProp('molAtomMapNumber', '{0}'.format(idx))
 
-    drawer = rdMolDraw2D.MolDraw2DSVG(300, 200)
+    drawer = rdMolDraw2D.MolDraw2DSVG(350, 225)
     drawer.DrawMolecule(mol, highlightAtoms=[i - 1 for i in prob_dict if prob_dict[i] >= cutoff])
     drawer.FinishDrawing()
 
@@ -42,10 +42,10 @@ def get_dataset():
 
     for case in data:
         mol2 = '{0}.mol2'.format(case)
-        sdf = '{0}.sdf'.format(case)
-        if os.path.exists(mol2) and os.path.exists(sdf):
+        mol = '{0}.mol'.format(case)
+        if os.path.exists(mol2) and os.path.exists(mol):
             data[case]['mol2'] = open(mol2, 'rb').read()
-            data[case]['sdf'] = open(sdf, 'rb').read()
+            data[case]['mol'] = open(mol, 'rb').read()
         else:
             logging.warn('Test case {0} does not exist'.format(case))
             del data[case]
@@ -61,20 +61,36 @@ def process_fame_results(fame_out, df):
 
     fame_pred = {}
     cutoff = 1.0
-    if 'predictions' in fame_out:
+    for pred in fame_out.get('predictions', []):
+        fame_pred = dict([(atom_labels[a['atomID']], a['probability']) for a in pred['atomPredictions']])
 
-        for pred in fame_out['predictions']:
-            fame_pred = dict([(atom_labels[a['atomID']], a['probability']) for a in pred['atomPredictions']])
+        fame_positives = [a['probability'] for a in pred['atomPredictions'] if a['decision']]
+        if (fame_positives):
+            cutoff = min(fame_positives)
 
-            fame_positives = [a['probability'] for a in pred['atomPredictions'] if a['decision']]
-            if (fame_positives):
-                cutoff = min(fame_positives)
-
-            break
+        break
 
     df['Fame'] = pandas.Series(fame_pred)
 
     return df, cutoff
+
+
+def process_metpred_results(metpred_out, df):
+    """
+    Add MetPred results to pandas DataFrame and determine cutoff propensity
+    """
+    atom_labels = dict([(int(a.split('.')[1]), a) for a in df.index])
+
+    metpred_pred = {}
+    metpred_type = {}
+    for pred in metpred_out.get('predictions', []):
+        metpred_pred[atom_labels[pred['atom']]] = pred['normalizedOccurrenceRatio']
+        metpred_type[atom_labels[pred['atom']]] = '; '.join([reaction['type'] for reaction in pred['reactionTypes']])
+
+    df['MetPred'] = pandas.Series(metpred_pred)
+    df['MetPred reaction'] = pandas.Series(metpred_type)
+
+    return df, df['MetPred'].min()
 
 
 def style_dataframe(df, smartcyp_cutoff=0.75, docking_cutoff=0.75, fame_cutoff=1.0):
@@ -84,6 +100,7 @@ def style_dataframe(df, smartcyp_cutoff=0.75, docking_cutoff=0.75, fame_cutoff=1
         df1.loc[(df['SMARTCyp'] >= smartcyp_cutoff), 'SMARTCyp'] = 'background-color: {}'.format(color)
         df1.loc[(df['Docking'] >= docking_cutoff), 'Docking'] = 'background-color: {}'.format(color)
         df1.loc[(df['Fame'] >= fame_cutoff), 'Fame'] = 'background-color: {}'.format(color)
+        df1.loc[(df['MetPred'] > 0), 'MetPred'] = 'background-color: {}'.format(color)
         return df1
 
     return df.style.apply(highlight_som, axis=None).set_precision(3)
