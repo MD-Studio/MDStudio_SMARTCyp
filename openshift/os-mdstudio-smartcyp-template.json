@@ -239,6 +239,7 @@
       "metadata": {
         "name": "mdstudio-smartcyp",
         "annotations": {
+          "haproxy.router.openshift.io/timeout": "180s",
           "kubernetes.io/tls-acme": "${TLS}"
         }
       },
@@ -256,6 +257,7 @@
       "metadata": {
         "name": "mdstudio-smartcyp-swagger",
         "annotations": {
+          "haproxy.router.openshift.io/timeout": "180s",
           "kubernetes.io/tls-acme": "${TLS}"
         }
       },
