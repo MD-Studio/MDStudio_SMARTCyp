@@ -50,7 +50,7 @@ paths:
           description: CYP isoform to make prediction for
           in: formData
           default: 3A4
-          enum: [3A4, 1A2, 2D6]
+          enum: [3A4, 1A2, 2D6, 3a4, 1a2, 2d6]
         - name: filter_clusters
           description: Make prediction for clustered docking results only
           in: formData
