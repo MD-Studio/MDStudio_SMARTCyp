@@ -1,13 +1,18 @@
 # -*- coding: utf-8 -*-
 
-import os
-import logging
 import pandas
+import glob
 
 from rdkit import Chem
 from rdkit.Chem.Draw import rdMolDraw2D
 
-no_wrap_div = '<div><div style="white-space: nowrap">{}{}</div><div style="white-space: nowrap">{}{}</div></div>'
+no_wrap_div = """
+    <div style="display: flex; flex-wrap: wrap; justify-content: space-around">
+      <div style="text-align:center">Docking {0}</div>
+      <div style="text-align:center">SMARTCyp {1}</div>
+      <div style="text-align:center">Fame 3 {2}</div>
+      <div style="text-align:center">MetPred {3}</div>
+    </div>"""
 
 
 def show_predictions(mol, prob, cutoff=0.75, show_prob_label=False):
@@ -36,19 +41,12 @@ def show_predictions(mol, prob, cutoff=0.75, show_prob_label=False):
 
 def get_dataset():
 
-    data = {'aminopyrine': {'som': [12, 13], 'cyp': '2D6', 'smiles': 'CN(C1=C[NH+](N(C1=O)c1ccccc1)C)C'},
-            'estradiol': {'som': [8, 9, 11, 15], 'cyp': '2D6', 'smiles': 'Oc1ccc2c(c1)CC[C@@H]1[C@@H]2CC[C@]2([C@H]1CC[C@@H]2O)C'},
-            'methadone': {'som': [20, 21], 'cyp': '2D6', 'smiles': 'CCC(=O)C(c1ccccc1)(c1ccccc1)C[C@H]([NH+](C)C)C'}}
-
-    for case in data:
-        mol2 = '{0}.mol2'.format(case)
-        mol = '{0}.mol'.format(case)
-        if os.path.exists(mol2) and os.path.exists(mol):
-            data[case]['mol2'] = open(mol2, 'rb').read()
-            data[case]['mol'] = open(mol, 'rb').read()
-        else:
-            logging.warn('Test case {0} does not exist'.format(case))
-            del data[case]
+    data = {}
+    for case in glob.glob('*.mol2'):
+        name = case.split('.')[0]
+        mol = '{0}.mol'.format(name)
+        data[name]['mol2'] = open(case, 'rb').read()
+        data[name]['mol'] = open(mol, 'rb').read()
 
     return data
 
