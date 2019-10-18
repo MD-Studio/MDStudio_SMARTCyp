@@ -45,9 +45,8 @@ def get_dataset():
     for case in glob.glob('*.mol2'):
         name = case.split('.')[0]
         mol = '{0}.mol'.format(name)
-        data[name]['mol2'] = open(case, 'rb').read()
-        data[name]['mol'] = open(mol, 'rb').read()
-
+        data[name] = {'mol2': open(case, 'rb').read(), 'mol': open(mol, 'rb').read()}
+        
     return data
 
 
