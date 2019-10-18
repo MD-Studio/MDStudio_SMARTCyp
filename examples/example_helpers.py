@@ -8,10 +8,10 @@ from rdkit.Chem.Draw import rdMolDraw2D
 
 no_wrap_div = """
     <div style="display: flex; flex-wrap: wrap; justify-content: space-around">
-      <div style="text-align:center">Docking {0}</div>
-      <div style="text-align:center">SMARTCyp {1}</div>
-      <div style="text-align:center">Fame 3 {2}</div>
-      <div style="text-align:center">MetPred {3}</div>
+      <div>{0}<div style="text-align:center">Docking</div></div>
+      <div>{1}<div style="text-align:center">SMARTCyp</div></div>
+      <div>{2}<div style="text-align:center">Fame 3</div></div>
+      <div>{3}<div style="text-align:center">MetPred</div></div>
     </div>"""
 
 
