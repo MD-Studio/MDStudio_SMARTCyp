@@ -46,7 +46,7 @@ def get_dataset():
         name = case.split('.')[0]
         mol = '{0}.mol'.format(name)
         data[name] = {'mol2': open(case, 'rb').read(), 'mol': open(mol, 'rb').read()}
-        
+
     return data
 
 
