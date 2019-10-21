@@ -198,6 +198,7 @@ def smartcyp_prediction(ligand_file=None, smiles=None, output_format='json', noe
     try:
         result_dict = smartcyp.run(path_file_object['content'],
                                    is_smiles=path_file_object['extension'] == 'smi',
+                                   input_format=path_file_object.get('extension', 'mol2'),
                                    output_format=output_format,
                                    noempcorr=noempcorr,
                                    output_png=output_png)

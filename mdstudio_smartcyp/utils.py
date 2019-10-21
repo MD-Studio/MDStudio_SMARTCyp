@@ -283,6 +283,45 @@ def prepare_work_dir(path=None, prefix='', suffix='', create=True):
     return path
 
 
+def renumber_smartcyp_atoms(mol2, smartcyp_results):
+    """
+    Check SMARTCyp atom numbering with respect ot mol2 input file
+
+    SMARTCyp strips protons and renumbers atoms. This function maps
+    the renumbered atoms to the original inout file numbering.
+
+    :param mol2:             Tripos MOL2 file as string
+    :type mol2:              :py:str
+    :param smartcyp_results: SMARTCyp results
+    :type smartcyp_results:  :pandas:DataFrame
+
+    :return:                 corrected SMARTCyp results
+    :rtype:                  :pandas:DataFrame
+    """
+
+    mol2 = parse_tripos_atom(mol2)
+
+    renumber_idi = []
+    renumber_idx = []
+    for atom in sorted(mol2.keys()):
+
+        data = mol2[atom]
+        if data['atom_type'] != 'H':
+
+            renumber_idi.append(atom)
+            renumber_idx.append('{0}.{1}'.format(data['atom_name'], atom))
+
+    if len(renumber_idi) != len(smartcyp_results):
+        logging.error('Unable to renumber SMARTCyp results. Atom count does not match: {0} vs {1}'.format(
+            len(renumber_idi), len(smartcyp_results)))
+        return smartcyp_results
+
+    smartcyp_results['Atom_id'] = renumber_idi
+    smartcyp_results.index = renumber_idx
+
+    return smartcyp_results
+
+
 def parse_tripos_atom(mol2):
     """
     Parse Tripos MOL2 ATOM records to a dictionary

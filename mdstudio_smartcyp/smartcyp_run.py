@@ -15,7 +15,7 @@ import base64
 
 from mdstudio_smartcyp import (__smartcyp_version__, __smartcyp_citation__, __supported_models__, __smartcyp_path__,
                                __module__)
-from mdstudio_smartcyp.utils import prepare_work_dir, RunnerBaseClass
+from mdstudio_smartcyp.utils import prepare_work_dir, RunnerBaseClass, renumber_smartcyp_atoms
 
 logger = logging.getLogger(__module__)
 
@@ -58,7 +58,7 @@ class SmartCypRunner(RunnerBaseClass):
         self.workdir = prepare_work_dir(path=base_work_dir, prefix='smartcyp-')
         self.results = None
 
-    def _parse_csv(self, csvfile):
+    def _parse_csv(self, csvfile, ligfile=None):
         """
         Parse SMARTCyp results .csv file
 
@@ -75,6 +75,9 @@ class SmartCypRunner(RunnerBaseClass):
 
         results = pandas.read_csv(csvfile, index_col='Atom')
         results['Atom_id'] = [int(i.split('.')[-1]) for i in results.index]
+
+        if ligfile:
+            results = renumber_smartcyp_atoms(ligfile, results)
 
         self.results = results.where((pandas.notnull(results)), None)
 
@@ -130,7 +133,7 @@ class SmartCypRunner(RunnerBaseClass):
 
         return image_results
 
-    def run(self, mol, is_smiles=False, output_format='json', noempcorr=False, output_png=False):
+    def run(self, mol, is_smiles=False, input_format='mol2', output_format='json', noempcorr=False, output_png=False):
         """
         Run SMARTCyp predictions
 
@@ -166,7 +169,7 @@ class SmartCypRunner(RunnerBaseClass):
             self.log.info('SMARTCyp prediction for SMILES string: {0}'.format(mol))
 
         else:
-            with open('{0}/ligand.mol2'.format(self.workdir), 'w') as ligfile:
+            with open('{0}/ligand.{1}'.format(self.workdir, input_format), 'w') as ligfile:
                 ligfile.write(mol)
 
             cmd.append(os.path.join(self.workdir, 'ligand.mol2'))
@@ -177,7 +180,12 @@ class SmartCypRunner(RunnerBaseClass):
 
             csvfile = glob.glob('{0}/*.csv'.format(self.workdir))
             if len(csvfile):
-                self._parse_csv(csvfile[0])
+
+                if input_format in ('mol2', 'mol'):
+                    self._parse_csv(csvfile[0], ligfile=mol)
+                else:
+                    self._parse_csv(csvfile[0])
+
                 if output_format == 'csv':
                     result['result'] = self.results.to_csv()
                 elif output_format == 'json':
