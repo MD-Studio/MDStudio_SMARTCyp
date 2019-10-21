@@ -10,7 +10,7 @@ no_wrap_div = """
     <div style="display: flex; flex-wrap: wrap; justify-content: space-around">
       <div>{0}<div style="text-align:center">Docking</div></div>
       <div>{1}<div style="text-align:center">SMARTCyp</div></div>
-      <div>{2}<div style="text-align:center">Fame 3</div></div>
+      <div>{2}<div style="text-align:center">FAME 3</div></div>
       <div>{3}<div style="text-align:center">MetPred</div></div>
     </div>"""
 
@@ -67,7 +67,7 @@ def process_fame_results(fame_out, df):
 
         break
 
-    df['Fame'] = pandas.Series(fame_pred)
+    df['FAME'] = pandas.Series(fame_pred)
 
     return df, cutoff
 
@@ -96,7 +96,7 @@ def style_dataframe(df, smartcyp_cutoff=0.75, docking_cutoff=0.75, fame_cutoff=1
         df1 = pandas.DataFrame('', index=df.index, columns=df.columns)
         df1.loc[(df['SMARTCyp'] >= smartcyp_cutoff), 'SMARTCyp'] = 'background-color: {}'.format(color)
         df1.loc[(df['Docking'] >= docking_cutoff), 'Docking'] = 'background-color: {}'.format(color)
-        df1.loc[(df['Fame'] >= fame_cutoff), 'Fame'] = 'background-color: {}'.format(color)
+        df1.loc[(df['FAME'] >= fame_cutoff), 'FAME'] = 'background-color: {}'.format(color)
         df1.loc[(df['MetPred'] > 0), 'MetPred'] = 'background-color: {}'.format(color)
         return df1
 
