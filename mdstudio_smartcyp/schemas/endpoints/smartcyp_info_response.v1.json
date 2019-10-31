@@ -1,30 +1,39 @@
 {
   "$schema": "http://json-schema.org/draft-04/schema#",
-  "id": "http://mdstudio/schemas/endpoints/info_response.v1.json",
+  "id": "http://mdstudio/schemas/endpoints/smartcyp_info_response.v1.json",
   "title": "MDStudio SMARTCyp info",
   "description": "Informative summary on the installed SMARTCyp version and configuration",
   "type": "object",
   "properties": {
-    "version": {
-      "description": "SMARTCyp version",
-      "type": "string"
+    "status": {
+      "type": "string",
+      "description": "Status of SMARTCyp info request",
+      "enum": [
+        "failed",
+        "completed"
+      ]
     },
-    "citation": {
-      "description": "SMARTCyp citation",
-      "type": "string"
-    },
-    "models": {
-      "type": "array",
-      "description": "Supported CYP prediction models",
-      "default": []
-    },
-    "default_settings": {
+    "info": {
       "type": "object",
-      "description": "default parameters"
+      "description": "Informative summary on the installed SMARTCyp version and configuration",
+      "properties": {
+          "version": {
+            "description": "SMARTCyp version",
+            "type": "string"
+          },
+          "citation": {
+            "description": "SMARTCyp citation",
+            "type": "string"
+          },
+          "models": {
+            "type": "array",
+            "description": "Supported CYP prediction models",
+            "default": []
+          }
+      }
     }
   },
   "required": [
-    "version",
-    "citation"
+    "status"
   ]
 }

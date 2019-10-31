@@ -13,13 +13,15 @@
         "completed"
       ]
     },
-    "output": {
-      "description": "Docking solutions as combined ensemble file",
-      "type": "string"
+    "result": {
+      "description": "Docking solutions as separate or combined ensemble files",
+      "type": "array",
+      "items": {
+        "$ref": "resource://mdgroup/common_resources/path_file/v1"
+      }
     }
   },
   "required": [
-    "status",
-    "output"
+    "status"
   ]
 }

@@ -7,7 +7,8 @@
   "properties": {
     "base_work_dir": {
       "type": "string",
-      "description": "Base directory for PLANTS docking results directories"
+      "description": "Base directory for PLANTS docking results directories",
+      "default": "/tmp/mdstudio/mdstudio_smartcyp"
     },
     "paths": {
       "description": "Path to docking poses for which to return statistics",
@@ -16,21 +17,21 @@
         "type": "string"
       }
     },
-    "min_cluster_size": {
-      "description": "Minimum cluster size for coordinate based clustering",
-      "type": "integer",
-      "default": 2
-    },
-    "threshold": {
-      "description": "Minimum RMSD threshold for defining clusters. Same a the 't' argument in the scipy.cluster.hierarchy.fcluster package",
-      "type": "number",
-      "default": 8
-    },
-    "criterion": {
-      "description": "Cluster criterion used by the fcluster method (scipy.cluster.hierarchy.fcluster)",
+    "output_format": {
+      "description": "Structure file format to return",
       "type": "string",
-      "default": "maxclust",
-      "enum": ["inconsistent", "distance", "maxclust", "monocrit", "maxclust_monocrit"]
+      "default": "mol2",
+      "enum": ["mol2", "pdb"]
+    },
+    "include_protein": {
+      "description": "Include the protein structure in the returned file format",
+      "type": "boolean",
+      "default": false
+    },
+    "create_ensemble": {
+      "description": "Return multiple poses as combined ensemble format",
+      "type": "boolean",
+      "default": true
     }
   },
   "required": [

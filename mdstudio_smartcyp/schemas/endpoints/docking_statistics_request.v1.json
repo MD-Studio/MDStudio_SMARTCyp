@@ -7,7 +7,8 @@
   "properties": {
     "base_work_dir": {
       "type": "string",
-      "description": "Base directory for PLANTS docking results directories"
+      "description": "Base directory for PLANTS docking results directories",
+      "default": "/tmp/mdstudio/mdstudio_smartcyp"
     },
     "paths": {
       "description": "Path to docking poses for which to return statistics",

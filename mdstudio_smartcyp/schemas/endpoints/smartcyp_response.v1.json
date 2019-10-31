@@ -5,10 +5,20 @@
   "description": "Perform a CYP site of metabolism prediction using SMARTCyp",
   "type": "object",
   "properties": {
+    "status": {
+      "type": "string",
+      "description": "Status of SMARTCyp info request",
+      "enum": [
+        "failed",
+        "completed"
+      ]
+    },
     "result": {
       "type": "object",
       "description": "Content of SMARTCyp prediction .csv file"
     }
   },
-  "required": ["result"]
+  "required": [
+    "status"
+  ]
 }

@@ -13,7 +13,7 @@
         "completed"
       ]
     },
-    "output": {
+    "result": {
       "type": [
         "object",
         "null"
@@ -22,7 +22,6 @@
     }
   },
   "required": [
-    "status",
-    "output"
+    "status"
   ]
 }

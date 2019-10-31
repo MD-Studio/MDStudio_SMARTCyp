@@ -5,12 +5,21 @@
   "description": "Perform Structure PrOtonation and REcognition System (SPORES)",
   "type": "object",
   "properties": {
+    "status": {
+      "type": "string",
+      "description": "Plants Docking final status",
+      "enum": [
+        "failed",
+        "completed"
+      ]
+    },
     "result": {
       "type": "object",
       "description": "SPORES processed structure file",
       "$ref": "resource://mdgroup/common_resources/path_file/v1"
     }
-    }
   },
-  "required": ["result"]
+  "required": [
+    "status"
+  ]
 }

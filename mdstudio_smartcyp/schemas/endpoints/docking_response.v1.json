@@ -17,16 +17,15 @@
       "description": "Dendrogram plot of hierarchical clusters",
       "$ref": "resource://mdgroup/common_resources/path_file/v1"
     },
-    "output": {
+    "result": {
       "type": [
         "object",
         "null"
       ],
-      "description": "Dictionary containing the Plants docking output files"
+      "description": "Dictionary containing the statistics of PLANTS docked ligand poses"
     }
   },
   "required": [
-    "status",
-    "output"
+    "status"
   ]
 }

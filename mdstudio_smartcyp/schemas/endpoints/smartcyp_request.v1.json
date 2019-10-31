@@ -8,7 +8,7 @@
     "base_work_dir": {
       "type": "string",
       "description": "Directory to run the docking simulation",
-      "default": "/tmp/mdstudio/lie_plants_docking"
+      "default": "/tmp/mdstudio/mdstudio_smartcyp"
     },
     "ligand_file": {
       "$ref": "resource://mdgroup/common_resources/path_file/v1",
