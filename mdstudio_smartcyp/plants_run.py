@@ -364,7 +364,8 @@ class PlantsDocking(RunnerBaseClass):
             conf.write(PLANTS_CONF_FILE_TEMPLATE.format(**self.config))
 
         success = self.cmd_runner([exec_path, '--mode', mode, 'plants.config'])
-        if not success:
+        if not success or not len(glob.glob(os.path.join(self.workdir, '*_entry_*_conf_*.mol2'))):
+            success = False
             self.delete()
 
         return success
