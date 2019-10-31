@@ -1,0 +1,38 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "id": "http://mdstudio/schemas/endpoints/docking_info_response.v1.json",
+  "title": "MDStudio PLANTS docking info",
+  "description": "Informative summary on the installed PLANTS version and configuration",
+  "type": "object",
+  "properties": {
+    "status": {
+      "type": "string",
+      "description": "Status of PLANTS info request",
+      "enum": [
+        "failed",
+        "completed"
+      ]
+    },
+    "info": {
+      "type": "object",
+      "description": "Informative summary on the installed PLANTS version and configuration",
+      "properties": {
+          "version": {
+            "description": "PLANTS version",
+            "type": "string"
+          },
+          "citation": {
+            "description": "PLANTS citation",
+            "type": "string"
+          },
+          "default_settings": {
+            "type": "object",
+            "description": "default parameters"
+          }
+      }
+    }
+  },
+  "required": [
+    "status"
+  ]
+}

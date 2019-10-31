@@ -1,0 +1,9 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "id": "http://mdstudio/schemas/endpoints/docking_info_request.v1.json",
+  "title": "MDStudio PLANTS docking info",
+  "description": "Information on the installed PLANTS version and configuration",
+  "type": "object",
+  "properties": {},
+  "additionalProperties": false
+}
