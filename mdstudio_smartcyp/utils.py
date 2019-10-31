@@ -463,9 +463,11 @@ def create_multi_pdb(mol2_file_paths, protein=None):
             prot_pdb = mol2_to_pdb(prot_mol2)
 
     multi_pdb = StringIO()
+    is_multi_pdb = len(mol2_file_paths) > 1
     for model, path in enumerate(mol2_file_paths, start=1):
 
-        multi_pdb.write('MODEL {0}\n'.format(model))
+        if is_multi_pdb:
+            multi_pdb.write('MODEL {0}\n'.format(model))
         if prot_pdb:
             for line in prot_pdb:
                 multi_pdb.write('{0:6}{1:>5} {2:^5}{3:>3} {4}{5:>4}    {6:8.3f}{7:8.3f}{8:8.3f}  {9:6}\n'.format(*line))
@@ -478,7 +480,8 @@ def create_multi_pdb(mol2_file_paths, protein=None):
             for line in lig_pdb:
                 multi_pdb.write('{0:6}{1:>5} {2:^5}{3:>3} {4}{5:>4}    {6:8.3f}{7:8.3f}{8:8.3f}  {9:6}\n'.format(*line))
 
-        multi_pdb.write('ENDMDL\n')
+        if is_multi_pdb:
+            multi_pdb.write('ENDMDL\n')
     multi_pdb.write('END\n')
 
     multi_pdb.seek(0)
