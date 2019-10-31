@@ -250,27 +250,31 @@ class PlantsDocking(RunnerBaseClass):
 
         return results
 
-    def get_structures(self, structures, output_format='mol2', include_protein=False):
+    def get_structures(self, structures, output_format='mol2', include_protein=False, create_ensemble=True):
         """
-        Create a multi-molecule (ensemble) MOL2 or PDB file by concatenating
-        single PLANTS MOL2 docking pose files.
+        Return docked poses in MOL2 or PDB file format. If `create_ensemble`
+        all poses will be concatenated as single multi-molecule (ensemble)
+        structure file.
 
-        The structures to concatenate are identified by their unique path ID
+        The structures to return are identified by their unique path ID
         listed in the docking results as the 'PATH' variable. It consists of
         the '<docking results directory name>/<pose name>' that retained on
         the server for the duration defined by 'result_storage_time'.
 
-        :param structures:      docking pose structure path IDs for which to
-                                return ensemble file.
+        :param structures:      docking pose structure path IDs.
         :type structures:       :py:list
-        :param output_format:   return ensemble in MOL2 or PDB format
+        :param output_format:   structure file format as MOL2 or PDB
         :type output_format:    :py:str
-        :param include_protein: return ensemble including the protein
-                                structure or only the ligand structures
+        :param include_protein: return structures including the protein
+                                or only the ligand structures
         :type include_protein:  :py:bool
+        :param create_ensemble: concatenate multiple docked poses as a single
+                                multi-molecule ensemble file.
 
-        :return:                docking results as single Tripos MOL2 file
-        :rtype:                 :py:str
+        :return:                list of multiple molecular structures or one
+                                single (ensemble) structure in MOL2 or PDB
+                                format.
+        :rtype:                 :py:str, :py:list
         """
 
         structures = self._absolute_paths(structures)
@@ -283,9 +287,13 @@ class PlantsDocking(RunnerBaseClass):
 
         # Return structure ensemble in PDB or MOL2 format
         if output_format == 'mol2':
-            return create_multi_mol2(structures, protein=protein)
+            if create_ensemble:
+                return create_multi_mol2(structures, protein=protein)
+            return [create_multi_mol2([mol], protein=protein) for mol in structures]
         elif output_format == 'pdb':
-            return create_multi_pdb(structures, protein=protein)
+            if create_ensemble:
+                return create_multi_pdb(structures, protein=protein)
+            return [create_multi_pdb([mol], protein=protein) for mol in structures]
 
     def run(self, protein, ligand, mode='screen'):
         """
