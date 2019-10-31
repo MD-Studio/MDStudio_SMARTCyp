@@ -1,0 +1,38 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "id": "http://mdstudio/schemas/endpoints/spores_info_response.v1.json",
+  "title": "MDStudio SPORES docking info",
+  "description": "Informative summary on the installed SPORES version and configuration",
+  "type": "object",
+  "properties": {
+    "status": {
+      "type": "string",
+      "description": "Status of SPORES info request",
+      "enum": [
+        "failed",
+        "completed"
+      ]
+    },
+    "info": {
+      "type": "object",
+      "description": "Informative summary on the installed SPORES version and configuration",
+      "properties": {
+          "version": {
+            "description": "SPORES version",
+            "type": "string"
+          },
+          "citation": {
+            "description": "SPORES citation",
+            "type": "string"
+          },
+          "default_settings": {
+            "type": "object",
+            "description": "default parameters"
+          }
+      }
+    }
+  },
+  "required": [
+    "status"
+  ]
+}

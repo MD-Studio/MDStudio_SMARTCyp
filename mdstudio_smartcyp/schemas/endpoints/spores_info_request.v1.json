@@ -1,0 +1,9 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "id": "http://mdstudio/schemas/endpoints/spores_info_request.v1.json",
+  "title": "MDStudio SPORES docking info",
+  "description": "Information on the installed SPORES version and configuration",
+  "type": "object",
+  "properties": {},
+  "additionalProperties": false
+}
