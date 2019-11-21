@@ -2,6 +2,7 @@
 
 [![Build Status](https://travis-ci.org/MD-Studio/MDStudio_SMARTCyp.svg?branch=master)](https://travis-ci.org/MD-Studio/MDStudio_SMARTCyp)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/697c033fd7674ecea28c089150a25dfa)](https://www.codacy.com/app/marcvdijk/MDStudio_SMARTCyp?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=MD-Studio/MDStudio_SMARTCyp&amp;utm_campaign=Badge_Grade)
+[![codecov](https://codecov.io/gh/MD-Studio/MDStudio_SMARTCyp/branch/master/graph/badge.svg)](https://codecov.io/gh/MD-Studio/MDStudio_SMARTCyp)
 [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/MD-Studio/MDStudio_SMARTCyp/master?filepath=examples)
 
 The MDStudio SMARTCyp service combines SMARTCyp reactivity-based Cytochrome P450 site-of-metabolism prediction and
