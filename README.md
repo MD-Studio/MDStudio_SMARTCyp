@@ -5,6 +5,8 @@
 [![codecov](https://codecov.io/gh/MD-Studio/MDStudio_SMARTCyp/branch/master/graph/badge.svg)](https://codecov.io/gh/MD-Studio/MDStudio_SMARTCyp)
 [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/MD-Studio/MDStudio_SMARTCyp/master?filepath=examples)
 
+![Configuration settings](mdstudio-logo.png)
+
 The MDStudio SMARTCyp service combines SMARTCyp reactivity-based Cytochrome P450 site-of-metabolism prediction and
 PLANTS structure-based ligand interaction prediction into one service.
 
