@@ -35,19 +35,22 @@ setup(
     name=distribution_name,
     version=0.1,
     description='MDStudio SMARTCyp module',
-    author="Marc van Dijk - VU University - Amsterdam",
-    author_email='m4.van.dijk@vu.nl',
-    url='https://github.com/MD-Studio/MDStudio',
+    author="""
+    Marc van Dijk - VU University - Amsterdam
+    Paul Visscher - Zefiros Software (www.zefiros.eu)
+    Felipe Zapata - eScience Center (https://www.esciencecenter.nl/)""",
+    author_email=['m4.van.dijk@vu.nl', 'f.zapata@esciencecenter.nl'],
+    url='https://github.com/MD-Studio/MDStudio_SMARTCyp',
     license='Apache Software License 2.0',
-    keywords='MDStudio SMARTCyp',
+    keywords='MDStudio structures cheminformatics',
     platforms=['Any'],
     packages=find_packages(),
-    package_data={'mdstudio_smartcyp': ['bin/*', 'rest/*', 'data/*', 'schemas/endpoints/*']},
     py_modules=[distribution_name],
-    include_package_data=True,
     install_requires=['flask', 'flask-cors', 'connexion', 'swagger-ui-bundle', 'gevent',
                       'mdstudio', 'matplotlib', 'scipy', 'mdinteract'],
     extras_require={'test': ['requests']},
+    dependency_links=["https://github.com/cinfony/cinfony/tarball/master#egg=cinfony-1.2"],
+    include_package_data=True,
     zip_safe=True,
     classifiers=[
         'Development Status :: 3 - Alpha',
