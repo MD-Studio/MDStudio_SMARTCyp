@@ -3,7 +3,7 @@
 [![Build Status](https://travis-ci.org/MD-Studio/MDStudio_SMARTCyp.svg?branch=master)](https://travis-ci.org/MD-Studio/MDStudio_SMARTCyp)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/697c033fd7674ecea28c089150a25dfa)](https://www.codacy.com/app/marcvdijk/MDStudio_SMARTCyp?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=MD-Studio/MDStudio_SMARTCyp&amp;utm_campaign=Badge_Grade)
 [![codecov](https://codecov.io/gh/MD-Studio/MDStudio_SMARTCyp/branch/master/graph/badge.svg)](https://codecov.io/gh/MD-Studio/MDStudio_SMARTCyp)
-[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/MD-Studio/MDStudio_SMARTCyp/master?filepath=examples)
+[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/OpenRiskNet/notebooks/master?filepath=MetaP)
 
 ![Configuration settings](mdstudio-logo.png)
 
@@ -12,6 +12,8 @@ PLANTS structure-based ligand interaction prediction into one service.
 
 ## Installation Quickstart
 MDStudio SMARTCyp can be used in three different ways: in the MDStudio environment, as REST service or as local installation.
+Can't wait to try it out? Click the `launch binder` button, this will start a fully operational 
+[Binder](https://github.com/MD-Studio/MDStudio_SMARTCyp) service in your browser for you to play with.
 
 ### Step 1. Installation
 Run MDStudio SMARTCyp as docker container by:
@@ -19,7 +21,12 @@ Run MDStudio SMARTCyp as docker container by:
     docker pull mdstudio/mdstudio_smartcyp
     docker run --name mdstudio_smartcyp -p 8081:8081 <container ID>
 
-Or download/clone the MDStudio_SMARTCyp repository and install locally using pip.
+or custom build the MDStudio SMARTCyp Docker container by cloning the MDStudio_SMARTCyp GitHub repository and run:
+
+    docker build MDStudio_SMARTCyp/ -t mdstudio/mdstudio_smartcyp
+    docker run -p 8081:8081 mdstudio/mdstudio_smartcyp
+
+or download/clone the MDStudio_SMARTCyp repository and install locally using pip.
 The repository comes equipped with the [SMARTCyp](https://smartcyp.sund.ku.dk/mol_to_som) software but for using 
 [PLANTS](https://uni-tuebingen.de/de/37876) docking and [SPORES](https://uni-tuebingen.de/fakultaeten/mathematisch-naturwissenschaftliche-fakultaet/fachbereiche/pharmazie-und-biochemie/pharmazie/pharmazeutische-chemie/pd-dr-t-exner/research/spores/) 
 structure preparation functionality you will need to obtain and copy the executables to the mdstudio_smartcyp/bin/ 

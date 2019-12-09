@@ -1,4 +1,0 @@
-docker build MDStudio_SMARTCyp/ -t mdstudio/mdstudio_smartcyp
-docker push mdstudio/mdstudio_smartcyp
-
-docker run -p 8081:8081 mdstudio/mdstudio_smartcyp

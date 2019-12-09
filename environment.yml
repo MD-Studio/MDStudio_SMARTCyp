@@ -1,7 +1,0 @@
-
-# Build environment for builder
-name: mdstudio_smartcyp
-channels:
-  - conda-forge
-dependencies:
-  - rdkit
