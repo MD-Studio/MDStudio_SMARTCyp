@@ -45,7 +45,7 @@ setup(
     keywords='MDStudio structures cheminformatics',
     platforms=['Any'],
     packages=find_packages(),
-    package_data={distribution_name: ['schemas/*', 'schemas/endpoints/*', 'data/*']},
+    package_data={distribution_name: ['schemas/*', 'schemas/endpoints/*', 'data/*', 'bin/*']},
     py_modules=[distribution_name],
     install_requires=['flask', 'flask-cors', 'connexion', 'swagger-ui-bundle', 'gevent',
                       'mdstudio', 'matplotlib', 'scipy', 'mdinteract'],

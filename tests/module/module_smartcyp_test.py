@@ -15,7 +15,7 @@ from mdstudio_smartcyp.smartcyp_run import SmartCypRunner, smartcyp_version_info
 from tests.module.unittest_baseclass import UnittestPythonCompatibility
 
 FILEPATH = os.path.abspath(os.path.join(os.path.dirname(__file__), '../files/'))
-print(FILEPATH)
+
 
 class SmartCypInfoTests(UnittestPythonCompatibility):
 
