@@ -33,7 +33,7 @@ distribution_name = 'mdstudio_smartcyp'
 
 setup(
     name=distribution_name,
-    version=0.1,
+    version=1.0,
     description='MDStudio SMARTCyp module',
     author="""
     Marc van Dijk - VU University - Amsterdam
@@ -45,6 +45,7 @@ setup(
     keywords='MDStudio structures cheminformatics',
     platforms=['Any'],
     packages=find_packages(),
+    package_data={distribution_name: ['schemas/*', 'schemas/endpoints/*', 'data/*']},
     py_modules=[distribution_name],
     install_requires=['flask', 'flask-cors', 'connexion', 'swagger-ui-bundle', 'gevent',
                       'mdstudio', 'matplotlib', 'scipy', 'mdinteract'],
